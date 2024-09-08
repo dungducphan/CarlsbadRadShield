@@ -37,71 +37,41 @@ G4VPhysicalVolume *detcon::Construct() {
     matGelPolymer->AddMaterial(nist->FindOrBuildMaterial("G4_WATER"), fractionmass = 80*perCent);
 
     // World
-    G4double worldSize = 11 * m;
+    G4double worldSize = 20 * m;
     G4Material *worldMat = nist->FindOrBuildMaterial("G4_Galactic");
     G4Box *solidWorld = new G4Box("solidWorld", 0.5 * worldSize, 0.5 * worldSize, 0.5 * worldSize);
     G4LogicalVolume *logicWorld = new G4LogicalVolume(solidWorld, worldMat, "logicWorld");
     G4VPhysicalVolume *physWorld = new G4PVPlacement(0, G4ThreeVector(), logicWorld, "physWorld", 0, false, 0, checkOverlaps);
 
-    // Radiation Shield
-    auto mesh_radShield = CADMesh::TessellatedMesh::FromSTL(Form("%s/radShield.stl", stlPath));
-    G4VSolid *solid_radShield = mesh_radShield->GetSolid();
-    logic_radShield = new G4LogicalVolume(solid_radShield, nist->FindOrBuildMaterial("G4_CONCRETE"), "logic_radShield");
-    G4VPhysicalVolume *phys_radShield = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), logic_radShield, "phys_radShield", logicWorld, false, 0, checkOverlaps);
-    G4VisAttributes* va_radShield = new G4VisAttributes();
-    va_radShield->SetVisibility();
-    va_radShield->SetForceSolid();
-    va_radShield->SetColor(0, 1, 1, 0.5);
-    logic_radShield->SetVisAttributes(va_radShield);
+    auto mesh_Dome = CADMesh::TessellatedMesh::FromSTL(Form("%s/CarlsbadRadShield-Dome.stl", stlPath));
+    G4VSolid *solid_Dome = mesh_Dome->GetSolid();
+    logic_Dome = new G4LogicalVolume(solid_Dome, nist->FindOrBuildMaterial("G4_CONCRETE"), "logic_Dome");
+    G4VPhysicalVolume *phys_Dome = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), logic_Dome, "phys_Dome", logicWorld, false, 0, checkOverlaps);
+    G4VisAttributes* va_Dome = new G4VisAttributes();
+    va_Dome->SetVisibility();
+    va_Dome->SetForceSolid();
+    va_Dome->SetColor(0, 1, 1, 0.5);
+    logic_Dome->SetVisAttributes(va_Dome);
 
-    // Target Chamber
-    auto mesh_chamber = CADMesh::TessellatedMesh::FromSTL(Form("%s/chamberAndBreadboard.stl", stlPath));
-    G4VSolid *solid_chamber = mesh_chamber->GetSolid();
-    G4LogicalVolume *logic_chamber = new G4LogicalVolume(solid_chamber, nist->FindOrBuildMaterial("G4_STAINLESS-STEEL"), "logic_chamber");
-    G4VPhysicalVolume *phys_chamber = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), logic_chamber, "phys_chamber", logicWorld, false, 0, checkOverlaps);
-    G4VisAttributes* va_chamber = new G4VisAttributes();
-    va_chamber->SetVisibility();
-    va_chamber->SetForceSolid();
-    va_chamber->SetColor(1, 0, 0, 0.5);
-    logic_chamber->SetVisAttributes(va_chamber);
+    auto mesh_DoorF = CADMesh::TessellatedMesh::FromSTL(Form("%s/CarlsbadRadShield-Door-F.stl", stlPath));
+    G4VSolid *solid_DoorF = mesh_DoorF->GetSolid();
+    logic_DoorF = new G4LogicalVolume(solid_DoorF, nist->FindOrBuildMaterial("G4_CONCRETE"), "logic_DoorF");
+    G4VPhysicalVolume *phys_DoorF = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), logic_DoorF, "phys_DoorF", logicWorld, false, 0, checkOverlaps);
+    G4VisAttributes* va_DoorF = new G4VisAttributes();
+    va_DoorF->SetVisibility();
+    va_DoorF->SetForceSolid();
+    va_DoorF->SetColor(0, 1, 1, 0.5);
+    logic_DoorF->SetVisAttributes(va_DoorF);
 
-    // TOFs
-    std::vector<G4VSolid *> solid_nTOFs;
-    for (unsigned int i = 0; i < 3; i++) {
-        auto mesh_nTOF = CADMesh::TessellatedMesh::FromSTL(Form("%s/nTOF_%i.stl", stlPath, i));
-        solid_nTOFs.push_back(mesh_nTOF->GetSolid());
-        logic_nTOFs.push_back(new G4LogicalVolume(solid_nTOFs.at(i), matEJ200, Form("logic_nTOF_%i", i)));
-        new G4PVPlacement(0, G4ThreeVector(0, 0, 0), logic_nTOFs.at(i), Form("phys_nTOF_%i", i), logicWorld, false, i,
-                          checkOverlaps);
-    }
-    G4VisAttributes* va_nTOF = new G4VisAttributes();
-    va_nTOF->SetVisibility();
-    va_nTOF->SetForceSolid();
-    va_nTOF->SetColor(0, 1, 0, 0.5);
-    for (auto& elem : logic_nTOFs) elem->SetVisAttributes(va_nTOF);
-    G4cout << "Mass of TOF: " << logic_nTOFs.at(0)->GetMass() / kilogram << " kg." << G4endl;
-    // FIXME: my understand of the GetSolids() function in this case is wrong, only one physical volume is
-    //  created even though the CAD model might contains more than one, disconnected solid volumes.
-
-    G4cout << solid_nTOFs.size() << G4endl;
-    // FIXME: display detector ID next to the model in visualization
-
-    // Bubble Detectors
-    std::vector<G4VSolid*> solid_nBDs;
-    for (unsigned int i = 0; i < 10; i++) {
-        auto mesh_nBD = CADMesh::TessellatedMesh::FromSTL(Form("%s/nBD_0_%i.stl", stlPath, i));
-        solid_nBDs.push_back(mesh_nBD->GetSolid());
-        logic_nBDs.push_back(new G4LogicalVolume(solid_nBDs.at(i), matGelPolymer, Form("logic_nBD_%i", i)));
-        new G4PVPlacement(0, G4ThreeVector(0, 0, 0), logic_nBDs.at(i), Form("phys_nBD_%i", i), logicWorld, false,
-                          100+i, checkOverlaps);
-    }
-    G4VisAttributes* va_nBD = new G4VisAttributes();
-    va_nBD->SetVisibility();
-    va_nBD->SetForceSolid();
-    va_nBD->SetColor(1, 0, 1, 0.5);
-    for (auto& elem : logic_nBDs) elem->SetVisAttributes(va_nBD);
-    G4cout << "Mass of BD: " << logic_nBDs.at(0)->GetMass() / kilogram << " kg." << G4endl;
-    // FIXME: display detector ID next to the model in visualization
+    auto mesh_DoorB = CADMesh::TessellatedMesh::FromSTL(Form("%s/CarlsbadRadShield-Door-B.stl", stlPath));
+    G4VSolid *solid_DoorB = mesh_DoorB->GetSolid();
+    logic_DoorB = new G4LogicalVolume(solid_DoorB, nist->FindOrBuildMaterial("G4_CONCRETE"), "logic_DoorB");
+    G4VPhysicalVolume *phys_DoorB = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), logic_DoorB, "phys_DoorB", logicWorld, false, 0, checkOverlaps);
+    G4VisAttributes* va_DoorB = new G4VisAttributes();
+    va_DoorB->SetVisibility();
+    va_DoorB->SetForceSolid();
+    va_DoorB->SetColor(0, 1, 1, 0.5);
+    logic_DoorB->SetVisAttributes(va_DoorB);
 
     return physWorld;
 }
