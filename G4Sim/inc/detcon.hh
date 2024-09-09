@@ -39,5 +39,12 @@ public:
 
     std::vector<G4LogicalVolume*> logic_nTOFs;
     std::vector<G4LogicalVolume*> logic_nBDs;
-    G4LogicalVolume *logic_radShield;
+    G4LogicalVolume *logic_HDConcrete;
+    G4LogicalVolume *logic_VacuumChamber;
+    G4LogicalVolume *logic_Ground;
+    G4LogicalVolume *logic_HumanPhantom1;
+    G4LogicalVolume *logic_HumanPhantom2;
+    G4LogicalVolume *logic_HumanPhantom3;
+    G4LogicalVolume *logic_HumanPhantom4;
+    G4LogicalVolume *logic_SteelShield;
 };

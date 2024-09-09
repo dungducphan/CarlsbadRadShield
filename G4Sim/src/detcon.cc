@@ -18,7 +18,8 @@ G4VPhysicalVolume *detcon::Construct() {
     G4bool checkOverlaps = true;
 
     // Getting the ${STL_DIR} env variable
-    auto stlPath = getenv("STL_DIR");
+    // auto stlPath = getenv("STL_DIR");
+    auto stlPath = "/home/dphan/Documents/GitHub/CarlsbadRadShield/G4Sim/geometryFiles";
 
     // Define material for EJ-200 plastic scintillator
     G4Element* elH  = nist->FindOrBuildElement("H");
@@ -43,35 +44,89 @@ G4VPhysicalVolume *detcon::Construct() {
     G4LogicalVolume *logicWorld = new G4LogicalVolume(solidWorld, worldMat, "logicWorld");
     G4VPhysicalVolume *physWorld = new G4PVPlacement(0, G4ThreeVector(), logicWorld, "physWorld", 0, false, 0, checkOverlaps);
 
-    auto mesh_Dome = CADMesh::TessellatedMesh::FromSTL(Form("%s/CarlsbadRadShield-Dome.stl", stlPath));
-    G4VSolid *solid_Dome = mesh_Dome->GetSolid();
-    logic_Dome = new G4LogicalVolume(solid_Dome, nist->FindOrBuildMaterial("G4_CONCRETE"), "logic_Dome");
-    G4VPhysicalVolume *phys_Dome = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), logic_Dome, "phys_Dome", logicWorld, false, 0, checkOverlaps);
-    G4VisAttributes* va_Dome = new G4VisAttributes();
-    va_Dome->SetVisibility();
-    va_Dome->SetForceSolid();
-    va_Dome->SetColor(0, 1, 1, 0.5);
-    logic_Dome->SetVisAttributes(va_Dome);
+    auto mesh_HDConcrete = CADMesh::TessellatedMesh::FromSTL(Form("%s/CarlsbadRadShield-HDConcrete.stl", stlPath));
+    G4VSolid *solid_HDConcrete = mesh_HDConcrete->GetSolid();
+    logic_HDConcrete = new G4LogicalVolume(solid_HDConcrete, nist->FindOrBuildMaterial("G4_CONCRETE"), "logic_HDConcrete");
+    G4VPhysicalVolume *phys_HDConcrete = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), logic_HDConcrete, "phys_HDConcrete", logicWorld, false, 0, checkOverlaps);
+    auto va_HDConcrete = new G4VisAttributes();
+    va_HDConcrete->SetVisibility();
+    va_HDConcrete->SetForceSolid();
+    va_HDConcrete->SetColor(0, 1, 1, 0.5);
+    logic_HDConcrete->SetVisAttributes(va_HDConcrete);
 
-    auto mesh_DoorF = CADMesh::TessellatedMesh::FromSTL(Form("%s/CarlsbadRadShield-Door-F.stl", stlPath));
-    G4VSolid *solid_DoorF = mesh_DoorF->GetSolid();
-    logic_DoorF = new G4LogicalVolume(solid_DoorF, nist->FindOrBuildMaterial("G4_CONCRETE"), "logic_DoorF");
-    G4VPhysicalVolume *phys_DoorF = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), logic_DoorF, "phys_DoorF", logicWorld, false, 0, checkOverlaps);
-    G4VisAttributes* va_DoorF = new G4VisAttributes();
-    va_DoorF->SetVisibility();
-    va_DoorF->SetForceSolid();
-    va_DoorF->SetColor(0, 1, 1, 0.5);
-    logic_DoorF->SetVisAttributes(va_DoorF);
+    auto mesh_VacuumChamber = CADMesh::TessellatedMesh::FromSTL(Form("%s/CarlsbadRadShield-VacuumChamber.stl", stlPath));
+    G4VSolid *solid_VacuumChamber = mesh_VacuumChamber->GetSolid();
+    logic_VacuumChamber = new G4LogicalVolume(solid_VacuumChamber, nist->FindOrBuildMaterial("G4_CONCRETE"), "logic_VacuumChamber");
+    G4VPhysicalVolume *phys_VacuumChamber = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), logic_VacuumChamber, "phys_VacuumChamber", logicWorld, false, 0, checkOverlaps);
+    auto va_VacuumChamber = new G4VisAttributes();
+    va_VacuumChamber->SetVisibility();
+    va_VacuumChamber->SetForceSolid();
+    va_VacuumChamber->SetColor(1, 0, 0, 0.5);
+    logic_VacuumChamber->SetVisAttributes(va_VacuumChamber);
 
-    auto mesh_DoorB = CADMesh::TessellatedMesh::FromSTL(Form("%s/CarlsbadRadShield-Door-B.stl", stlPath));
-    G4VSolid *solid_DoorB = mesh_DoorB->GetSolid();
-    logic_DoorB = new G4LogicalVolume(solid_DoorB, nist->FindOrBuildMaterial("G4_CONCRETE"), "logic_DoorB");
-    G4VPhysicalVolume *phys_DoorB = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), logic_DoorB, "phys_DoorB", logicWorld, false, 0, checkOverlaps);
-    G4VisAttributes* va_DoorB = new G4VisAttributes();
-    va_DoorB->SetVisibility();
-    va_DoorB->SetForceSolid();
-    va_DoorB->SetColor(0, 1, 1, 0.5);
-    logic_DoorB->SetVisAttributes(va_DoorB);
+    auto mesh_Ground = CADMesh::TessellatedMesh::FromSTL(Form("%s/CarlsbadRadShield-Ground.stl", stlPath));
+    G4VSolid *solid_Ground = mesh_Ground->GetSolid();
+    logic_Ground = new G4LogicalVolume(solid_Ground, nist->FindOrBuildMaterial("G4_CONCRETE"), "logic_Ground");
+    G4VPhysicalVolume *phys_Ground = new G4PVPlacement(0, G4ThreeVector(7000, 7000, 1650), logic_Ground, "phys_Ground", logicWorld, false, 0, checkOverlaps);
+    auto va_Ground = new G4VisAttributes();
+    va_Ground->SetVisibility();
+    va_Ground->SetForceSolid();
+    va_Ground->SetColor(0, 0, 1, 0.5);
+    logic_Ground->SetVisAttributes(va_Ground);
+
+    auto mesh_SteelShield = CADMesh::TessellatedMesh::FromSTL(Form("%s/CarlsbadRadShield-IronShield.stl", stlPath));
+    G4VSolid *solid_SteelShield = mesh_SteelShield->GetSolid();
+    logic_SteelShield = new G4LogicalVolume(solid_SteelShield, nist->FindOrBuildMaterial("G4_CONCRETE"), "logic_SteelShield");
+    G4VPhysicalVolume *phys_SteelShield = new G4PVPlacement(0, G4ThreeVector(0, 0, 1450 * mm), logic_SteelShield, "phys_SteelShield", logicWorld, false, 0, checkOverlaps);
+    auto va_SteelShield = new G4VisAttributes();
+    va_SteelShield->SetVisibility();
+    va_SteelShield->SetForceSolid();
+    va_SteelShield->SetColor(1, 0, 1, 0.5);
+    logic_SteelShield->SetVisAttributes(va_SteelShield);
+
+    auto mesh_HumanPhantom1 = CADMesh::TessellatedMesh::FromSTL(Form("%s/CarlsbadRadShield-HP-1.stl", stlPath));
+    G4VSolid *solid_HumanPhantom1 = mesh_HumanPhantom1->GetSolid();
+    logic_HumanPhantom1 = new G4LogicalVolume(solid_HumanPhantom1, nist->FindOrBuildMaterial("G4_CONCRETE"), "logic_HumanPhantom1");
+    G4VPhysicalVolume *phys_HumanPhantom1 = new G4PVPlacement(0, G4ThreeVector(0, 2000 * mm, 0), logic_HumanPhantom1, "phys_HumanPhantom1", logicWorld, false, 0, checkOverlaps);
+    auto va_HumanPhantom1 = new G4VisAttributes();
+    va_HumanPhantom1->SetVisibility();
+    va_HumanPhantom1->SetForceSolid();
+    va_HumanPhantom1->SetColor(0, 1, 0, 0.5);
+    logic_HumanPhantom1->SetVisAttributes(va_HumanPhantom1);
+
+    auto mesh_HumanPhantom2 = CADMesh::TessellatedMesh::FromSTL(Form("%s/CarlsbadRadShield-HP-2.stl", stlPath));
+    G4VSolid *solid_HumanPhantom2 = mesh_HumanPhantom2->GetSolid();
+    logic_HumanPhantom2 = new G4LogicalVolume(solid_HumanPhantom2, nist->FindOrBuildMaterial("G4_CONCRETE"), "logic_HumanPhantom2");
+    G4VPhysicalVolume *phys_HumanPhantom2 = new G4PVPlacement(0, G4ThreeVector(-1000 * mm, 2000 * mm, 0), logic_HumanPhantom2, "phys_HumanPhantom2", logicWorld, false, 0, checkOverlaps);
+    auto va_HumanPhantom2 = new G4VisAttributes();
+    va_HumanPhantom2->SetVisibility();
+    va_HumanPhantom2->SetForceSolid();
+    va_HumanPhantom2->SetColor(0, 1, 0, 0.5);
+    logic_HumanPhantom2->SetVisAttributes(va_HumanPhantom2);
+
+    auto mesh_HumanPhantom3 = CADMesh::TessellatedMesh::FromSTL(Form("%s/CarlsbadRadShield-HP-3.stl", stlPath));
+    G4VSolid *solid_HumanPhantom3 = mesh_HumanPhantom3->GetSolid();
+    logic_HumanPhantom3 = new G4LogicalVolume(solid_HumanPhantom3, nist->FindOrBuildMaterial("G4_CONCRETE"), "logic_HumanPhantom3");
+    G4VPhysicalVolume *phys_HumanPhantom3 = new G4PVPlacement(0, G4ThreeVector(-3000 * mm, 2000 * mm, 0), logic_HumanPhantom3, "phys_HumanPhantom3", logicWorld, false, 0, checkOverlaps);
+    auto va_HumanPhantom3 = new G4VisAttributes();
+    va_HumanPhantom3->SetVisibility();
+    va_HumanPhantom3->SetForceSolid();
+    va_HumanPhantom3->SetColor(0, 1, 0, 0.5);
+    logic_HumanPhantom3->SetVisAttributes(va_HumanPhantom3);
+
+    auto mesh_HumanPhantom4 = CADMesh::TessellatedMesh::FromSTL(Form("%s/CarlsbadRadShield-HP-4.stl", stlPath));
+    G4VSolid *solid_HumanPhantom4 = mesh_HumanPhantom4->GetSolid();
+    logic_HumanPhantom4 = new G4LogicalVolume(solid_HumanPhantom4, nist->FindOrBuildMaterial("G4_CONCRETE"), "logic_HumanPhantom4");
+    auto HP4_Rot = new G4RotationMatrix();
+    HP4_Rot->rotateX(0*deg);
+    HP4_Rot->rotateY(0*deg);
+    HP4_Rot->rotateZ(90*deg);
+    G4VPhysicalVolume *phys_HumanPhantom4 = new G4PVPlacement(HP4_Rot, G4ThreeVector(10300, 5300, 0), logic_HumanPhantom4, "phys_HumanPhantom4", logicWorld, false, 0, checkOverlaps);
+    auto va_HumanPhantom4 = new G4VisAttributes();
+    va_HumanPhantom4->SetVisibility();
+    va_HumanPhantom4->SetForceSolid();
+    va_HumanPhantom4->SetColor(0, 1, 0, 0.5);
+    logic_HumanPhantom4->SetVisAttributes(va_HumanPhantom4);
 
     return physWorld;
 }
