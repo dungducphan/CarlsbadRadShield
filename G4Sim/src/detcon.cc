@@ -127,6 +127,9 @@ G4VPhysicalVolume *detcon::Construct() {
     va_HumanPhantom4->SetColor(0, 1, 0, 0.5);
     logic_HumanPhantom4->SetVisAttributes(va_HumanPhantom4);
 
+    std::cout << "________________________________________________________________________" << std::endl;
+    std::cout << "Mass of Human Phantom: " << logic_HumanPhantom1->GetMass() / kg << " kg" << std::endl;
+
     return physWorld;
 }
 

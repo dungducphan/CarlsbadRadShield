@@ -7,6 +7,13 @@
 #include <TCanvas.h>
 #include <TStyle.h>
 
+#include <iostream>
+
+const std::string DataPath = "/home/dphan/Documents/GitHub/CarlsbadRadShield/AnalysisScripts/";
+const std::string DataFile = "EDep_000_440000_Beam.root";
+const std::string PlotPath = "/home/dphan/Documents/GitHub/CarlsbadRadShield/AnalysisScripts/Plots/";
+const double massOfHumanPhantom = 252.175; // kg
+
 class BeamAna {
 public :
    TTree          *fChain;   //!pointer to the analyzed TTree or TChain
@@ -39,9 +46,9 @@ BeamAna::BeamAna(TTree *tree) : fChain(0) {
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
    if (tree == 0) {
-      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("EDep_000_440000_Beam.root");
+      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject((DataPath + DataFile).c_str());
       if (!f || !f->IsOpen()) {
-         f = new TFile("EDep_000_440000_Beam.root");
+         f = new TFile((DataPath + DataFile).c_str());
       }
       f->GetObject("EDep",tree);
 
@@ -109,18 +116,46 @@ void BeamAna::Loop() {
 
    Long64_t nentries = fChain->GetEntriesFast();
 
+   double absorbedEnergy_Human1 = 0; // Joule
+   double absorbedEnergy_Human2 = 0; // Joule
+   double absorbedEnergy_Human3 = 0; // Joule
+   double absorbedEnergy_Human4 = 0; // Joule
+
    Long64_t nbytes = 0, nb = 0;
    for (Long64_t jentry=0; jentry<nentries;jentry++) {
       Long64_t ientry = LoadTree(jentry);
       if (ientry < 0) break;
       nb = fChain->GetEntry(jentry);   nbytes += nb;
       // if (Cut(ientry) < 0) continue;
+      if (HumanPhantom_ID == 1) {
+         absorbedEnergy_Human1 += EDep;
+      } else if (HumanPhantom_ID == 2) {
+         absorbedEnergy_Human2 += EDep;
+      } else if (HumanPhantom_ID == 3) {
+         absorbedEnergy_Human3 += EDep;
+      } else if (HumanPhantom_ID == 4) {
+         absorbedEnergy_Human4 += EDep;
+      }
    }
+
+   absorbedEnergy_Human1 = absorbedEnergy_Human1 * 710.2 * 100 / massOfHumanPhantom; // Gy/s
+   absorbedEnergy_Human2 = absorbedEnergy_Human2 * 710.2 * 100 / massOfHumanPhantom; // Gy/s
+   absorbedEnergy_Human3 = absorbedEnergy_Human3 * 710.2 * 100 / massOfHumanPhantom; // Gy/s
+   absorbedEnergy_Human4 = absorbedEnergy_Human4 * 710.2 * 100 / massOfHumanPhantom; // Gy/s
+
+   std::cout << "Beam Charge: 50pC. Rep-rate 100Hz. Beam Energy 200MeV." << std::endl;
+   std::cout << "Absorbed Dose Rate in Human Phantom 1: " << absorbedEnergy_Human1 << " Gy/s" << std::endl;
+   std::cout << "Absorbed Dose Rate in Human Phantom 2: " << absorbedEnergy_Human2 << " Gy/s" << std::endl;
+   std::cout << "Absorbed Dose Rate in Human Phantom 3: " << absorbedEnergy_Human3 << " Gy/s" << std::endl;
+   std::cout << "Absorbed Dose Rate in Human Phantom 4: " << absorbedEnergy_Human4 << " Gy/s" << std::endl;
 }
 
 #if !defined(__CINT__) && !defined(__CLING__) && !defined(__ACLIC__)
 
 int main() {
+   BeamAna *ana = new BeamAna();
+   ana->Loop();
+
    return 0;
 }
 #endif
