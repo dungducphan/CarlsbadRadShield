@@ -1,5 +1,5 @@
 #include <detcon.hh>
-#include <nTOF_SD.hh>
+#include <ParticleSD.hh>
 
 #include <CADMesh.hh>
 
@@ -35,9 +35,11 @@ G4VPhysicalVolume *detcon::Construct() {
     HDConcrete->AddElement(nist->FindOrBuildElement("Fe"), 0.014);
 
     // World
-    G4double worldSize = 20 * m;
+    G4double worldSize_X = 15 * m;
+    G4double worldSize_Y = 15 * m;
+    G4double worldSize_Z = 5 * m;
     G4Material *worldMat = nist->FindOrBuildMaterial("G4_Galactic");
-    G4Box *solidWorld = new G4Box("solidWorld", 0.5 * worldSize, 0.5 * worldSize, 0.5 * worldSize);
+    G4Box *solidWorld = new G4Box("solidWorld", 0.5 * worldSize_X, 0.5 * worldSize_Y, 0.5 * worldSize_Z);
     G4LogicalVolume *logicWorld = new G4LogicalVolume(solidWorld, worldMat, "logicWorld");
     G4VPhysicalVolume *physWorld = new G4PVPlacement(0, G4ThreeVector(), logicWorld, "physWorld", 0, false, 0, checkOverlaps);
 
@@ -129,13 +131,10 @@ G4VPhysicalVolume *detcon::Construct() {
 }
 
 void detcon::ConstructSDandField() {
-    nTOF_SD *aTOFSD = new nTOF_SD("neutronTOFSD");
-    G4SDManager::GetSDMpointer()->AddNewDetector(aTOFSD);
-    for (auto &elem: logic_nTOFs) SetSensitiveDetector(elem, aTOFSD);
-    for (auto &elem: logic_nBDs) SetSensitiveDetector(elem, aTOFSD);
-
-    // FIXME: When I run a test, I make the radShield volume to become the nTOF sensitive detector to get a lot of neutrons quickly. There was std::bad_aloc error when running the test simulation
-    //  with a lot of primary neutron (n = 1000). That problem does not show up when the number of neutron hits recorded is small. So I will look over this problem right now, but keep this in mind
-    //  if seeing this bug in the future.
-
+    auto *aDoseSD = new ParticleSD("RadiationDoseSD");
+    G4SDManager::GetSDMpointer()->AddNewDetector(aDoseSD);
+    SetSensitiveDetector(logic_HumanPhantom1, aDoseSD);
+    SetSensitiveDetector(logic_HumanPhantom2, aDoseSD);
+    SetSensitiveDetector(logic_HumanPhantom3, aDoseSD);
+    SetSensitiveDetector(logic_HumanPhantom4, aDoseSD);
 }

@@ -1,7 +1,7 @@
 /run/initialize
 /vis/open OGL
 /vis/scene/create
-/vis/viewer/set/viewpointVector 1 0.8 0.7
+#/vis/viewer/set/viewpointVector 1 0.8 0.7
 /vis/drawVolume
 /vis/viewer/set/autoRefresh true
 /vis/scene/add/trajectories smooth
