@@ -7,7 +7,7 @@ generator::generator() {
     fGeneralParticleSource = new G4GeneralParticleSource();
 
     G4SingleParticleSource *sps = fGeneralParticleSource->GetCurrentSource();
-    G4ParticleDefinition *particle = G4ParticleTable::GetParticleTable()->FindParticle("geantino");
+    G4ParticleDefinition *particle = G4ParticleTable::GetParticleTable()->FindParticle("e-");
 
     sps->SetParticleDefinition(particle);
     sps->SetNumberOfParticles(10);
