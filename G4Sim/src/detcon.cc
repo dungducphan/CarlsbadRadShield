@@ -21,21 +21,18 @@ G4VPhysicalVolume *detcon::Construct() {
     // auto stlPath = getenv("STL_DIR");
     auto stlPath = "/home/dphan/Documents/GitHub/CarlsbadRadShield/G4Sim/geometryFiles";
 
-    // Define material for EJ-200 plastic scintillator
-    G4Element* elH  = nist->FindOrBuildElement("H");
-    G4Element* elC  = nist->FindOrBuildElement("C");
-    G4Material* matEJ200 = new G4Material("matEJ200", 1.0221 * g/cm3, 2);
-    matEJ200->AddElement(elH, 0.084838648);
-    matEJ200->AddElement(elC, 0.915161352);
-
-    // Define material for bubble detector polymer hydrogel matrix
-    // define a material from elements and/or others materials (mixture of mixtures)
-    G4double density = 01.200*g/cm3;
-    G4int ncomponents = 2;
-    G4double fractionmass = 0;
-    G4Material* matGelPolymer = new G4Material("matGelPolymer", density, ncomponents);
-    matGelPolymer->AddMaterial(nist->FindOrBuildMaterial("G4_POLYVINYL_ALCOHOL"), fractionmass = 20*perCent);
-    matGelPolymer->AddMaterial(nist->FindOrBuildMaterial("G4_WATER"), fractionmass = 80*perCent);
+    // Define High-Density Concrete
+    auto HDConcrete = new G4Material("HDConcrete", 3.7 * g / cm3, 10);
+    HDConcrete->AddElement(nist->FindOrBuildElement("H"),  0.01);
+    HDConcrete->AddElement(nist->FindOrBuildElement("C"),  0.001);
+    HDConcrete->AddElement(nist->FindOrBuildElement("O"),  0.529107);
+    HDConcrete->AddElement(nist->FindOrBuildElement("Na"), 0.016);
+    HDConcrete->AddElement(nist->FindOrBuildElement("Mg"), 0.002);
+    HDConcrete->AddElement(nist->FindOrBuildElement("Al"), 0.033872);
+    HDConcrete->AddElement(nist->FindOrBuildElement("Si"), 0.337021);
+    HDConcrete->AddElement(nist->FindOrBuildElement("K"),  0.013);
+    HDConcrete->AddElement(nist->FindOrBuildElement("Ca"), 0.044);
+    HDConcrete->AddElement(nist->FindOrBuildElement("Fe"), 0.014);
 
     // World
     G4double worldSize = 20 * m;
@@ -46,7 +43,7 @@ G4VPhysicalVolume *detcon::Construct() {
 
     auto mesh_HDConcrete = CADMesh::TessellatedMesh::FromSTL(Form("%s/CarlsbadRadShield-HDConcrete.stl", stlPath));
     G4VSolid *solid_HDConcrete = mesh_HDConcrete->GetSolid();
-    logic_HDConcrete = new G4LogicalVolume(solid_HDConcrete, nist->FindOrBuildMaterial("G4_CONCRETE"), "logic_HDConcrete");
+    logic_HDConcrete = new G4LogicalVolume(solid_HDConcrete, HDConcrete, "logic_HDConcrete");
     G4VPhysicalVolume *phys_HDConcrete = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), logic_HDConcrete, "phys_HDConcrete", logicWorld, false, 0, checkOverlaps);
     auto va_HDConcrete = new G4VisAttributes();
     va_HDConcrete->SetVisibility();
@@ -56,7 +53,7 @@ G4VPhysicalVolume *detcon::Construct() {
 
     auto mesh_VacuumChamber = CADMesh::TessellatedMesh::FromSTL(Form("%s/CarlsbadRadShield-VacuumChamber.stl", stlPath));
     G4VSolid *solid_VacuumChamber = mesh_VacuumChamber->GetSolid();
-    logic_VacuumChamber = new G4LogicalVolume(solid_VacuumChamber, nist->FindOrBuildMaterial("G4_CONCRETE"), "logic_VacuumChamber");
+    logic_VacuumChamber = new G4LogicalVolume(solid_VacuumChamber, nist->FindOrBuildMaterial("G4_STAINLESS-STEEL"), "logic_VacuumChamber");
     G4VPhysicalVolume *phys_VacuumChamber = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), logic_VacuumChamber, "phys_VacuumChamber", logicWorld, false, 0, checkOverlaps);
     auto va_VacuumChamber = new G4VisAttributes();
     va_VacuumChamber->SetVisibility();
@@ -76,7 +73,7 @@ G4VPhysicalVolume *detcon::Construct() {
 
     auto mesh_SteelShield = CADMesh::TessellatedMesh::FromSTL(Form("%s/CarlsbadRadShield-IronShield.stl", stlPath));
     G4VSolid *solid_SteelShield = mesh_SteelShield->GetSolid();
-    logic_SteelShield = new G4LogicalVolume(solid_SteelShield, nist->FindOrBuildMaterial("G4_CONCRETE"), "logic_SteelShield");
+    logic_SteelShield = new G4LogicalVolume(solid_SteelShield, nist->FindOrBuildMaterial("G4_STAINLESS-STEEL"), "logic_SteelShield");
     G4VPhysicalVolume *phys_SteelShield = new G4PVPlacement(0, G4ThreeVector(0, 0, 1450 * mm), logic_SteelShield, "phys_SteelShield", logicWorld, false, 0, checkOverlaps);
     auto va_SteelShield = new G4VisAttributes();
     va_SteelShield->SetVisibility();
@@ -86,7 +83,7 @@ G4VPhysicalVolume *detcon::Construct() {
 
     auto mesh_HumanPhantom1 = CADMesh::TessellatedMesh::FromSTL(Form("%s/CarlsbadRadShield-HP-1.stl", stlPath));
     G4VSolid *solid_HumanPhantom1 = mesh_HumanPhantom1->GetSolid();
-    logic_HumanPhantom1 = new G4LogicalVolume(solid_HumanPhantom1, nist->FindOrBuildMaterial("G4_CONCRETE"), "logic_HumanPhantom1");
+    logic_HumanPhantom1 = new G4LogicalVolume(solid_HumanPhantom1, nist->FindOrBuildMaterial("G4_TISSUE_SOFT_ICRP"), "logic_HumanPhantom1");
     G4VPhysicalVolume *phys_HumanPhantom1 = new G4PVPlacement(0, G4ThreeVector(0, 2000 * mm, 0), logic_HumanPhantom1, "phys_HumanPhantom1", logicWorld, false, 0, checkOverlaps);
     auto va_HumanPhantom1 = new G4VisAttributes();
     va_HumanPhantom1->SetVisibility();
@@ -96,7 +93,7 @@ G4VPhysicalVolume *detcon::Construct() {
 
     auto mesh_HumanPhantom2 = CADMesh::TessellatedMesh::FromSTL(Form("%s/CarlsbadRadShield-HP-2.stl", stlPath));
     G4VSolid *solid_HumanPhantom2 = mesh_HumanPhantom2->GetSolid();
-    logic_HumanPhantom2 = new G4LogicalVolume(solid_HumanPhantom2, nist->FindOrBuildMaterial("G4_CONCRETE"), "logic_HumanPhantom2");
+    logic_HumanPhantom2 = new G4LogicalVolume(solid_HumanPhantom2, nist->FindOrBuildMaterial("G4_TISSUE_SOFT_ICRP"), "logic_HumanPhantom2");
     G4VPhysicalVolume *phys_HumanPhantom2 = new G4PVPlacement(0, G4ThreeVector(-1000 * mm, 2000 * mm, 0), logic_HumanPhantom2, "phys_HumanPhantom2", logicWorld, false, 0, checkOverlaps);
     auto va_HumanPhantom2 = new G4VisAttributes();
     va_HumanPhantom2->SetVisibility();
@@ -106,7 +103,7 @@ G4VPhysicalVolume *detcon::Construct() {
 
     auto mesh_HumanPhantom3 = CADMesh::TessellatedMesh::FromSTL(Form("%s/CarlsbadRadShield-HP-3.stl", stlPath));
     G4VSolid *solid_HumanPhantom3 = mesh_HumanPhantom3->GetSolid();
-    logic_HumanPhantom3 = new G4LogicalVolume(solid_HumanPhantom3, nist->FindOrBuildMaterial("G4_CONCRETE"), "logic_HumanPhantom3");
+    logic_HumanPhantom3 = new G4LogicalVolume(solid_HumanPhantom3, nist->FindOrBuildMaterial("G4_TISSUE_SOFT_ICRP"), "logic_HumanPhantom3");
     G4VPhysicalVolume *phys_HumanPhantom3 = new G4PVPlacement(0, G4ThreeVector(-3000 * mm, 2000 * mm, 0), logic_HumanPhantom3, "phys_HumanPhantom3", logicWorld, false, 0, checkOverlaps);
     auto va_HumanPhantom3 = new G4VisAttributes();
     va_HumanPhantom3->SetVisibility();
@@ -116,7 +113,7 @@ G4VPhysicalVolume *detcon::Construct() {
 
     auto mesh_HumanPhantom4 = CADMesh::TessellatedMesh::FromSTL(Form("%s/CarlsbadRadShield-HP-4.stl", stlPath));
     G4VSolid *solid_HumanPhantom4 = mesh_HumanPhantom4->GetSolid();
-    logic_HumanPhantom4 = new G4LogicalVolume(solid_HumanPhantom4, nist->FindOrBuildMaterial("G4_CONCRETE"), "logic_HumanPhantom4");
+    logic_HumanPhantom4 = new G4LogicalVolume(solid_HumanPhantom4, nist->FindOrBuildMaterial("G4_TISSUE_SOFT_ICRP"), "logic_HumanPhantom4");
     auto HP4_Rot = new G4RotationMatrix();
     HP4_Rot->rotateX(0*deg);
     HP4_Rot->rotateY(0*deg);

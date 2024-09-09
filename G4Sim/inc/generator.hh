@@ -13,6 +13,7 @@
 #include "G4String.hh"
 
 #include "TMath.h"
+#include "TRandom3.h"
 
 class generator : public G4VUserPrimaryGeneratorAction {
 public:
@@ -24,4 +25,6 @@ public:
 
 private:
     G4GeneralParticleSource *fGeneralParticleSource = nullptr;
+    G4ThreeVector RandomizedDirection();
+    TRandom3 *fRandom;
 };
