@@ -19,7 +19,7 @@ G4VPhysicalVolume *detcon::Construct() {
 
     // Getting the ${STL_DIR} env variable
     // auto stlPath = getenv("STL_DIR");
-    auto stlPath = "/home/dphan/Documents/GitHub/CarlsbadRadShield/G4Sim/geometryFiles";
+    auto stlPath = ".";
 
     // Define High-Density Concrete
     auto HDConcrete = new G4Material("HDConcrete", 3.7 * g / cm3, 10);
