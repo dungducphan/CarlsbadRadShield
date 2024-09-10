@@ -10,9 +10,11 @@
 #include <iostream>
 
 const std::string DataPath = "/home/dphan/Documents/GitHub/CarlsbadRadShield/AnalysisScripts/";
-const std::string DataFile = "EDep_000_440000_Beam.root";
+const std::string DataFile = "EDep_000_44000000_Beam_HDC3_FE1_HDC12.root";
 const std::string PlotPath = "/home/dphan/Documents/GitHub/CarlsbadRadShield/AnalysisScripts/Plots/";
-const double massOfHumanPhantom = 252.175; // kg
+const double massOfHumanPhantom = 168.117; // kg
+const double scaleFactor = 7.102; // scale factor to get 50pC charge
+const double laserReprate = 100; // Hz
 
 class BeamAna {
 public :
@@ -127,6 +129,7 @@ void BeamAna::Loop() {
       if (ientry < 0) break;
       nb = fChain->GetEntry(jentry);   nbytes += nb;
       // if (Cut(ientry) < 0) continue;
+
       if (HumanPhantom_ID == 1) {
          absorbedEnergy_Human1 += EDep;
       } else if (HumanPhantom_ID == 2) {
@@ -138,16 +141,12 @@ void BeamAna::Loop() {
       }
    }
 
-   absorbedEnergy_Human1 = absorbedEnergy_Human1 * 710.2 * 100 / massOfHumanPhantom; // Gy/s
-   absorbedEnergy_Human2 = absorbedEnergy_Human2 * 710.2 * 100 / massOfHumanPhantom; // Gy/s
-   absorbedEnergy_Human3 = absorbedEnergy_Human3 * 710.2 * 100 / massOfHumanPhantom; // Gy/s
-   absorbedEnergy_Human4 = absorbedEnergy_Human4 * 710.2 * 100 / massOfHumanPhantom; // Gy/s
+   absorbedEnergy_Human1 = absorbedEnergy_Human1 * scaleFactor * laserReprate / massOfHumanPhantom; // Gy/s
+   absorbedEnergy_Human2 = absorbedEnergy_Human2 * scaleFactor * laserReprate / massOfHumanPhantom; // Gy/s
 
    std::cout << "Beam Charge: 50pC. Rep-rate 100Hz. Beam Energy 200MeV." << std::endl;
-   std::cout << "Absorbed Dose Rate in Human Phantom 1: " << absorbedEnergy_Human1 << " Gy/s" << std::endl;
-   std::cout << "Absorbed Dose Rate in Human Phantom 2: " << absorbedEnergy_Human2 << " Gy/s" << std::endl;
-   std::cout << "Absorbed Dose Rate in Human Phantom 3: " << absorbedEnergy_Human3 << " Gy/s" << std::endl;
-   std::cout << "Absorbed Dose Rate in Human Phantom 4: " << absorbedEnergy_Human4 << " Gy/s" << std::endl;
+   std::cout << "Absorbed Dose Rate in Human Phantom 1: " << absorbedEnergy_Human1 * 10 << " mrem/s" << std::endl;
+   std::cout << "Absorbed Dose Rate in Human Phantom 2: " << absorbedEnergy_Human2 * 10 << " mrem/s" << std::endl;
 }
 
 #if !defined(__CINT__) && !defined(__CLING__) && !defined(__ACLIC__)

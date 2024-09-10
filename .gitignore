@@ -35,3 +35,5 @@
 
 .idea/
 cmake-build-*/
+*.root
+AnalysisScripts/EDep_000_440000_Beam_TestConfig.root
