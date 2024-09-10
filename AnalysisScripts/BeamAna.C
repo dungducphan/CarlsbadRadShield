@@ -145,8 +145,8 @@ void BeamAna::Loop() {
    absorbedEnergy_Human2 = absorbedEnergy_Human2 * scaleFactor * laserReprate / massOfHumanPhantom; // Gy/s
 
    std::cout << "Beam Charge: 50pC. Rep-rate 100Hz. Beam Energy 200MeV." << std::endl;
-   std::cout << "Absorbed Dose Rate in Human Phantom 1: " << absorbedEnergy_Human1 * 10 << " mrem/s" << std::endl;
-   std::cout << "Absorbed Dose Rate in Human Phantom 2: " << absorbedEnergy_Human2 * 10 << " mrem/s" << std::endl;
+   std::cout << "Absorbed Dose Rate in Human Phantom 1: " << absorbedEnergy_Human1 * 100 * 1000 << " mrem/s" << std::endl;
+   std::cout << "Absorbed Dose Rate in Human Phantom 2: " << absorbedEnergy_Human2 * 100 * 1000 << " mrem/s" << std::endl;
 }
 
 #if !defined(__CINT__) && !defined(__CLING__) && !defined(__ACLIC__)
