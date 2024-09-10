@@ -50,7 +50,7 @@ G4VPhysicalVolume *detcon::Construct() {
     auto va_VacuumChamber = new G4VisAttributes();
     va_VacuumChamber->SetVisibility();
     va_VacuumChamber->SetForceSolid();
-    va_VacuumChamber->SetColor(1, 0, 0, 0.5);
+    va_VacuumChamber->SetColor(1, 0, 0, 0.7);
     logic_VacuumChamber->SetVisAttributes(va_VacuumChamber);
 
     auto mesh_HDConcrete3in = CADMesh::TessellatedMesh::FromSTL(Form("%s/CarlsbadRadShield-HDC3in.stl", stlPath));
@@ -60,7 +60,7 @@ G4VPhysicalVolume *detcon::Construct() {
     auto va_HDConcrete3in = new G4VisAttributes();
     va_HDConcrete3in->SetVisibility();
     va_HDConcrete3in->SetForceSolid();
-    va_HDConcrete3in->SetColor(0, 1, 1, 0.5);
+    va_HDConcrete3in->SetColor(0, 1, 1, 0.3);
     logic_HDConcrete3in->SetVisAttributes(va_HDConcrete3in);
 
     auto mesh_HDConcrete12in = CADMesh::TessellatedMesh::FromSTL(Form("%s/CarlsbadRadShield-HDC12in.stl", stlPath));
@@ -70,7 +70,7 @@ G4VPhysicalVolume *detcon::Construct() {
     auto va_HDConcrete12in = new G4VisAttributes();
     va_HDConcrete12in->SetVisibility();
     va_HDConcrete12in->SetForceSolid();
-    va_HDConcrete12in->SetColor(0, 1, 1, 0.5);
+    va_HDConcrete12in->SetColor(0, 1, 1, 0.1);
     logic_HDConcrete12in->SetVisAttributes(va_HDConcrete12in);
 
     auto mesh_Fe1in = CADMesh::TessellatedMesh::FromSTL(Form("%s/CarlsbadRadShield-Fe1in.stl", stlPath));
@@ -80,13 +80,13 @@ G4VPhysicalVolume *detcon::Construct() {
     auto va_Fe1in = new G4VisAttributes();
     va_Fe1in->SetVisibility();
     va_Fe1in->SetForceSolid();
-    va_Fe1in->SetColor(0, 1, 1, 0.5);
+    va_Fe1in->SetColor(1, 0, 1, 0.2);
     logic_Fe1in->SetVisAttributes(va_Fe1in);
 
      auto mesh_HumanPhantom1 = CADMesh::TessellatedMesh::FromSTL(Form("%s/CarlsbadRadShield-HP1.stl", stlPath));
     G4VSolid *solid_HumanPhantom1 = mesh_HumanPhantom1->GetSolid();
     logic_HumanPhantom1 = new G4LogicalVolume(solid_HumanPhantom1, nist->FindOrBuildMaterial("G4_TISSUE_SOFT_ICRP"), "logic_HumanPhantom1");
-    G4VPhysicalVolume *phys_HumanPhantom1 = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), logic_HumanPhantom1, "phys_HumanPhantom1", logicWorld, false, 0, checkOverlaps);
+    G4VPhysicalVolume *phys_HumanPhantom1 = new G4PVPlacement(0, G4ThreeVector(0, 2060 * mm, -300), logic_HumanPhantom1, "phys_HumanPhantom1", logicWorld, false, 0, checkOverlaps);
     auto va_HumanPhantom1 = new G4VisAttributes();
     va_HumanPhantom1->SetVisibility();
     va_HumanPhantom1->SetForceSolid();
@@ -96,7 +96,11 @@ G4VPhysicalVolume *detcon::Construct() {
     auto mesh_HumanPhantom2 = CADMesh::TessellatedMesh::FromSTL(Form("%s/CarlsbadRadShield-HP2.stl", stlPath));
     G4VSolid *solid_HumanPhantom2 = mesh_HumanPhantom2->GetSolid();
     logic_HumanPhantom2 = new G4LogicalVolume(solid_HumanPhantom2, nist->FindOrBuildMaterial("G4_TISSUE_SOFT_ICRP"), "logic_HumanPhantom2");
-    G4VPhysicalVolume *phys_HumanPhantom2 = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), logic_HumanPhantom2, "phys_HumanPhantom2", logicWorld, false, 0, checkOverlaps);
+    auto HP2_Rot = new G4RotationMatrix();
+    HP2_Rot->rotateX(0*deg);
+    HP2_Rot->rotateY(0*deg);
+    HP2_Rot->rotateZ(90*deg);
+    G4VPhysicalVolume *phys_HumanPhantom2 = new G4PVPlacement(HP2_Rot, G4ThreeVector(4320, -2260, 300), logic_HumanPhantom2, "phys_HumanPhantom2", logicWorld, false, 0, checkOverlaps);
     auto va_HumanPhantom2 = new G4VisAttributes();
     va_HumanPhantom2->SetVisibility();
     va_HumanPhantom2->SetForceSolid();
@@ -114,6 +118,4 @@ void detcon::ConstructSDandField() {
     G4SDManager::GetSDMpointer()->AddNewDetector(aDoseSD);
     SetSensitiveDetector(logic_HumanPhantom1, aDoseSD);
     SetSensitiveDetector(logic_HumanPhantom2, aDoseSD);
-    SetSensitiveDetector(logic_HumanPhantom3, aDoseSD);
-    SetSensitiveDetector(logic_HumanPhantom4, aDoseSD);
 }
