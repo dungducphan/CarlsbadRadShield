@@ -35,8 +35,8 @@ G4VPhysicalVolume *detcon::Construct() {
     HDConcrete->AddElement(nist->FindOrBuildElement("Fe"), 0.014);
 
     // World
-    G4double worldSize_X = 15 * m;
-    G4double worldSize_Y = 15 * m;
+    G4double worldSize_X = 6 * m;
+    G4double worldSize_Y = 6 * m;
     G4double worldSize_Z = 5 * m;
     G4Material *worldMat = nist->FindOrBuildMaterial("G4_Galactic");
     G4Box *solidWorld = new G4Box("solidWorld", 0.5 * worldSize_X, 0.5 * worldSize_Y, 0.5 * worldSize_Z);
