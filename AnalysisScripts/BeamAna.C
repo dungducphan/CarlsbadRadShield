@@ -10,10 +10,10 @@
 #include <iostream>
 
 const std::string DataPath = "/home/dphan/Documents/GitHub/CarlsbadRadShield/AnalysisScripts/";
-const std::string DataFile = "EDep_001_88000000_Iso_2MeV_HDC3_FE1_HDC12.root";
+const std::string DataFile = "EDep_001_8800000_Iso_10MeV_HDC3_FE1_HDC12.root";
 const std::string PlotPath = "/home/dphan/Documents/GitHub/CarlsbadRadShield/AnalysisScripts/Plots/";
 const double massOfHumanPhantom = 168.117; // kg
-const double scaleFactor = 710.23; // scale factor to get 50pC charge
+const double scaleFactor = 7102.3; // scale factor to the targeted charge
 const double laserReprate = 100; // Hz
 
 class BeamAna {
@@ -145,7 +145,7 @@ void BeamAna::Loop() {
    absorbedEnergy_Human2 = absorbedEnergy_Human2 * scaleFactor * laserReprate / massOfHumanPhantom; // Gy/s
 
    // std::cout << "Beam Charge: 50pC. Rep-rate 100Hz. Beam Energy 200MeV." << std::endl;
-   std::cout << "Diffuse Charge: 10nC. Rep-rate 100Hz. Electron Energy 1MeV." << std::endl;
+   std::cout << "Diffuse Charge: 10nC. Rep-rate 100Hz. Electron Energy 10MeV." << std::endl;
    std::cout << "Absorbed Dose Rate in Human Phantom 1: " << absorbedEnergy_Human1 * 100 * 1000 << " mrem/s" << std::endl;
    std::cout << "Absorbed Dose Rate in Human Phantom 2: " << absorbedEnergy_Human2 * 100 * 1000 << " mrem/s" << std::endl;
 }
