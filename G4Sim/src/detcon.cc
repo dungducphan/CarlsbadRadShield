@@ -35,8 +35,8 @@ G4VPhysicalVolume *detcon::Construct() {
     HDConcrete->AddElement(nist->FindOrBuildElement("Fe"), 0.014);
 
     // World
-    G4double worldSize_X = 6 * m;
-    G4double worldSize_Y = 6 * m;
+    G4double worldSize_X = 5 * m;
+    G4double worldSize_Y = 5 * m;
     G4double worldSize_Z = 5 * m;
     G4Material *worldMat = nist->FindOrBuildMaterial("G4_Galactic");
     G4Box *solidWorld = new G4Box("solidWorld", 0.5 * worldSize_X, 0.5 * worldSize_Y, 0.5 * worldSize_Z);
@@ -53,62 +53,26 @@ G4VPhysicalVolume *detcon::Construct() {
     va_VacuumChamber->SetColor(1, 0, 0, 0.7);
     logic_VacuumChamber->SetVisAttributes(va_VacuumChamber);
 
-    auto mesh_HDConcrete3in = CADMesh::TessellatedMesh::FromSTL(Form("%s/CarlsbadRadShield-HDC3in.stl", stlPath));
-    G4VSolid *solid_HDConcrete3in = mesh_HDConcrete3in->GetSolid();
-    logic_HDConcrete3in = new G4LogicalVolume(solid_HDConcrete3in, HDConcrete, "logic_HDConcrete3in");
-    G4VPhysicalVolume *phys_HDConcrete3in = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), logic_HDConcrete3in, "phys_HDConcrete3in", logicWorld, false, 0, checkOverlaps);
-    auto va_HDConcrete3in = new G4VisAttributes();
-    va_HDConcrete3in->SetVisibility();
-    va_HDConcrete3in->SetForceSolid();
-    va_HDConcrete3in->SetColor(0, 1, 1, 0.3);
-    logic_HDConcrete3in->SetVisAttributes(va_HDConcrete3in);
+    auto mesh_HDConcrete18in = CADMesh::TessellatedMesh::FromSTL(Form("%s/CarlsbadRadShield-HDC18.stl", stlPath));
+    G4VSolid *solid_HDConcrete18in = mesh_HDConcrete18in->GetSolid();
+    logic_HDConcrete18in = new G4LogicalVolume(solid_HDConcrete18in, HDConcrete, "logic_HDConcrete18in");
+    G4VPhysicalVolume *phys_HDConcrete18in = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), logic_HDConcrete18in, "phys_HDConcrete18in", logicWorld, false, 0, checkOverlaps);
+    auto va_HDConcrete18in = new G4VisAttributes();
+    va_HDConcrete18in->SetVisibility();
+    va_HDConcrete18in->SetForceSolid();
+    va_HDConcrete18in->SetColor(0, 1, 1, 0.3);
+    logic_HDConcrete18in->SetVisAttributes(va_HDConcrete18in);
 
-    auto mesh_HDConcrete12in = CADMesh::TessellatedMesh::FromSTL(Form("%s/CarlsbadRadShield-HDC12in.stl", stlPath));
-    G4VSolid *solid_HDConcrete12in = mesh_HDConcrete12in->GetSolid();
-    logic_HDConcrete12in = new G4LogicalVolume(solid_HDConcrete12in, HDConcrete, "logic_HDConcrete12in");
-    G4VPhysicalVolume *phys_HDConcrete12in = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), logic_HDConcrete12in, "phys_HDConcrete12in", logicWorld, false, 0, checkOverlaps);
-    auto va_HDConcrete12in = new G4VisAttributes();
-    va_HDConcrete12in->SetVisibility();
-    va_HDConcrete12in->SetForceSolid();
-    va_HDConcrete12in->SetColor(0, 1, 1, 0.1);
-    logic_HDConcrete12in->SetVisAttributes(va_HDConcrete12in);
 
-    auto mesh_Fe1in = CADMesh::TessellatedMesh::FromSTL(Form("%s/CarlsbadRadShield-Fe1in.stl", stlPath));
-    G4VSolid *solid_Fe1in = mesh_Fe1in->GetSolid();
-    logic_Fe1in = new G4LogicalVolume(solid_Fe1in, nist->FindOrBuildMaterial("G4_STAINLESS-STEEL"), "logic_Fe1in");
-    G4VPhysicalVolume *phys_Fe1in = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), logic_Fe1in, "phys_Fe1in", logicWorld, false, 0, checkOverlaps);
-    auto va_Fe1in = new G4VisAttributes();
-    va_Fe1in->SetVisibility();
-    va_Fe1in->SetForceSolid();
-    va_Fe1in->SetColor(1, 0, 1, 0.2);
-    logic_Fe1in->SetVisAttributes(va_Fe1in);
-
-     auto mesh_HumanPhantom1 = CADMesh::TessellatedMesh::FromSTL(Form("%s/CarlsbadRadShield-HP1.stl", stlPath));
-    G4VSolid *solid_HumanPhantom1 = mesh_HumanPhantom1->GetSolid();
-    logic_HumanPhantom1 = new G4LogicalVolume(solid_HumanPhantom1, nist->FindOrBuildMaterial("G4_TISSUE_SOFT_ICRP"), "logic_HumanPhantom1");
-    G4VPhysicalVolume *phys_HumanPhantom1 = new G4PVPlacement(0, G4ThreeVector(0, 2060 * mm, -300), logic_HumanPhantom1, "phys_HumanPhantom1", logicWorld, false, 0, checkOverlaps);
-    auto va_HumanPhantom1 = new G4VisAttributes();
-    va_HumanPhantom1->SetVisibility();
-    va_HumanPhantom1->SetForceSolid();
-    va_HumanPhantom1->SetColor(0, 1, 0, 0.5);
-    logic_HumanPhantom1->SetVisAttributes(va_HumanPhantom1);
-
-    auto mesh_HumanPhantom2 = CADMesh::TessellatedMesh::FromSTL(Form("%s/CarlsbadRadShield-HP2.stl", stlPath));
-    G4VSolid *solid_HumanPhantom2 = mesh_HumanPhantom2->GetSolid();
-    logic_HumanPhantom2 = new G4LogicalVolume(solid_HumanPhantom2, nist->FindOrBuildMaterial("G4_TISSUE_SOFT_ICRP"), "logic_HumanPhantom2");
-    auto HP2_Rot = new G4RotationMatrix();
-    HP2_Rot->rotateX(0*deg);
-    HP2_Rot->rotateY(0*deg);
-    HP2_Rot->rotateZ(90*deg);
-    G4VPhysicalVolume *phys_HumanPhantom2 = new G4PVPlacement(HP2_Rot, G4ThreeVector(4320, -2260, 300), logic_HumanPhantom2, "phys_HumanPhantom2", logicWorld, false, 0, checkOverlaps);
-    auto va_HumanPhantom2 = new G4VisAttributes();
-    va_HumanPhantom2->SetVisibility();
-    va_HumanPhantom2->SetForceSolid();
-    va_HumanPhantom2->SetColor(0, 1, 0, 0.5);
-    logic_HumanPhantom2->SetVisAttributes(va_HumanPhantom2);
-
-    std::cout << "________________________________________________________________________" << std::endl;
-    std::cout << "Mass of Human Phantom: " << logic_HumanPhantom1->GetMass() / kg << " kg" << std::endl;
+    auto elemBox = new G4Box("elemBox", 5 * cm, 5 * cm, 5 * cm);
+    auto logicBox = new G4LogicalVolume(elemBox, nist->FindOrBuildMaterial("G4_TISSUE_SOFT_ICRP"), "logicBox");
+    // Build a grid of 31x31 wall of boxes
+    for (int i = 0; i < 31; i++) {
+        for (int j = 0; j < 31; j++) {
+            new G4PVPlacement(0, G4ThreeVector((i - 15) * 10. * cm, (j - 15) * 10. * cm, 2 * m), Form("HPWall_1_%02i_%02i", i, j),
+                logicBox, physWorld, false, 0, checkOverlaps);
+        }
+    }
 
     return physWorld;
 }
@@ -116,6 +80,4 @@ G4VPhysicalVolume *detcon::Construct() {
 void detcon::ConstructSDandField() {
     auto *aDoseSD = new ParticleSD("RadiationDoseSD");
     G4SDManager::GetSDMpointer()->AddNewDetector(aDoseSD);
-    SetSensitiveDetector(logic_HumanPhantom1, aDoseSD);
-    SetSensitiveDetector(logic_HumanPhantom2, aDoseSD);
 }
