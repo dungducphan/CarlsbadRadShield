@@ -64,15 +64,17 @@ G4VPhysicalVolume *detcon::Construct() {
     logic_HDConcrete18in->SetVisAttributes(va_HDConcrete18in);
 
 
-    auto elemBox = new G4Box("elemBox", 5 * cm, 5 * cm, 5 * cm);
-    auto logicBox = new G4LogicalVolume(elemBox, nist->FindOrBuildMaterial("G4_TISSUE_SOFT_ICRP"), "logicBox");
+    auto elem_Phantom = new G4Box("elem_Phantom", 5 * cm, 5 * cm, 5 * cm);
+    logic_Phantom = new G4LogicalVolume(elem_Phantom, nist->FindOrBuildMaterial("G4_TISSUE_SOFT_ICRP"), "logic_Phantom");
     // Build a grid of 31x31 wall of boxes
     for (int i = 0; i < 31; i++) {
         for (int j = 0; j < 31; j++) {
-            new G4PVPlacement(0, G4ThreeVector((i - 15) * 10. * cm, (j - 15) * 10. * cm, 2 * m), Form("HPWall_1_%02i_%02i", i, j),
-                logicBox, physWorld, false, 0, checkOverlaps);
+            new G4PVPlacement(0, G4ThreeVector((i - 15) * 10. * cm, (j - 15) * 10. * cm, 2 * m), Form("Phantom_%02i_%02i", i, j),
+                logic_Phantom, physWorld, false, i * 100 + j, checkOverlaps);
         }
     }
+
+    std::cout << "Mass of Element Phantom: " << logic_Phantom->GetMass() / kg << " kg" << std::endl;
 
     return physWorld;
 }
@@ -80,4 +82,5 @@ G4VPhysicalVolume *detcon::Construct() {
 void detcon::ConstructSDandField() {
     auto *aDoseSD = new ParticleSD("RadiationDoseSD");
     G4SDManager::GetSDMpointer()->AddNewDetector(aDoseSD);
+    SetSensitiveDetector(logic_Phantom, aDoseSD);
 }

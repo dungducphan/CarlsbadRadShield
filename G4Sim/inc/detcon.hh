@@ -41,4 +41,5 @@ public:
     std::vector<G4LogicalVolume*> logic_nBDs;
     G4LogicalVolume *logic_HDConcrete18in;
     G4LogicalVolume *logic_VacuumChamber;
+    G4LogicalVolume *logic_Phantom;
 };
