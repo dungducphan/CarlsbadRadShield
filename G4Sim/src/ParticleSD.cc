@@ -23,7 +23,7 @@ G4bool ParticleSD::ProcessHits(G4Step * aStep, G4TouchableHistory *) {
 
     G4AnalysisManager *man = G4AnalysisManager::Instance();
     man->FillNtupleDColumn(0, edep / joule);
-    man->FillNtupleDColumn(1, det_id);
+    man->FillNtupleIColumn(1, det_id);
     man->AddNtupleRow(0);
 
     return true;
