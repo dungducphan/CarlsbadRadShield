@@ -3,3 +3,6 @@ include(${ROOT_USE_FILE})
 
 add_executable(BeamAna BeamAna.C)
 target_link_libraries(BeamAna ${ROOT_LIBRARIES})
+
+add_executable(MeatWall MeatWall.C)
+target_link_libraries(MeatWall ${ROOT_LIBRARIES})
