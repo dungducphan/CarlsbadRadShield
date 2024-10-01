@@ -144,8 +144,9 @@ G4VPhysicalVolume *detcon::Construct() {
     // Build a grid of 31x31 wall of boxes
     for (int i = 0; i < 31; i++) {
         for (int j = 0; j < 31; j++) {
-            new G4PVPlacement(0, G4ThreeVector((i - 15) * 10. * cm, (j - 15) * 10. * cm, 2 * m), Form("Phantom_%02i_%02i", i, j),
-                logic_Phantom, physRest, false, i * 100 + j, checkOverlaps);
+            auto solidPhantom = new G4PVPlacement(0, G4ThreeVector((i - 15) * 10. * cm, (j - 15) * 10. * cm, 2 * m), Form("Phantom_%02i_%02i", i, j),
+                logic_Phantom, physRest, false, vec_physical_volumes_phantom.size(), checkOverlaps);
+            vec_physical_volumes_phantom.push_back(solidPhantom);
         }
     }
 
@@ -192,5 +193,9 @@ G4VIStore* detcon::CreateImportanceStore() {
     istore->AddImportanceGeometryCell(imp, *vec_physical_volumes[3 + NumberOfShieldingLayers]); // Air Rest
     G4cout << "Going to assign importance: " << imp << ", to volume: " << (vec_physical_volumes[3 + NumberOfShieldingLayers])->GetName() << G4endl;
 
+    for (int j = 0; j < vec_physical_volumes_phantom.size(); j++) {
+        istore->AddImportanceGeometryCell(imp, *vec_physical_volumes_phantom[j], j); // Element Phantoms
+        G4cout << "Going to assign importance: " << imp << ", to volume: " << vec_physical_volumes_phantom[j]->GetName() << G4endl;
+    }
     return istore;
 }

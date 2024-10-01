@@ -46,6 +46,7 @@ public:
     std::vector<G4LogicalVolume*> vec_logical_volumes;
     G4LogicalVolume* logic_Phantom;
     std::vector<G4VPhysicalVolume*> vec_physical_volumes;
+    std::vector<G4VPhysicalVolume*> vec_physical_volumes_phantom;
 
 private:
     G4VPhysicalVolume* fWorldVolume;

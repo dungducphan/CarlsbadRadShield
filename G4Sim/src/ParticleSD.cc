@@ -11,6 +11,11 @@ ParticleSD::ParticleSD(const G4String &name) : G4VSensitiveDetector(name) {}
 ParticleSD::~ParticleSD() noexcept {}
 
 G4bool ParticleSD::ProcessHits(G4Step * aStep, G4TouchableHistory *) {
+
+    // Get track and track weight
+    auto track = aStep->GetTrack();
+    auto weight = track->GetWeight();
+
     // Get the energy deposited by the particle
     G4double edep = aStep->GetTotalEnergyDeposit();
 
@@ -23,7 +28,8 @@ G4bool ParticleSD::ProcessHits(G4Step * aStep, G4TouchableHistory *) {
 
     G4AnalysisManager *man = G4AnalysisManager::Instance();
     man->FillNtupleDColumn(0, edep / joule);
-    man->FillNtupleIColumn(1, det_id);
+    man->FillNtupleDColumn(1, weight);
+    man->FillNtupleIColumn(2, det_id);
     man->AddNtupleRow(0);
 
     return true;
