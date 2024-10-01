@@ -21,6 +21,8 @@
 #include "G4LogicalBorderSurface.hh"
 #include "G4LogicalSkinSurface.hh"
 #include "G4SDManager.hh"
+#include "G4SubtractionSolid.hh"
+#include "G4VIStore.hh"
 
 #include "TMath.h"
 
@@ -32,14 +34,20 @@ class detcon : public G4VUserDetectorConstruction {
 public:
     detcon();
 
-    virtual ~detcon();
+    ~detcon() override;
 
-    virtual G4VPhysicalVolume *Construct();
-    virtual void ConstructSDandField();
+    G4VSolid* GenerateShell(const double& innerWidth, const double& outerWidth, const G4String& name);
 
-    std::vector<G4LogicalVolume*> logic_nTOFs;
-    std::vector<G4LogicalVolume*> logic_nBDs;
-    G4LogicalVolume *logic_HDConcrete18in;
-    G4LogicalVolume *logic_VacuumChamber;
-    G4LogicalVolume *logic_Phantom;
+    G4VPhysicalVolume *Construct() override;
+    void ConstructSDandField() override;
+    G4VPhysicalVolume* GetWorldVolume();
+    G4VIStore* CreateImportanceStore();
+
+    std::vector<G4LogicalVolume*> vec_logical_volumes;
+    G4LogicalVolume* logic_Phantom;
+    std::vector<G4VPhysicalVolume*> vec_physical_volumes;
+
+private:
+    G4VPhysicalVolume* fWorldVolume;
+    G4int NumberOfShieldingLayers;
 };

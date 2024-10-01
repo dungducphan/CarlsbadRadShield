@@ -14,6 +14,9 @@
 #include "G4UImanager.hh"
 #include "G4VisExecutive.hh"
 #include "G4UIExecutive.hh"
+#include "G4GeometrySampler.hh"
+#include "G4ImportanceBiasing.hh"
+#include "G4GeometryManager.hh"
 
 #include "TH1D.h"
 #include "TFile.h"
@@ -31,9 +34,16 @@ int main(int argc, char **argv) {
     G4RunManager* runManager = new G4RunManager();
 #endif
 
-    runManager->SetUserInitialization(new detcon());
-    runManager->SetUserInitialization(new Shielding());
+    auto detector = new detcon();
+    runManager->SetUserInitialization(detector);
+    G4GeometrySampler mgs(detector->GetWorldVolume(), "gamma");
+    auto physics = new Shielding();
+    physics->RegisterPhysics(new G4ImportanceBiasing(&mgs));
+    runManager->SetUserInitialization(physics);
     runManager->SetUserInitialization(new actioninit());
+    runManager->Initialize();
+
+    detector->CreateImportanceStore();
 
     G4VisManager *visManager = new G4VisExecutive;
     visManager->Initialize();
@@ -49,6 +59,10 @@ int main(int argc, char **argv) {
         ui->SessionStart();
         delete ui;
     }
+
+    // open geometry for clean biasing stores clean-up
+    //
+    G4GeometryManager::GetInstance()->OpenGeometry();
 
     delete visManager;
     delete runManager;

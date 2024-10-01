@@ -39,3 +39,5 @@ cmake-build-*/
 AnalysisScripts/EDep_000_440000_Beam_TestConfig.root
 .FCStd1
 *.FCStd1
+
+*biasing*
