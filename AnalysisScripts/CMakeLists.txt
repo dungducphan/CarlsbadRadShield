@@ -6,3 +6,6 @@ target_link_libraries(BeamAna ${ROOT_LIBRARIES})
 
 add_executable(MeatWall MeatWall.C)
 target_link_libraries(MeatWall ${ROOT_LIBRARIES})
+
+add_executable(HDC18 HDC18.C)
+target_link_libraries(HDC18 ${ROOT_LIBRARIES})
