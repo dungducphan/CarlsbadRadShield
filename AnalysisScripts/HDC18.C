@@ -40,7 +40,7 @@ public :
 };
 
 HDC18::HDC18(TTree *tree) : fChain(0) {
-   std::string filename = "/home/dphan/Documents/GitHub/CarlsbadRadShield/AnalysisScripts/EDep_HDC18_Accidental_DirectHit_200MeV_44000.root";
+   std::string filename = "/home/dphan/Documents/GitHub/CarlsbadRadShield/AnalysisScripts/EDep_HDC18_Occupational_2MeV_4400000.root";
    if (tree == 0) {
       TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject(filename.c_str());
       if (!f || !f->IsOpen()) {
@@ -129,17 +129,17 @@ void HDC18::Loop() {
 
    gStyle->SetOptStat(0);
    // Factor 200 to scale to 10nC
-   PhantomWall->Scale(1000 * 200 / 100);
+   PhantomWall->Scale(1000 * 2 * 100);
    PhantomWall->SetTitle("Phantom Wall Dose Rate Map (mrem/s)");
    PhantomWall->GetXaxis()->SetTitle("Cell Number (x10 cm)");
    PhantomWall->GetYaxis()->SetTitle("Cell Number (x10 cm)");
    PhantomWall->GetXaxis()->CenterTitle();
    PhantomWall->GetYaxis()->CenterTitle();
-   PhantomWall->GetZaxis()->SetRangeUser(0, 20);
+   // PhantomWall->GetZaxis()->SetRangeUser(0, 0.1);
    auto c1 = new TCanvas("c1", "c1", 800, 800);
    c1->SetMargin(0.15, 0.15, 0.15, 0.15);
    PhantomWall->Draw("colz");
-   c1->SaveAs("PhantomWall_HDC18_Accidental_200MeV_50pC_DirectHit.png");
+   c1->SaveAs("PhantomWall_HDC18_Occupational_2MeV_10nC.png");
 }
 
 #if !defined(__CINT__) && !defined(__CLING__) && !defined(__ACLIC__)

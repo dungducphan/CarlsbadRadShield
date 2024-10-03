@@ -10,17 +10,17 @@ generator::generator() {
     G4ParticleDefinition *particle = G4ParticleTable::GetParticleTable()->FindParticle("e-");
 
     sps->SetParticleDefinition(particle);
-    sps->SetNumberOfParticles(10);
+    sps->SetNumberOfParticles(100);
 
     sps->GetPosDist()->SetPosDisType("Point"); // Point, Beam, Plane, Surface, Volume
     sps->GetPosDist()->SetCentreCoords(G4ThreeVector(0., 0, 0.));
     sps->GetPosDist()->ConfineSourceToVolume("NULL");
 
-    // sps->GetAngDist()->SetAngDistType("iso");
+    sps->GetAngDist()->SetAngDistType("iso");
 
     sps->GetEneDist()->SetEnergyDisType("Gauss"); // Mono, Lin, Pow, Exp, Gaus, Brem, BBody, Cdg (cosmic diffuse gamma), User, Arb, Epn (energy per nucleon)
-    sps->GetEneDist()->SetMonoEnergy(200 * MeV);
-    sps->GetEneDist()->SetBeamSigmaInE(5 * MeV);
+    sps->GetEneDist()->SetMonoEnergy(2 * MeV);
+    sps->GetEneDist()->SetBeamSigmaInE(0.05 * MeV);
 
     fRandom = new TRandom3();
 }
@@ -30,7 +30,7 @@ generator::~generator() {
 }
 
 void generator::GeneratePrimaries(G4Event *anEvent) {
-    fGeneralParticleSource->GetCurrentSource()->GetAngDist()->SetParticleMomentumDirection(RandomizedDirection());
+    // fGeneralParticleSource->GetCurrentSource()->GetAngDist()->SetParticleMomentumDirection(RandomizedDirection());
     fGeneralParticleSource->GeneratePrimaryVertex(anEvent);
 }
 
