@@ -128,14 +128,14 @@ void HDC18::Loop() {
    }
 
    gStyle->SetOptStat(0);
-   // Factor 200 to scale to 10nC
-   PhantomWall->Scale(1000 * 2 * 100);
-   PhantomWall->SetTitle("Phantom Wall Dose Rate Map (mrem/s)");
+   // Factor 20 to scale to 1nC
+   PhantomWall->Scale(1000 * 1000 * 0.2 * 100);
+   PhantomWall->SetTitle("Phantom Wall Dose Rate Map (urem/s)");
    PhantomWall->GetXaxis()->SetTitle("Cell Number (x10 cm)");
    PhantomWall->GetYaxis()->SetTitle("Cell Number (x10 cm)");
    PhantomWall->GetXaxis()->CenterTitle();
    PhantomWall->GetYaxis()->CenterTitle();
-   // PhantomWall->GetZaxis()->SetRangeUser(0, 0.1);
+   // PhantomWall->GetZaxis()->SetRangeUser(0, 25);
    auto c1 = new TCanvas("c1", "c1", 800, 800);
    c1->SetMargin(0.15, 0.15, 0.15, 0.15);
    PhantomWall->Draw("colz");
