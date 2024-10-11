@@ -74,7 +74,7 @@ G4VPhysicalVolume *detcon::Construct() {
     // logic_HDConcrete18in->SetVisAttributes(va_HDConcrete18in);
 
     // Dimensions
-    NumberOfShieldingLayers = 8;
+    NumberOfShieldingLayers = 10;
     double vacuumChamberSize = 0.5 * m;
     double distanceToShieldingWall = 1 * m;
     double innerVacuumWidth = vacuumChamberSize - 2.54 * cm;
