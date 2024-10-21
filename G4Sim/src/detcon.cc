@@ -25,10 +25,6 @@ G4VPhysicalVolume *detcon::Construct() {
     G4NistManager *nist = G4NistManager::Instance();
     G4bool checkOverlaps = true;
 
-    // Getting the ${STL_DIR} env variable
-    // auto stlPath = getenv("STL_DIR");
-    auto stlPath = ".";
-
     // Define High-Density Concrete
     auto HDConcrete = new G4Material("HDConcrete", 3.7 * g / cm3, 10);
     HDConcrete->AddElement(nist->FindOrBuildElement("H"),  0.01);
@@ -53,40 +49,18 @@ G4VPhysicalVolume *detcon::Construct() {
     vec_logical_volumes.push_back(logicWorld);
     vec_physical_volumes.push_back(physWorld);
 
-    // auto mesh_VacuumChamber = CADMesh::TessellatedMesh::FromSTL(Form("%s/CarlsbadRadShield-VacuumChamber.stl", stlPath));
-    // G4VSolid *solid_VacuumChamber = mesh_VacuumChamber->GetSolid();
-    // logic_VacuumChamber = new G4LogicalVolume(solid_VacuumChamber, nist->FindOrBuildMaterial("G4_STAINLESS-STEEL"), "logic_VacuumChamber");
-    // G4VPhysicalVolume *phys_VacuumChamber = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), logic_VacuumChamber, "phys_VacuumChamber", logicWorld, false, 0, checkOverlaps);
-    // auto va_VacuumChamber = new G4VisAttributes();
-    // va_VacuumChamber->SetVisibility();
-    // va_VacuumChamber->SetForceSolid();
-    // va_VacuumChamber->SetColor(1, 0, 0, 0.7);
-    // logic_VacuumChamber->SetVisAttributes(va_VacuumChamber);
-    //
-    // auto mesh_HDConcrete18in = CADMesh::TessellatedMesh::FromSTL(Form("%s/CarlsbadRadShield-HDC18.stl", stlPath));
-    // G4VSolid *solid_HDConcrete18in = mesh_HDConcrete18in->GetSolid();
-    // logic_HDConcrete18in = new G4LogicalVolume(solid_HDConcrete18in, HDConcrete, "logic_HDConcrete18in");
-    // G4VPhysicalVolume *phys_HDConcrete18in = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), logic_HDConcrete18in, "phys_HDConcrete18in", logicWorld, false, 0, checkOverlaps);
-    // auto va_HDConcrete18in = new G4VisAttributes();
-    // va_HDConcrete18in->SetVisibility();
-    // va_HDConcrete18in->SetForceSolid();
-    // va_HDConcrete18in->SetColor(0, 1, 1, 0.3);
-    // logic_HDConcrete18in->SetVisAttributes(va_HDConcrete18in);
-
     // Dimensions
-    NumberOfShieldingLayers = 10;
+    NumberOf3inHDCShieldingLayersIn9inHDC = 3;
     double vacuumChamberSize = 0.5 * m;
-    double distanceToShieldingWall = 1 * m;
     double innerVacuumWidth = vacuumChamberSize - 2.54 * cm;
-    double thicknessOfShieldingLayer = 2.54 * cm;
-    double innerShieldingWidth = innerVacuumWidth + 2 * distanceToShieldingWall;
-
-    // // Vacuum
-    // auto solidVacuum = G4Box("solidVacuum", 0.5 * innerVacuumWidth, 0.5 * innerVacuumWidth, 0.5 * innerVacuumWidth);
-    // auto logicVacuum = new G4LogicalVolume(&solidVacuum, nist->FindOrBuildMaterial("G4_Galactic"), "logicVacuum");
-    // auto physVacuum = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), logicVacuum, "physVacuum", logicWorld, false, 0, checkOverlaps);
-    // vec_logical_volumes.push_back(logicVacuum);
-    // vec_physical_volumes.push_back(physVacuum);
+    double distance_FromChamber_To3inHDCShielding = 1 * m;
+    double innerShieldingWidth_3inHDC = innerVacuumWidth + 2 * distance_FromChamber_To3inHDCShielding;
+    double outerShieldingWidth_3inHDC = innerShieldingWidth_3inHDC + 3 * 2.54 * cm;
+    double innerShieldingWidth_2inSS = outerShieldingWidth_3inHDC;
+    double outerShieldingWidth_2inSS = innerShieldingWidth_2inSS + 2 * 2.54 * cm;
+    double innerShieldingWidth_9inHDC = outerShieldingWidth_2inSS;
+    double thicknessOfShieldingLayer_3inHDC = 3 * 2.54 * cm;
+    double outerShieldingWidth_9inHDC = innerShieldingWidth_9inHDC + NumberOf3inHDCShieldingLayersIn9inHDC * thicknessOfShieldingLayer_3inHDC;
 
     // Vacuum Chamber
     auto solidVacuumChamber = GenerateShell(innerVacuumWidth, vacuumChamberSize, "solidVacuumChamber");
@@ -100,34 +74,54 @@ G4VPhysicalVolume *detcon::Construct() {
     vec_logical_volumes.push_back(logicVacuumChamber);
     vec_physical_volumes.push_back(physVacuumChamber);
 
-    // Air
-    auto solidAir = GenerateShell(vacuumChamberSize, innerShieldingWidth, "solidAir");
-    auto logicAir = new G4LogicalVolume(solidAir, nist->FindOrBuildMaterial("G4_AIR"), "logicAir");
-    auto physAir = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), logicAir, "physAir", logicWorld, false, 0, checkOverlaps);
-    vec_logical_volumes.push_back(logicAir);
-    vec_physical_volumes.push_back(physAir);
+    // Air between Chamber and first layer of HDC
+    auto solidAir_01 = GenerateShell(vacuumChamberSize, innerShieldingWidth_3inHDC, "solidAir_01");
+    auto logicAir_01 = new G4LogicalVolume(solidAir_01, nist->FindOrBuildMaterial("G4_AIR"), "logicAir_01");
+    auto physAir_01 = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), logicAir_01, "physAir_01", logicWorld, false, 0, checkOverlaps);
+    vec_logical_volumes.push_back(logicAir_01);
+    vec_physical_volumes.push_back(physAir_01);
     auto vaAir = new G4VisAttributes();
     vaAir->SetVisibility();
     vaAir->SetForceSolid();
     vaAir->SetColor(0, 1, 0, 0.1);
-    logicAir->SetVisAttributes(vaAir);
+    logicAir_01->SetVisAttributes(vaAir);
 
-    // Shielding Layers
-    for (unsigned int i = 0; i < NumberOfShieldingLayers; i++) {
-        auto solidShieldingLayer = GenerateShell(innerShieldingWidth + i * thicknessOfShieldingLayer, innerShieldingWidth + (i + 1) * thicknessOfShieldingLayer, Form("solidShieldingLayer_%02i", i + 1));
-        auto logicShieldingLayer = new G4LogicalVolume(solidShieldingLayer, HDConcrete, Form("logicShieldingLayer_%02i", i + 1));
-        auto physShieldingLayer = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), logicShieldingLayer, Form("physShieldingLayer_%02i", i + 1), logicWorld, false, 0, checkOverlaps);
-        vec_logical_volumes.push_back(logicShieldingLayer);
-        vec_physical_volumes.push_back(physShieldingLayer);
-        auto vaShieldingLayer = new G4VisAttributes();
-        vaShieldingLayer->SetVisibility();
-        vaShieldingLayer->SetForceSolid();
-        vaShieldingLayer->SetColor(0, 0, 1, 0.05);
-        logicShieldingLayer->SetVisAttributes(vaShieldingLayer);
+    // 3inHDC Shielding Layer
+    auto solid3inHDCShieldingLayer = GenerateShell(innerShieldingWidth_3inHDC, outerShieldingWidth_3inHDC, "solid3inHDCShieldingLayer");
+    auto logic3inHDCShieldingLayer = new G4LogicalVolume(solid3inHDCShieldingLayer, HDConcrete, "logic3inHDCShieldingLayer");
+    auto phys3inHDCShieldingLayer = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), logic3inHDCShieldingLayer, "phys3inHDCShieldingLayer", logicWorld, false, 0, checkOverlaps);
+    vec_logical_volumes.push_back(logic3inHDCShieldingLayer);
+    vec_physical_volumes.push_back(phys3inHDCShieldingLayer);
+    auto vaHDCShieldingLayer = new G4VisAttributes();
+    vaHDCShieldingLayer->SetVisibility();
+    vaHDCShieldingLayer->SetForceSolid();
+    vaHDCShieldingLayer->SetColor(0, 0, 1, 0.1);
+    logic3inHDCShieldingLayer->SetVisAttributes(vaHDCShieldingLayer);
+
+    // Stainless steel Shielding Layers
+    auto solid2inSSShieldingLayer = GenerateShell(innerShieldingWidth_2inSS, outerShieldingWidth_2inSS, "solid2inSSShieldingLayer");
+    auto logic2inSSShieldingLayer = new G4LogicalVolume(solid2inSSShieldingLayer, nist->FindOrBuildMaterial("G4_STAINLESS-STEEL"), "logic2inSSShieldingLayer");
+    auto phys2inSSShieldingLayer = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), logic2inSSShieldingLayer, "phys2inSSShieldingLayer", logicWorld, false, 0, checkOverlaps);
+    vec_logical_volumes.push_back(logic2inSSShieldingLayer);
+    vec_physical_volumes.push_back(phys2inSSShieldingLayer);
+    auto vaSSShieldingLayer = new G4VisAttributes();
+    vaSSShieldingLayer->SetVisibility();
+    vaSSShieldingLayer->SetForceSolid();
+    vaSSShieldingLayer->SetColor(0, 1, 1, 0.5);
+    logic2inSSShieldingLayer->SetVisAttributes(vaSSShieldingLayer);
+
+    // 9inHDC in 3 layers of 3inHDC
+    for (unsigned int i = 0; i < NumberOf3inHDCShieldingLayersIn9inHDC; i++) {
+        auto solidShieldingLayer_dummy = GenerateShell(innerShieldingWidth_9inHDC + i * thicknessOfShieldingLayer_3inHDC, innerShieldingWidth_9inHDC + (i + 1) * thicknessOfShieldingLayer_3inHDC, Form("solid3inHDCShieldingSublayer_%02i", i));
+        auto logicShieldingLayer_dummy = new G4LogicalVolume(solidShieldingLayer_dummy, HDConcrete, Form("logic3inHDCShieldingSublayer_%02i", i));
+        auto physShieldingLayer_dummy = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), logicShieldingLayer_dummy, Form("phys3inHDCShieldingSublayer_%02i", i), logicWorld, false, 0, checkOverlaps);
+        vec_logical_volumes.push_back(logicShieldingLayer_dummy);
+        vec_physical_volumes.push_back(physShieldingLayer_dummy);
+        logicShieldingLayer_dummy->SetVisAttributes(vaHDCShieldingLayer);
     }
 
     // Rest
-    auto solidRest = GenerateShell(innerShieldingWidth + NumberOfShieldingLayers * thicknessOfShieldingLayer, worldSize_X, "solidRest");
+    auto solidRest = GenerateShell(outerShieldingWidth_9inHDC, worldSize_X, "solidRest");
     auto logicRest = new G4LogicalVolume(solidRest, nist->FindOrBuildMaterial("G4_AIR"), "logicRest");
     auto physRest = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), logicRest, "physRest", logicWorld, false, 0, checkOverlaps);
     vec_logical_volumes.push_back(logicRest);
@@ -183,19 +177,39 @@ G4VIStore* detcon::CreateImportanceStore() {
     G4cout << "Going to assign importance: " << 2 << ", to volume: " << (vec_physical_volumes[1])->GetName() << G4endl;
     istore->AddImportanceGeometryCell(2, *vec_physical_volumes[2]); // Air
     G4cout << "Going to assign importance: " << 2 << ", to volume: " << (vec_physical_volumes[2])->GetName() << G4endl;
-    G4double imp = 1;
-    for (int i = 0; i < NumberOfShieldingLayers; i++) {
-        imp = TMath::Power(2., 2 + i);
-        istore->AddImportanceGeometryCell(imp, *vec_physical_volumes[3 + i]); // Shielding Layers
-        G4cout << "Going to assign importance: " << imp << ", to volume: " << (vec_physical_volumes[3 + i])->GetName() << G4endl;
-    }
-    imp = TMath::Power(2., 1 + NumberOfShieldingLayers);
-    istore->AddImportanceGeometryCell(imp, *vec_physical_volumes[3 + NumberOfShieldingLayers]); // Air Rest
-    G4cout << "Going to assign importance: " << imp << ", to volume: " << (vec_physical_volumes[3 + NumberOfShieldingLayers])->GetName() << G4endl;
+    istore->AddImportanceGeometryCell(4, *vec_physical_volumes[3]); // First 3inHDC layer
+    G4cout << "Going to assign importance: " << 4 << ", to volume: " << (vec_physical_volumes[3])->GetName() << G4endl;
+    istore->AddImportanceGeometryCell(8, *vec_physical_volumes[4]); // 2inSS layer
+    G4cout << "Going to assign importance: " << 8 << ", to volume: " << (vec_physical_volumes[4])->GetName() << G4endl;
+    istore->AddImportanceGeometryCell(16, *vec_physical_volumes[5]); // Second HDC layer - first 3inHDC sublayer
+    G4cout << "Going to assign importance: " << 16 << ", to volume: " << (vec_physical_volumes[5])->GetName() << G4endl;
+    istore->AddImportanceGeometryCell(32, *vec_physical_volumes[6]); // Second HDC layer - second 3inHDC sublayer
+    G4cout << "Going to assign importance: " << 32 << ", to volume: " << (vec_physical_volumes[6])->GetName() << G4endl;
+    istore->AddImportanceGeometryCell(64, *vec_physical_volumes[7]); // Second HDC layer - third 3inHDC sublayer
+    G4cout << "Going to assign importance: " << 64 << ", to volume: " << (vec_physical_volumes[7])->GetName() << G4endl;
+    istore->AddImportanceGeometryCell(64, *vec_physical_volumes[8]); // Rest of the world
+    G4cout << "Going to assign importance: " << 64 << ", to volume: " << (vec_physical_volumes[8])->GetName() << G4endl;
 
     for (int j = 0; j < vec_physical_volumes_phantom.size(); j++) {
-        istore->AddImportanceGeometryCell(imp, *vec_physical_volumes_phantom[j], j); // Element Phantoms
-        G4cout << "Going to assign importance: " << imp << ", to volume: " << vec_physical_volumes_phantom[j]->GetName() << G4endl;
+        istore->AddImportanceGeometryCell(64, *vec_physical_volumes_phantom[j], j); // Element Phantoms
+        G4cout << "Going to assign importance: " << 64 << ", to volume: " << vec_physical_volumes_phantom[j]->GetName() << G4endl;
     }
+
+    // Testing
+    // G4IStore *istore = G4IStore::GetInstance();
+    // istore->AddImportanceGeometryCell(1,  *vec_physical_volumes[0]); // Vacuum World
+    // istore->AddImportanceGeometryCell(1,  *vec_physical_volumes[1]); // Vacuum Chamber
+    // istore->AddImportanceGeometryCell(1,  *vec_physical_volumes[2]); // Air
+    // istore->AddImportanceGeometryCell(1,  *vec_physical_volumes[3]); // First 3inHDC layer
+    // istore->AddImportanceGeometryCell(1,  *vec_physical_volumes[4]); // 2inSS layer
+    // istore->AddImportanceGeometryCell(1, *vec_physical_volumes[5]); // Second HDC layer - first 3inHDC sublayer
+    // istore->AddImportanceGeometryCell(1, *vec_physical_volumes[6]); // Second HDC layer - second 3inHDC sublayer
+    // istore->AddImportanceGeometryCell(1, *vec_physical_volumes[7]); // Second HDC layer - third 3inHDC sublayer
+    // istore->AddImportanceGeometryCell(1, *vec_physical_volumes[8]); // Second HDC layer - third 3inHDC sublayer
+    //
+    // for (int j = 0; j < vec_physical_volumes_phantom.size(); j++) {
+    //     istore->AddImportanceGeometryCell(1, *vec_physical_volumes_phantom[j], j); // Element Phantoms
+    // }
+
     return istore;
 }
