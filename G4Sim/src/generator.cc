@@ -16,7 +16,7 @@ generator::generator() {
     sps->GetPosDist()->SetCentreCoords(G4ThreeVector(0., 0, 0.));
     sps->GetPosDist()->ConfineSourceToVolume("NULL");
 
-    // sps->GetAngDist()->SetAngDistType("iso");
+    sps->GetAngDist()->SetAngDistType("iso");
 
     sps->GetEneDist()->SetEnergyDisType("Gauss"); // Mono, Lin, Pow, Exp, Gaus, Brem, BBody, Cdg (cosmic diffuse gamma), User, Arb, Epn (energy per nucleon)
     sps->GetEneDist()->SetMonoEnergy(200 * MeV);
@@ -30,7 +30,7 @@ generator::~generator() {
 }
 
 void generator::GeneratePrimaries(G4Event *anEvent) {
-    fGeneralParticleSource->GetCurrentSource()->GetAngDist()->SetParticleMomentumDirection(RandomizedDirection());
+    // fGeneralParticleSource->GetCurrentSource()->GetAngDist()->SetParticleMomentumDirection(RandomizedDirection());
     fGeneralParticleSource->GeneratePrimaryVertex(anEvent);
 }
 

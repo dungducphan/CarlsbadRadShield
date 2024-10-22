@@ -41,7 +41,7 @@ int main(int argc, char **argv) {
     physics->RegisterPhysics(new G4ImportanceBiasing(&mgs));
     runManager->SetUserInitialization(physics);
     runManager->SetUserInitialization(new actioninit());
-    runManager->SetNumberOfThreads(44);
+    //runManager->SetNumberOfThreads(44);
     runManager->Initialize();
 
     detector->CreateImportanceStore();
