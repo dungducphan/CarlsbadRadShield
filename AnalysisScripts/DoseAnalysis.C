@@ -9,13 +9,15 @@
 #include <TStyle.h>
 #include <iostream>
 
-double numberOfElectronsSimulated = 88000;
+double numberOfElectronsSimulated = 176000;
 double targetCharge = 50E-12; // Coulombs
 double chargeScaleFactor = targetCharge / (numberOfElectronsSimulated * 1.6E-19); // scale factor to the targeted charge
 double phantomMass = 1.03; // kg
 double laserReprate = 100; // Hz
 double Sievert_to_rem = 100; // Sievert to Rem conversion factor
 double rem_to_mrem = 1000;
+std::string filePath = "/home/dphan/Documents/GitHub/CarlsbadRadShield/AnalysisScripts/18inHDC/EDep_AccidentalIndirectHit_200MeV_176000_18inHDC.root";
+std::string outputFile = "PhantomWall_HDC18_Accidental_200MeV_50pC_IndirectHit.png";
 
 class HDC18 {
 public :
@@ -44,7 +46,7 @@ public :
 };
 
 HDC18::HDC18(TTree *tree) : fChain(0) {
-   std::string filename = "/home/dphan/Documents/GitHub/CarlsbadRadShield/AnalysisScripts/HDC20/EDep_AccidentalIndirectHit_200MeV_88000_HDC20.root";
+   std::string filename = filePath;
    if (tree == 0) {
       TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject(filename.c_str());
       if (!f || !f->IsOpen()) {
@@ -132,8 +134,8 @@ void HDC18::Loop() {
    }
 
    gStyle->SetOptStat(0);
-   PhantomWall->Scale(Sievert_to_rem * rem_to_mrem);
-   PhantomWall->SetTitle("Phantom Wall Dose Rate Map (mrem/s)");
+   PhantomWall->Scale(Sievert_to_rem * rem_to_mrem * 1000);
+   PhantomWall->SetTitle("Phantom Wall Dose Rate Map (urem/s)");
    PhantomWall->GetXaxis()->SetTitle("Cell Number (x10 cm)");
    PhantomWall->GetYaxis()->SetTitle("Cell Number (x10 cm)");
    PhantomWall->GetXaxis()->CenterTitle();
@@ -144,7 +146,7 @@ void HDC18::Loop() {
    PhantomWall->Draw("colz");
    // c1->SaveAs("PhantomWall_HDC20_Occupational_2MeV_10nC.png");
    // c1->SaveAs("PhantomWall_HDC20_Accidental_200MeV_50pC_DirectHit.png");
-   c1->SaveAs("PhantomWall_HDC20_Accidental_200MeV_50pC_IndirectHit.png");
+   c1->SaveAs(outputFile.c_str());
 }
 
 #if !defined(__CINT__) && !defined(__CLING__) && !defined(__ACLIC__)
