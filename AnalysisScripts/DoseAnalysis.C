@@ -16,8 +16,8 @@ double phantomMass = 1.03; // kg
 double laserReprate = 100; // Hz
 double Sievert_to_rem = 100; // Sievert to Rem conversion factor
 double rem_to_mrem = 1000;
-std::string filePath = "/home/dphan/Documents/GitHub/CarlsbadRadShield/AnalysisScripts/18inHDC/EDep_AccidentalIndirectHit_200MeV_176000_18inHDC.root";
-std::string outputFile = "PhantomWall_HDC18_Accidental_200MeV_50pC_IndirectHit.png";
+std::string filePath = "/home/dphan/Documents/GitHub/CarlsbadRadShield/Results/3inHDC_2inSS_9inHDC/EDep_AccidentalIndirectHit_200MeV_176000_3inHDC_2inSS_9inHDC.root";
+std::string outputFile = "PhantomWall_3inHDC_2inSS_9inHDC_AccidentalIndirectHit_200MeV_50pC.png";
 
 class HDC18 {
 public :
