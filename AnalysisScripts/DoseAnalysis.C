@@ -9,15 +9,15 @@
 #include <TStyle.h>
 #include <iostream>
 
-double numberOfElectronsSimulated = 176000;
-double targetCharge = 50E-12; // Coulombs
+double numberOfElectronsSimulated = 4400000;
+double targetCharge = 1E-9; // Coulombs
 double chargeScaleFactor = targetCharge / (numberOfElectronsSimulated * 1.6E-19); // scale factor to the targeted charge
 double phantomMass = 1.03; // kg
 double laserReprate = 100; // Hz
 double Sievert_to_rem = 100; // Sievert to Rem conversion factor
 double rem_to_mrem = 1000;
-std::string filePath = "/home/dphan/Documents/GitHub/CarlsbadRadShield/Results/3inHDC_2inSS_9inHDC/EDep_AccidentalIndirectHit_200MeV_176000_3inHDC_2inSS_9inHDC.root";
-std::string outputFile = "PhantomWall_3inHDC_2inSS_9inHDC_AccidentalIndirectHit_200MeV_50pC.png";
+std::string filePath = "/home/dphan/Documents/GitHub/CarlsbadRadShield/Results/HDCInterpolate/EDep_Occupational_2MeV_4400000_9inHDC.root";
+std::string outputFile = "AverageDose_Occupational_2MeV_1nC_9inHDC";
 
 class HDC18 {
 public :
@@ -146,7 +146,10 @@ void HDC18::Loop() {
    PhantomWall->Draw("colz");
    // c1->SaveAs("PhantomWall_HDC20_Occupational_2MeV_10nC.png");
    // c1->SaveAs("PhantomWall_HDC20_Accidental_200MeV_50pC_DirectHit.png");
-   c1->SaveAs(outputFile.c_str());
+   c1->SaveAs((outputFile + ".png").c_str());
+   auto outfile = new TFile((outputFile + ".root").c_str(), "RECREATE");
+   PhantomWall->Write();
+   outfile->Close();
 }
 
 #if !defined(__CINT__) && !defined(__CLING__) && !defined(__ACLIC__)

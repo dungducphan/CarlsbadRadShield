@@ -50,5 +50,5 @@ public:
 
 private:
     G4VPhysicalVolume* fWorldVolume;
-    G4int NumberOf3inHDCShieldingLayersIn15inHDC;
+    G4int NumberOf3inHDCShieldingLayersIn12inHDC;
 };
