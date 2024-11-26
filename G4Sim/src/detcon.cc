@@ -86,7 +86,7 @@ G4VPhysicalVolume *detcon::Construct() {
     auto vaHDCShieldingLayer = new G4VisAttributes();
     vaHDCShieldingLayer->SetVisibility();
     vaHDCShieldingLayer->SetForceSolid();
-    vaHDCShieldingLayer->SetColor(0, 0, 1, 0.1);
+    vaHDCShieldingLayer->SetColor(0, 0, 1, 0.0);
     for (unsigned int i = 0; i < NumberOf3inHDCShieldingLayersIn18inHDC; i++) {
         auto solidShieldingLayer_dummy = GenerateShell(innerShieldingWidth_18inHDC + 2 * i * thicknessOfShieldingLayer_3inHDC, innerShieldingWidth_18inHDC + 2 * (i + 1) * thicknessOfShieldingLayer_3inHDC, Form("solid3inHDCShieldingSublayer_%02i", i));
         auto logicShieldingLayer_dummy = new G4LogicalVolume(solidShieldingLayer_dummy, HDConcrete, Form("logic3inHDCShieldingSublayer_%02i", i));
@@ -107,6 +107,13 @@ G4VPhysicalVolume *detcon::Construct() {
     vaRest->SetForceSolid();
     vaRest->SetColor(1, 1, 1, 0.1);
     logicRest->SetVisAttributes(vaRest);
+
+    auto solid_nippleTube = new G4Tubs("solid_nippleTube", (2-0.1) * 2.54 * cm, 2 * 2.54 * cm, 0.5 * m, 0, 2 * M_PI);
+    auto logic_nippleTube = new G4LogicalVolume(solid_nippleTube, nist->FindOrBuildMaterial("G4_STAINLESS-STEEL"), "logic_nippleTube");
+    logic_nippleTube->SetVisAttributes(vaVacuumChamber);
+    auto phys_nippleTube = new G4PVPlacement(0, G4ThreeVector(0, 0, 0.75 * m), logic_nippleTube, "phys_nippleTube", logicWorld, false, 0, false);
+    vec_logical_volumes.push_back(logic_nippleTube);
+    vec_physical_volumes.push_back(phys_nippleTube);
 
     // Element Phantoms
     auto elem_Phantom = new G4Box("elem_Phantom", 5 * cm, 5 * cm, 5 * cm);
@@ -167,6 +174,8 @@ G4VIStore* detcon::CreateImportanceStore() {
     G4cout << "Going to assign importance: " << 4096 << ", to volume: " << (vec_physical_volumes[8])->GetName() << G4endl;
     istore->AddImportanceGeometryCell(4096, *vec_physical_volumes[9]); // Rest of the world
     G4cout << "Going to assign importance: " << 4096 << ", to volume: " << (vec_physical_volumes[9])->GetName() << G4endl;
+    istore->AddImportanceGeometryCell(2, *vec_physical_volumes[10]); // Nipple but same as Air
+    G4cout << "Going to assign importance: " << 2 << ", to volume: " << (vec_physical_volumes[10])->GetName() << G4endl;
 
     for (int j = 0; j < vec_physical_volumes_phantom.size(); j++) {
         istore->AddImportanceGeometryCell(4096, *vec_physical_volumes_phantom[j], j); // Element Phantoms

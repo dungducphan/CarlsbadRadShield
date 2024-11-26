@@ -9,15 +9,15 @@
 #include <TStyle.h>
 #include <iostream>
 
-double numberOfElectronsSimulated = 176000;
+double numberOfElectronsSimulated = 100000;
 double targetCharge = 50E-12; // Coulombs
 double chargeScaleFactor = targetCharge / (numberOfElectronsSimulated * 1.6E-19); // scale factor to the targeted charge
 double phantomMass = 1.03; // kg
 double laserReprate = 100; // Hz
 double Sievert_to_rem = 100; // Sievert to Rem conversion factor
 double rem_to_mrem = 1000;
-std::string filePath = "/home/dphan/Documents/GitHub/CarlsbadRadShield/Results/3inHDC_2inSS_9inHDC/EDep_AccidentalIndirectHit_200MeV_176000_3inHDC_2inSS_9inHDC.root";
-std::string outputFile = "PhantomWall_3inHDC_2inSS_9inHDC_AccidentalIndirectHit_200MeV_50pC.png";
+std::string filePath = "/home/dphan/Documents/GitHub/CarlsbadRadShield/Results/300MeV/EDep_Ana.root";
+std::string outputFile = "PhantomWall_18inHDC_AccidentalDirectHit_300MeV_50pC.png";
 
 class HDC18 {
 public :
@@ -134,8 +134,8 @@ void HDC18::Loop() {
    }
 
    gStyle->SetOptStat(0);
-   PhantomWall->Scale(Sievert_to_rem * rem_to_mrem * 1000);
-   PhantomWall->SetTitle("Phantom Wall Dose Rate Map (urem/s)");
+   PhantomWall->Scale(Sievert_to_rem * rem_to_mrem);
+   PhantomWall->SetTitle("Phantom Wall Dose Rate Map (mrem/s)");
    PhantomWall->GetXaxis()->SetTitle("Cell Number (x10 cm)");
    PhantomWall->GetYaxis()->SetTitle("Cell Number (x10 cm)");
    PhantomWall->GetXaxis()->CenterTitle();
