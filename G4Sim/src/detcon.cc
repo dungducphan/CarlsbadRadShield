@@ -39,9 +39,9 @@ G4VPhysicalVolume *detcon::Construct() {
     HDConcrete->AddElement(nist->FindOrBuildElement("Fe"), 0.014);
 
     // World
-    G4double worldSize_X = 5 * m;
-    G4double worldSize_Y = 5 * m;
-    G4double worldSize_Z = 5 * m;
+    G4double worldSize_X = 7 * m;
+    G4double worldSize_Y = 7 * m;
+    G4double worldSize_Z = 7 * m;
     G4Material *worldMat = nist->FindOrBuildMaterial("G4_Galactic");
     auto *solidWorld = new G4Box("solidWorld", 0.5 * worldSize_X, 0.5 * worldSize_Y, 0.5 * worldSize_Z);
     auto *logicWorld = new G4LogicalVolume(solidWorld, worldMat, "logicWorld");
@@ -55,7 +55,9 @@ G4VPhysicalVolume *detcon::Construct() {
     double innerVacuumWidth = vacuumChamberSize - 2.54 * cm;
     double distance_FromChamber_To18inHDCShielding = 1 * m;
     double innerShieldingWidth_18inHDC = innerVacuumWidth + 2 * distance_FromChamber_To18inHDCShielding;
-    double thicknessOfShieldingLayer_3inHDC = 3 * 2.54 * cm;
+
+    // Increase the thickness of the shielding layer to 7 cm to get to 42in of shielding
+    double thicknessOfShieldingLayer_3inHDC = 7 * 2.54 * cm;
     double outerShieldingWidth_18inHDC = innerShieldingWidth_18inHDC + 2 * NumberOf3inHDCShieldingLayersIn18inHDC * thicknessOfShieldingLayer_3inHDC;
 
     // Vacuum Chamber
@@ -82,11 +84,11 @@ G4VPhysicalVolume *detcon::Construct() {
     vaAir->SetColor(0, 1, 0, 0.1);
     logicAir_01->SetVisAttributes(vaAir);
 
-    // 18inHDC in 3 layers of 3inHDC
+    // 42inHDC in 6 layers of 7inHDC
     auto vaHDCShieldingLayer = new G4VisAttributes();
     vaHDCShieldingLayer->SetVisibility();
     vaHDCShieldingLayer->SetForceSolid();
-    vaHDCShieldingLayer->SetColor(0, 0, 1, 0.0);
+    vaHDCShieldingLayer->SetColor(0, 0, 1, 0.05);
     for (unsigned int i = 0; i < NumberOf3inHDCShieldingLayersIn18inHDC; i++) {
         auto solidShieldingLayer_dummy = GenerateShell(innerShieldingWidth_18inHDC + 2 * i * thicknessOfShieldingLayer_3inHDC, innerShieldingWidth_18inHDC + 2 * (i + 1) * thicknessOfShieldingLayer_3inHDC, Form("solid3inHDCShieldingSublayer_%02i", i));
         auto logicShieldingLayer_dummy = new G4LogicalVolume(solidShieldingLayer_dummy, HDConcrete, Form("logic3inHDCShieldingSublayer_%02i", i));
@@ -121,7 +123,7 @@ G4VPhysicalVolume *detcon::Construct() {
     // Build a grid of 31x31 wall of boxes
     for (int i = 0; i < 31; i++) {
         for (int j = 0; j < 31; j++) {
-            auto solidPhantom = new G4PVPlacement(0, G4ThreeVector((i - 15) * 10. * cm, (j - 15) * 10. * cm, 2 * m), Form("Phantom_%02i_%02i", i, j),
+            auto solidPhantom = new G4PVPlacement(0, G4ThreeVector((i - 15) * 10. * cm, (j - 15) * 10. * cm, 2.61 * m), Form("Phantom_%02i_%02i", i, j),
                 logic_Phantom, physRest, false, vec_physical_volumes_phantom.size(), checkOverlaps);
             vec_physical_volumes_phantom.push_back(solidPhantom);
         }
