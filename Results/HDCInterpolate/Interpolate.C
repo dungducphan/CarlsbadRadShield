@@ -46,6 +46,11 @@ void Interpolate() {
     double stddev_15in = GetStdDevFromHist(hist_15in, mean_15in);
     double stddev_18in = GetStdDevFromHist(hist_18in, mean_18in);
 
+    std::cout << "9in: " << mean_9in << " +/- " << stddev_9in << std::endl;
+    std::cout << "12in: " << mean_12in << " +/- " << stddev_12in << std::endl;
+    std::cout << "15in: " << mean_15in << " +/- " << stddev_15in << std::endl;
+    std::cout << "18in: " << mean_18in << " +/- " << stddev_18in << std::endl;
+
     auto graph = new TGraphErrors();
     graph->SetPoint(0, 9, mean_9in);
     graph->SetPointError(0, 0, stddev_9in);
