@@ -9,15 +9,15 @@
 #include <TStyle.h>
 #include <iostream>
 
-double numberOfElectronsSimulated = 4400000;
+double numberOfElectronsSimulated = 44000;
 double targetCharge = 75E-12; // Coulombs
 double chargeScaleFactor = targetCharge / (numberOfElectronsSimulated * 1.6E-19); // scale factor to the targeted charge
 double phantomMass = 1.03; // kg
 double laserReprate = 100; // Hz
 double Sievert_to_rem = 100; // Sievert to Rem conversion factor
 double rem_to_mrem = 1000;
-std::string filePath = "/home/dphan/Documents/GitHub/CarlsbadRadShield/Results/42inHDC/EDep_Ana_4400000.root";
-std::string outputFile = "PhantomWall_42inHDC_AccidentalDirectHit_200MeV_75pC.png";
+std::string filePath = "/home/dphan/Documents/GitHub/CarlsbadRadShield/Results/Sandwich/Sandwich_44000.root";
+std::string outputFile = "PhantomWall_Sandwich_AccidentalDirectHit_200MeV_75pC.png";
 
 class HDC18 {
 public :
