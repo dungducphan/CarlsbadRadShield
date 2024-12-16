@@ -13,7 +13,7 @@ generator::generator() {
     sps->SetNumberOfParticles(1);
 
     sps->GetPosDist()->SetPosDisType("Point"); // Point, Beam, Plane, Surface, Volume
-    sps->GetPosDist()->SetCentreCoords(G4ThreeVector(0., 0, 0.));
+    sps->GetPosDist()->SetCentreCoords(G4ThreeVector(0., 0, -150 * cm));
     sps->GetPosDist()->ConfineSourceToVolume("NULL");
 
     // sps->GetAngDist()->SetAngDistType("iso");
@@ -35,7 +35,7 @@ void generator::GeneratePrimaries(G4Event *anEvent) {
 }
 
 G4ThreeVector generator::RandomizedDirection() {
-    double rdm1 = fRandom->Gaus(80, 7);
+    double rdm1 = fRandom->Gaus(60, 7);
     double x_mom = TMath::Cos(rdm1 * mrad);
     double tmp = TMath::Sin(rdm1 * mrad);
     double rdm2 = fRandom->Gaus(TMath::PiOver2(), 0.07);
