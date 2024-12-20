@@ -41,7 +41,7 @@ G4VPhysicalVolume *detcon::Construct() {
     // World
     G4double worldSize_X = 7 * m;
     G4double worldSize_Y = 7 * m;
-    G4double worldSize_Z = 7 * m;
+    G4double worldSize_Z = 20 * m;
     G4Material *worldMat = nist->FindOrBuildMaterial("G4_Galactic");
     auto *solidWorld = new G4Box("solidWorld", 0.5 * worldSize_X, 0.5 * worldSize_Y, 0.5 * worldSize_Z);
     auto *logicWorld = new G4LogicalVolume(solidWorld, worldMat, "logicWorld");
@@ -111,7 +111,7 @@ G4VPhysicalVolume *detcon::Construct() {
     auto physRest = new G4PVPlacement(0, G4ThreeVector(0, 0, worldSize_Z/2 - rest_Z/2), logicRest, "physRest", logicWorld, false, 0, checkOverlaps);
     vec_physical_volumes.push_back(physRest);
     auto vaRest = new G4VisAttributes();
-    vaRest->SetVisibility(false);
+    vaRest->SetVisibility(true);
     vaRest->SetForceSolid();
     vaRest->SetColor(1, 1, 1, 0.8);
     logicRest->SetVisAttributes(vaRest);
@@ -122,7 +122,7 @@ G4VPhysicalVolume *detcon::Construct() {
     // Build a grid of 31x31 wall of boxes
     for (int i = 0; i < 31; i++) {
         for (int j = 0; j < 31; j++) {
-            auto solidPhantom = new G4PVPlacement(0, G4ThreeVector((i - 15) * 10. * cm, (j - 15) * 10. * cm, -rest_Z/2 + 30*cm), Form("Phantom_%02i_%02i", i, j),
+            auto solidPhantom = new G4PVPlacement(0, G4ThreeVector((i - 15) * 10. * cm, (j - 15) * 10. * cm, -rest_Z/2 + 8.8*m), Form("Phantom_%02i_%02i", i, j),
                 logic_Phantom, physRest, false, vec_physical_volumes_phantom.size(), checkOverlaps);
             vec_physical_volumes_phantom.push_back(solidPhantom);
         }
