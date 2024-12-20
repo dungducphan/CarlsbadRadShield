@@ -6,6 +6,10 @@ runAction::runAction() : G4UserRunAction() {
     man->CreateNtupleDColumn("EDep");
     man->CreateNtupleDColumn("Weight");
     man->CreateNtupleIColumn("HumanPhantom_ID");
+    man->CreateNtupleDColumn("Energy");
+    man->CreateNtupleDColumn("Px");
+    man->CreateNtupleDColumn("Py");
+    man->CreateNtupleDColumn("Pz");
     man->FinishNtuple(0);
 }
 
