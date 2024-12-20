@@ -19,7 +19,7 @@ generator::generator() {
     // sps->GetAngDist()->SetAngDistType("iso");
 
     sps->GetEneDist()->SetEnergyDisType("Gauss"); // Mono, Lin, Pow, Exp, Gaus, Brem, BBody, Cdg (cosmic diffuse gamma), User, Arb, Epn (energy per nucleon)
-    sps->GetEneDist()->SetMonoEnergy(200 * MeV);
+    sps->GetEneDist()->SetMonoEnergy(100 * MeV);
     sps->GetEneDist()->SetBeamSigmaInE(4 * MeV);
 
     fRandom = new TRandom3();

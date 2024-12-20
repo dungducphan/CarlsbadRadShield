@@ -7,17 +7,31 @@
 #include <TH1.h>
 #include <TCanvas.h>
 #include <TStyle.h>
+#include <TMath.h>
 #include <iostream>
 
-double numberOfElectronsSimulated = 440000;
+double* logspace(double Emin, double Emax, int N) {
+   double* result = new double[N];
+   double logEmin = TMath::Log10(Emin);
+   double logEmax = TMath::Log10(Emax);
+   double step = (logEmax - logEmin) / (N - 1);
+
+   for (int i = 0; i < N; ++i) {
+      result[i] = TMath::Power(logEmin + i * step, 10);
+   }
+
+   return result;
+}
+
+double numberOfElectronsSimulated = 44000;
 double targetCharge = 75E-12; // Coulombs
 double chargeScaleFactor = targetCharge / (numberOfElectronsSimulated * 1.6E-19); // scale factor to the targeted charge
 double phantomMass = 1.03; // kg
 double laserReprate = 100; // Hz
 double Sievert_to_rem = 100; // Sievert to Rem conversion factor
 double rem_to_mrem = 1000;
-std::string filePath = "/home/dphan/Documents/GitHub/CarlsbadRadShield/Results/Sandwich/Sandwich_440000.root";
-std::string outputFile = "PhantomWall_Sandwich_AccidentalDirectHit_200MeV_75pC.png";
+std::string filePath = "/home/dphan/Documents/GitHub/CarlsbadRadShield/Results/Sandwich/Sandwich_44000.100MeV.root";
+std::string outputFile = "PhantomWall_Sandwich_AccidentalDirectHit_100MeV_75pC.png";
 
 class HDC18 {
 public :
@@ -28,11 +42,28 @@ public :
    Double_t        EDep;
    Double_t        Weight;
    Int_t           HumanPhantom_ID;
+   Double_t        Energy;
+   Double_t        Px;
+   Double_t        Py;
+   Double_t        Pz;
+   Double_t        X;
+   Double_t        Y;
+   Double_t        Z;
+   Int_t           PID;
 
    // List of branches
    TBranch        *b_EDep;   //!
    TBranch        *b_Weight;   //!
    TBranch        *b_HumanPhantom_ID;   //!
+   TBranch        *b_Energy;
+   TBranch        *b_Px;
+   TBranch        *b_Py;
+   TBranch        *b_Pz;
+   TBranch        *b_X;
+   TBranch        *b_Y;
+   TBranch        *b_Z;
+   TBranch        *b_PID;
+
 
    HDC18(TTree *tree=0);
    virtual ~HDC18();
@@ -90,6 +121,14 @@ void HDC18::Init(TTree *tree) {
    fChain->SetBranchAddress("EDep", &EDep, &b_EDep);
    fChain->SetBranchAddress("Weight", &Weight, &b_Weight);
    fChain->SetBranchAddress("HumanPhantom_ID", &HumanPhantom_ID, &b_HumanPhantom_ID);
+   fChain->SetBranchAddress("Energy", &Energy, &b_Energy);
+   fChain->SetBranchAddress("Px", &Px, &b_Px);
+   fChain->SetBranchAddress("Py", &Py, &b_Py);
+   fChain->SetBranchAddress("Pz", &Pz, &b_Pz);
+   fChain->SetBranchAddress("X", &X, &b_X);
+   fChain->SetBranchAddress("Y", &Y, &b_Y);
+   fChain->SetBranchAddress("Z", &Z, &b_Z);
+   fChain->SetBranchAddress("PID", &PID, &b_PID);
    Notify();
 }
 
@@ -113,8 +152,16 @@ void HDC18::Loop() {
 
    TH2D* PhantomWall;
 
+   double Emin = 1.0E0; // Example minimum value
+   double Emax = 1.0E6; // Example maximum value
+   int N = 1001; // Example number of elements
+
+   double* logScaleArray = logspace(Emin, Emax, N);
+   TH1D* HistEnergy;
+
    if (gSystem->AccessPathName("PhantomWall.root")) {
       PhantomWall = new TH2D("PhantomWall", "PhantomWall", 31, -0.5, 30.5, 31, -0.5, 30.5);
+      HistEnergy = new TH1D("Energy", "Energy", N - 1, logScaleArray);
       Long64_t nbytes = 0, nb = 0;
       for (Long64_t jentry=0; jentry<nentries;jentry++) {
          Long64_t ientry = LoadTree(jentry);
@@ -123,14 +170,19 @@ void HDC18::Loop() {
          const int x = HumanPhantom_ID % 31;
          const int y = (HumanPhantom_ID - x) / 31;
          PhantomWall->Fill(y, x, EDep * Weight);
+         std::cout << "PID: " << PID << std::endl;
+         if (PID == 22) HistEnergy->Fill(Energy, Weight);
       }
       PhantomWall->Scale(chargeScaleFactor * laserReprate / phantomMass);
+      HistEnergy->Scale(chargeScaleFactor);
       auto outfile = new TFile("PhantomWall.root", "RECREATE");
       PhantomWall->Write();
+      HistEnergy->Write();
       outfile->Close();
    } else {
       auto infile = new TFile("PhantomWall.root");
       PhantomWall = (TH2D*)infile->Get("PhantomWall");
+      HistEnergy = (TH1D*)infile->Get("Energy");
    }
 
    gStyle->SetOptStat(0);
@@ -147,6 +199,24 @@ void HDC18::Loop() {
    // c1->SaveAs("PhantomWall_HDC20_Occupational_2MeV_10nC.png");
    // c1->SaveAs("PhantomWall_HDC20_Accidental_200MeV_50pC_DirectHit.png");
    c1->SaveAs(outputFile.c_str());
+
+   auto c2 = new TCanvas("c2", "c2", 800, 800);
+   c2->SetMargin(0.15, 0.15, 0.15, 0.15);
+   c2->SetLogx();
+   c2->SetLogy();
+   HistEnergy->SetTitle("Gamma Spectrum");
+   HistEnergy->GetXaxis()->SetTitle("Energy (keV)");
+   HistEnergy->GetYaxis()->SetTitle("Intensity (A.U.)");
+   HistEnergy->GetXaxis()->SetRangeUser(Emin, Emax);
+   HistEnergy->GetXaxis()->CenterTitle();
+   HistEnergy->GetYaxis()->CenterTitle();
+   HistEnergy->GetXaxis()->SetTitleOffset(1.4);
+   HistEnergy->GetYaxis()->SetTitleOffset(1.4);
+   HistEnergy->Draw();
+   c2->SaveAs("EnergySpectrum.png");
+
+   std::cout << "Total yield: " << HistEnergy->Integral() << std::endl;
+   std::cout << "Percentage of gamma with energy more than 1MeV: " << HistEnergy->Integral(HistEnergy->FindBin(1000.0), HistEnergy->GetNbinsX()) / HistEnergy->Integral() * 100 << "%" << std::endl;
 }
 
 #if !defined(__CINT__) && !defined(__CLING__) && !defined(__ACLIC__)

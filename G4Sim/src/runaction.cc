@@ -10,6 +10,10 @@ runAction::runAction() : G4UserRunAction() {
     man->CreateNtupleDColumn("Px");
     man->CreateNtupleDColumn("Py");
     man->CreateNtupleDColumn("Pz");
+    man->CreateNtupleDColumn("X");
+    man->CreateNtupleDColumn("Y");
+    man->CreateNtupleDColumn("Z");
+    man->CreateNtupleIColumn("PID");
     man->FinishNtuple(0);
 }
 
