@@ -44,7 +44,7 @@ int main(int argc, char **argv) {
     G4GDMLParser parser;
     parser.SetStripFlag(false);
     parser.SetOverlapCheck(true);
-    parser.Read("/home/dphan/Documents/GitHub/CarlsbadRadShield/GDML/BeamDumpGDML-worldVOL.gdml"); // Replace with your GDML file path
+    parser.Read("/home/dphan/Documents/GitHub/CarlsbadRadShield/GDML/BeamDumpGDML-worldVOL-W.gdml"); // Replace with your GDML file path
 
     auto worldVolume = parser.GetWorldVolume();
     auto detector = new detcon(worldVolume);
