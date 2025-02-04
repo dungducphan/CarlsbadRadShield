@@ -32,20 +32,17 @@ class G4LogicalVolume;
 
 class detcon : public G4VUserDetectorConstruction {
 public:
-    detcon();
+    detcon(G4VPhysicalVolume *setWorld = nullptr) {
+        fWorldVolume = setWorld;
+    }
 
-    ~detcon() override;
+    G4VPhysicalVolume *Construct() override {
+        return fWorldVolume;
+    }
 
-    G4VSolid* GenerateShell(const double& innerWidth, const double& outerWidth, const G4String& name);
-
-    G4VPhysicalVolume *Construct() override;
-    void ConstructSDandField() override;
-    G4VPhysicalVolume* GetWorldVolume();
-    G4VIStore* CreateImportanceStore();
-
-    G4LogicalVolume* logic_Phantom;
-    std::vector<G4VPhysicalVolume*> vec_physical_volumes;
-    std::vector<G4VPhysicalVolume*> vec_physical_volumes_phantom;
+    G4VPhysicalVolume* GetWorldVolume() {
+        return fWorldVolume;
+    }
 
 private:
     G4VPhysicalVolume* fWorldVolume;

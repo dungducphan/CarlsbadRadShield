@@ -10,6 +10,7 @@
 #endif
 
 #include "Shielding.hh"
+#include "QGSP_BERT_HP.hh"
 #include "G4SteppingVerbose.hh"
 #include "G4UImanager.hh"
 #include "G4VisExecutive.hh"
@@ -17,6 +18,8 @@
 #include "G4GeometrySampler.hh"
 #include "G4ImportanceBiasing.hh"
 #include "G4GeometryManager.hh"
+
+#include "G4GDMLParser.hh"
 
 #include "TH1D.h"
 #include "TFile.h"
@@ -34,17 +37,24 @@ int main(int argc, char **argv) {
     G4RunManager* runManager = new G4RunManager();
 #endif
 
-    auto detector = new detcon();
+    // auto detector = new detcon();
+    // runManager->SetUserInitialization(detector);
+
+    // Parse GDML file
+    G4GDMLParser parser;
+    parser.SetStripFlag(false);
+    parser.SetOverlapCheck(true);
+    parser.Read("/home/dphan/Documents/GitHub/CarlsbadRadShield/GDML/BeamDumpGDML-worldVOL.gdml"); // Replace with your GDML file path
+
+    auto worldVolume = parser.GetWorldVolume();
+    auto detector = new detcon(worldVolume);
     runManager->SetUserInitialization(detector);
-    G4GeometrySampler mgs(detector->GetWorldVolume(), "gamma");
-    auto physics = new Shielding();
-    physics->RegisterPhysics(new G4ImportanceBiasing(&mgs));
+
+    auto physics = new QGSP_BERT_HP();
     runManager->SetUserInitialization(physics);
     runManager->SetUserInitialization(new actioninit());
     runManager->SetNumberOfThreads(44);
     runManager->Initialize();
-
-    detector->CreateImportanceStore();
 
     G4VisManager *visManager = new G4VisExecutive;
     visManager->Initialize();
@@ -60,10 +70,6 @@ int main(int argc, char **argv) {
         ui->SessionStart();
         delete ui;
     }
-
-    // open geometry for clean biasing stores clean-up
-    //
-    G4GeometryManager::GetInstance()->OpenGeometry();
 
     delete visManager;
     delete runManager;
