@@ -23,8 +23,11 @@
 #include "G4SDManager.hh"
 #include "G4SubtractionSolid.hh"
 #include "G4VIStore.hh"
+#include "G4GDMLParser.hh"
 
 #include "TMath.h"
+
+#include "ParticleSD.hh"
 
 class G4VPhysicalVolume;
 
@@ -32,12 +35,24 @@ class G4LogicalVolume;
 
 class detcon : public G4VUserDetectorConstruction {
 public:
-    detcon(G4VPhysicalVolume *setWorld = nullptr) {
+
+    detcon(G4VPhysicalVolume *setWorld, G4LogicalVolume *setLogical) {
         fWorldVolume = setWorld;
+        logicalSD = setLogical;
     }
 
     G4VPhysicalVolume *Construct() override {
         return fWorldVolume;
+    }
+
+    void ConstructSDandField() {
+        G4SDManager *SDman = G4SDManager::GetSDMpointer();
+        G4String SDname;
+
+        // Create sensitive detectors
+        auto particleSD = new ParticleSD("ParticleSD");
+        SDman->AddNewDetector(particleSD);
+        logicalSD->SetSensitiveDetector(particleSD);
     }
 
     G4VPhysicalVolume* GetWorldVolume() {
@@ -46,4 +61,5 @@ public:
 
 private:
     G4VPhysicalVolume* fWorldVolume;
+    G4LogicalVolume* logicalSD;
 };

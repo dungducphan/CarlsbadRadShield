@@ -43,11 +43,12 @@ int main(int argc, char **argv) {
     parser.SetOverlapCheck(true);
     parser.Read("/home/dphan/Documents/GitHub/CarlsbadRadShield/GDML/BeamDumpGDML_Optimized_03-worldVOL.gdml"); // Replace with your GDML file path
 
-    auto worldVolume = parser.GetWorldVolume();
-    auto detector = new detcon(worldVolume);
+    auto world = parser.GetWorldVolume();
+    auto logical = parser.GetVolume("LV_Body_Detector");
+    auto detector = new detcon(world, logical);
     runManager->SetUserInitialization(detector);
 
-    auto physics = new QGSP_BERT_HP();
+    auto physics = new Shielding();
     runManager->SetUserInitialization(physics);
     runManager->SetUserInitialization(new actioninit());
     runManager->SetNumberOfThreads(44);
