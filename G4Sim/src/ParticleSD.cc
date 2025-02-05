@@ -18,9 +18,5 @@ G4bool ParticleSD::ProcessHits(G4Step * aStep, G4TouchableHistory *) {
     auto PID = track->GetParticleDefinition()->GetPDGEncoding();
     std::cout << "PID: " << PID << std::endl;
 
-#ifdef DEBUG
-        G4cout << "Registered a hit: " << det_id << G4endl;
-#endif
-
     return true;
 }
