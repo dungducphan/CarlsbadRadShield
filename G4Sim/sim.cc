@@ -41,17 +41,18 @@ int main(int argc, char **argv) {
     G4GDMLParser parser;
     parser.SetStripFlag(false);
     parser.SetOverlapCheck(true);
-    parser.Read("/home/dphan/Documents/GitHub/CarlsbadRadShield/GDML/BeamDumpGDML_Optimized_03-worldVOL.gdml"); // Replace with your GDML file path
+    parser.Read("/home/dphan/Documents/GitHub/CarlsbadRadShield/GDML/DetailedArcModel-worldVOL.gdml"); // Replace with your GDML file path
 
     auto world = parser.GetWorldVolume();
-    auto logical = parser.GetVolume("LV_Body_Detector");
+    // auto logical = parser.GetVolume("LV_Body_Detector");
+    auto logical = nullptr;
     auto detector = new detcon(world, logical);
     runManager->SetUserInitialization(detector);
 
     auto physics = new Shielding();
     runManager->SetUserInitialization(physics);
     runManager->SetUserInitialization(new actioninit());
-    runManager->SetNumberOfThreads(44);
+    runManager->SetNumberOfThreads(12);
     runManager->Initialize();
 
     G4VisManager *visManager = new G4VisExecutive;

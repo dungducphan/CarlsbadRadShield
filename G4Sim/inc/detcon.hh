@@ -46,6 +46,11 @@ public:
     }
 
     void ConstructSDandField() {
+        if (logicalSD == nullptr) {
+            G4cout << "Logical volume for sensitive detector is not set." << G4endl;
+            return;
+        }
+
         G4SDManager *SDman = G4SDManager::GetSDMpointer();
         G4String SDname;
 

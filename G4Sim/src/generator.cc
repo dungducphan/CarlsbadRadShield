@@ -13,7 +13,7 @@ generator::generator() {
     sps->SetNumberOfParticles(1);
 
     sps->GetPosDist()->SetPosDisType("Point"); // Point, Beam, Plane, Surface, Volume
-    sps->GetPosDist()->SetCentreCoords(G4ThreeVector(0., -1500 * mm, 0));
+    sps->GetPosDist()->SetCentreCoords(G4ThreeVector(0., 0, 0));
     sps->GetPosDist()->ConfineSourceToVolume("NULL");
 
     sps->GetEneDist()->SetEnergyDisType("Mono"); // Mono, Lin, Pow, Exp, Gaus, Brem, BBody, Cdg (cosmic diffuse gamma), User, Arb, Epn (energy per nucleon)
@@ -39,6 +39,5 @@ G4ThreeVector generator::RandomizedDirection() {
     double y_mom = TMath::Sin(rdm2 * rad) * tmp;
     double z_mom = TMath::Cos(rdm2 * rad) * tmp;
 
-    return {y_mom, x_mom, z_mom};
-    // return {z_mom, y_mom, x_mom};
+    return {z_mom, y_mom, -x_mom};
 }
