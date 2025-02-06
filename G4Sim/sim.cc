@@ -10,10 +10,16 @@
 #endif
 
 #include "Shielding.hh"
+#include "QGSP_BERT_HP.hh"
 #include "G4SteppingVerbose.hh"
 #include "G4UImanager.hh"
 #include "G4VisExecutive.hh"
 #include "G4UIExecutive.hh"
+#include "G4GeometrySampler.hh"
+#include "G4ImportanceBiasing.hh"
+#include "G4GeometryManager.hh"
+
+#include "G4GDMLParser.hh"
 
 #include "TH1D.h"
 #include "TFile.h"
@@ -31,9 +37,23 @@ int main(int argc, char **argv) {
     G4RunManager* runManager = new G4RunManager();
 #endif
 
-    runManager->SetUserInitialization(new detcon());
-    runManager->SetUserInitialization(new Shielding());
+    // Parse GDML file
+    G4GDMLParser parser;
+    parser.SetStripFlag(false);
+    parser.SetOverlapCheck(true);
+    parser.Read("/home/dphan/Documents/GitHub/CarlsbadRadShield/GDML/DetailedArcModel-worldVOL.gdml"); // Replace with your GDML file path
+
+    auto world = parser.GetWorldVolume();
+    // auto logical = parser.GetVolume("LV_Body_Detector");
+    auto logical = nullptr;
+    auto detector = new detcon(world, logical);
+    runManager->SetUserInitialization(detector);
+
+    auto physics = new Shielding();
+    runManager->SetUserInitialization(physics);
     runManager->SetUserInitialization(new actioninit());
+    runManager->SetNumberOfThreads(12);
+    runManager->Initialize();
 
     G4VisManager *visManager = new G4VisExecutive;
     visManager->Initialize();
