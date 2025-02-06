@@ -36,7 +36,8 @@ class G4LogicalVolume;
 class detcon : public G4VUserDetectorConstruction {
 public:
 
-    detcon(const G4GDMLParser &parser);
+    detcon(const G4GDMLParser& parser);
+    ~detcon() override;
 
     G4VPhysicalVolume *Construct() override;
 
@@ -57,4 +58,11 @@ private:
     G4LogicalVolume* logicalHDPEBlock1;
     G4LogicalVolume* logicalHDPEBlock2;
     G4LogicalVolume* logicalWBlock;
+
+    G4VisAttributes* arcVisAtt;
+    G4VisAttributes* vacuumChamberVisAtt;
+    G4VisAttributes* glassWindowVisAtt;
+    G4VisAttributes* HDPEOuterVisAtt;
+    G4VisAttributes* LeadVisAtt;
+    G4VisAttributes* TungstenVisAtt;
 };
