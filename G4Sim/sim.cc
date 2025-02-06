@@ -42,11 +42,7 @@ int main(int argc, char **argv) {
     parser.SetStripFlag(false);
     parser.SetOverlapCheck(true);
     parser.Read("/home/dphan/Documents/GitHub/CarlsbadRadShield/GDML/DetailedArcModel-worldVOL.gdml"); // Replace with your GDML file path
-
-    auto world = parser.GetWorldVolume();
-    // auto logical = parser.GetVolume("LV_Body_Detector");
-    auto logical = nullptr;
-    auto detector = new detcon(world, logical);
+    auto detector = new detcon(parser);
     runManager->SetUserInitialization(detector);
 
     auto physics = new Shielding();

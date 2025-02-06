@@ -36,29 +36,11 @@ class G4LogicalVolume;
 class detcon : public G4VUserDetectorConstruction {
 public:
 
-    detcon(G4VPhysicalVolume *setWorld, G4LogicalVolume *setLogical) {
-        fWorldVolume = setWorld;
-        logicalSD = setLogical;
-    }
+    detcon(const G4GDMLParser &parser);
 
-    G4VPhysicalVolume *Construct() override {
-        return fWorldVolume;
-    }
+    G4VPhysicalVolume *Construct() override;
 
-    void ConstructSDandField() {
-        if (logicalSD == nullptr) {
-            G4cout << "Logical volume for sensitive detector is not set." << G4endl;
-            return;
-        }
-
-        G4SDManager *SDman = G4SDManager::GetSDMpointer();
-        G4String SDname;
-
-        // Create sensitive detectors
-        auto particleSD = new ParticleSD("ParticleSD");
-        SDman->AddNewDetector(particleSD);
-        logicalSD->SetSensitiveDetector(particleSD);
-    }
+    void ConstructSDandField() override;
 
     G4VPhysicalVolume* GetWorldVolume() {
         return fWorldVolume;
@@ -66,5 +48,13 @@ public:
 
 private:
     G4VPhysicalVolume* fWorldVolume;
-    G4LogicalVolume* logicalSD;
+    G4LogicalVolume* logicalDetector;
+    G4LogicalVolume* logicalArc;
+    G4LogicalVolume* logicalChamber;
+    G4LogicalVolume* logicalFusedSilica;
+    G4LogicalVolume* logicalPbBlock1;
+    G4LogicalVolume* logicalPbBlock2;
+    G4LogicalVolume* logicalHDPEBlock1;
+    G4LogicalVolume* logicalHDPEBlock2;
+    G4LogicalVolume* logicalWBlock;
 };
