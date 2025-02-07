@@ -16,8 +16,8 @@
 #include <vector>
 #include <tuple>
 
-std::string voxelDataPath = "/home/dphan/Documents/GitHub/CarlsbadRadShield/AnalysisScripts/doseDep.txt";
-double numberOfElectrons = 96000;
+std::string voxelDataPath = "/home/dphan/Documents/GitHub/CarlsbadRadShield/AnalysisScripts/doseDep_10000000.txt";
+double numberOfElectrons = 10000000;
 double rescaleFactorTo100pC = (100E-12 / 1.6E-19) / numberOfElectrons;
 double rep_rate = 100;
 double seconds_in_a_business_year = 3600 * 8 * 250;
@@ -170,6 +170,7 @@ int main() {
     auto data = ReadVoxels(voxelDataPath);
     MaxDose(data);
     DoseSliceYZ(data, 0);
+    DoseSliceYZ(data, 9);
     DoseSliceXZ(data, 19);
     DoseSliceXY(data, 0);
     DoseSliceXY(data, 39);
