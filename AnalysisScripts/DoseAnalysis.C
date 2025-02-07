@@ -16,6 +16,15 @@
 #include <vector>
 #include <tuple>
 
+std::string voxelDataPath = "/home/dphan/Documents/GitHub/CarlsbadRadShield/AnalysisScripts/doseDep.txt";
+double numberOfElectrons = 96000;
+double rescaleFactorTo100pC = (100E-12 / 1.6E-19) / numberOfElectrons;
+double rep_rate = 100;
+double seconds_in_a_business_year = 3600 * 8 * 250;
+double gy_to_rem = 100;
+double totalFactor = rescaleFactorTo100pC * rep_rate * seconds_in_a_business_year * gy_to_rem;
+
+
 using voxelData = std::tuple<int, int, int, double, double, int>;
 
 std::vector<voxelData> ReadVoxels(const std::string& filename) {
@@ -58,13 +67,7 @@ std::vector<voxelData> ReadVoxels(const std::string& filename) {
     return voxels;
 }
 
-#if !defined(__CINT__) && !defined(__CLING__) && !defined(__ACLIC__)
-
-std::string voxelDataPath = "/home/dphan/Documents/GitHub/CarlsbadRadShield/cmake-build-debug/G4Sim/doseDep.txt";
-
-int main() {
-    auto data = ReadVoxels(voxelDataPath);
-
+double MaxDose(const std::vector<voxelData>& data) {
     double maxDose = 0;
     int maxDoseIdx = 0;
     for (int i = 0; i < data.size(); i++) {
@@ -75,6 +78,101 @@ int main() {
     }
     std::cout << "Max dose: " << maxDose << " Gy." << std::endl;
     std::cout << "Max dose voxel: (" << std::get<0>(data[maxDoseIdx]) << ", " << std::get<1>(data[maxDoseIdx]) << ", " << std::get<2>(data[maxDoseIdx]) << ")." << std::endl;
+    return maxDose;
+}
+
+void DoseSliceXZ(const std::vector<voxelData>& data, int y_Idx = 19) {
+    auto h = new TH2D("h", Form("Dose Slice (Y = %02i)", y_Idx), 40, 0, 40, 20, 0, 20);
+    h->GetXaxis()->SetTitle("Z");
+    h->GetYaxis()->SetTitle("X");
+    for (int i = 0; i < data.size(); i++) {
+        if (std::get<1>(data[i]) == y_Idx) {
+            int Z = std::get<2>(data[i]);
+            int X = std::get<0>(data[i]);
+            double dose = std::get<3>(data[i]);
+            h->Fill(0.5 + (double) Z, 0.5 + (double) X, dose * totalFactor);
+        }
+    }
+
+    auto c = new TCanvas("c", "c", 1600, 800);
+    c->SetMargin(0.1, 0.15, 0.15, 0.15);
+    h->Draw("colz");
+    h->GetZaxis()->SetTitle("Dose (rem)");
+    h->GetXaxis()->CenterTitle();
+    h->GetYaxis()->CenterTitle();
+    h->GetZaxis()->CenterTitle();
+    c->SaveAs(Form("DoseSliceXZ_Y_%02i.png", y_Idx));
+
+    delete h;
+    delete c;
+}
+
+void DoseSliceYZ(const std::vector<voxelData>& data, int x_Idx = 0) {
+    auto h = new TH2D("h", Form("Dose Slice (X = %02i)", x_Idx), 40, 0, 40, 20, 0, 20);
+    h->GetXaxis()->SetTitle("Z");
+    h->GetYaxis()->SetTitle("Y");
+    for (int i = 0; i < data.size(); i++) {
+        if (std::get<0>(data[i]) == x_Idx) {
+            int Z = std::get<2>(data[i]);
+            int Y = std::get<1>(data[i]);
+            double dose = std::get<3>(data[i]);
+            h->Fill(0.5 + (double) Z, 0.5 + (double) Y, dose * totalFactor);
+        }
+    }
+
+    auto c = new TCanvas("c", "c", 1600, 800);
+    c->SetMargin(0.1, 0.15, 0.15, 0.15);
+    h->Draw("colz");
+    h->GetZaxis()->SetTitle("Dose (rem)");
+    h->GetXaxis()->CenterTitle();
+    h->GetYaxis()->CenterTitle();
+    h->GetZaxis()->CenterTitle();
+    c->SaveAs(Form("DoseSliceYZ_X_%02i.png", x_Idx));
+
+    delete h;
+    delete c;
+}
+
+void DoseSliceXY(const std::vector<voxelData>& data, int z_Idx = 0) {
+    auto h = new TH2D("h", Form("Dose Slice (Z = %02i)", z_Idx), 20, 0, 20, 20, 0, 20);
+    h->GetXaxis()->SetTitle("X");
+    h->GetYaxis()->SetTitle("Y");
+    for (int i = 0; i < data.size(); i++) {
+        if (std::get<2>(data[i]) == z_Idx) {
+            int Y = std::get<1>(data[i]);
+            int X = std::get<0>(data[i]);
+            double dose = std::get<3>(data[i]);
+            h->Fill(0.5 + (double) X, 0.5 + (double) Y, dose * totalFactor);
+        }
+    }
+
+    auto c = new TCanvas("c", "c", 800, 800);
+    c->SetMargin(0.2, 0.2, 0.2, 0.2);
+    h->Draw("colz");
+    h->GetZaxis()->SetTitle("Dose (rem)");
+    h->GetXaxis()->SetTitleOffset(1.5);
+    h->GetYaxis()->SetTitleOffset(1.5);
+    h->GetZaxis()->SetTitleOffset(2);
+    h->GetXaxis()->CenterTitle();
+    h->GetYaxis()->CenterTitle();
+    h->GetZaxis()->CenterTitle();
+    c->SaveAs(Form("DoseSliceXY_Z_%02i.png", z_Idx));
+
+    delete h;
+    delete c;
+}
+
+#if !defined(__CINT__) && !defined(__CLING__) && !defined(__ACLIC__)
+
+int main() {
+    gStyle->SetOptStat(0);
+
+    auto data = ReadVoxels(voxelDataPath);
+    MaxDose(data);
+    DoseSliceYZ(data, 0);
+    DoseSliceXZ(data, 19);
+    DoseSliceXY(data, 0);
+    DoseSliceXY(data, 39);
 
     return 0;
 }
