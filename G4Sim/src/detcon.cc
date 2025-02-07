@@ -110,11 +110,11 @@ void detcon::ConstructSDandField() {
         return;
     }
 
-    G4SDManager *SDman = G4SDManager::GetSDMpointer();
-    G4String SDname;
-
-    // Create sensitive detectors
-    auto particleSD = new ParticleSD("ParticleSD");
-    SDman->AddNewDetector(particleSD);
-    logicalDetector->SetSensitiveDetector(particleSD);
+    // G4SDManager *SDman = G4SDManager::GetSDMpointer();
+    // G4String SDname;
+    //
+    // // Create sensitive detectors
+    // auto particleSD = new ParticleSD("ParticleSD");
+    // SDman->AddNewDetector(particleSD);
+    // logicalDetector->SetSensitiveDetector(particleSD);
 }
