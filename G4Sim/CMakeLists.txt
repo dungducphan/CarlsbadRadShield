@@ -1,7 +1,3 @@
-if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
-    add_definitions(-DDEBUG)
-endif()
-
 find_package(Geant4 REQUIRED ui_all vis_all multithreaded)
 find_package(ROOT REQUIRED Core)
 
