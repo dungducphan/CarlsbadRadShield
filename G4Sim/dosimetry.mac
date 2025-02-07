@@ -6,18 +6,21 @@
 /score/mesh/nBin 20 20 40
 
 # Filters
-/score/quantity/doseDeposit doseDep
+/score/quantity/doseDeposit doseDepGamma
+/score/filter/particle gammaFilter gamma
+/score/quantity/doseDeposit doseDepNeutron
+/score/filter/particle neutronFilter neutron
 /score/close
 /score/list
 
 ########################################
 
 # Run control
-/vis/disable
-/control/verbose 2
-/run/verbose 2
+# /vis/disable
+# /control/verbose 2
+# /run/verbose 2
 /run/beamOn 10000000
-/vis/enable
+# /vis/enable
 
 ########################################
 
@@ -26,4 +29,5 @@
 
 ########################################
 # Dump scorers to a file
-/score/dumpQuantityToFile dosimeterMesh doseDep doseDep.txt
+/score/dumpQuantityToFile dosimeterMesh doseDepGamma doseDepGamma.csv
+/score/dumpQuantityToFile dosimeterMesh doseDepNeutron doseDepNeutron.csv
