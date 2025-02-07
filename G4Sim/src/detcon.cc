@@ -92,7 +92,7 @@ G4VPhysicalVolume *detcon::Construct() {
     std::cout << "Mass of Chamber " << logicalChamber->GetMass() / kg << " kg" << std::endl;
     std::cout << "Mass of Beam Dump: " << logicalPbBlock1->GetMass() / kg + logicalPbBlock2->GetMass() / kg + logicalHDPEBlock1->GetMass() / kg + logicalHDPEBlock2->GetMass() / kg + logicalWBlock->GetMass() / kg << " kg" << std::endl;
     std::cout << "________________________________________________________________________" << std::endl;
-    
+
     return fWorldVolume;
 }
 

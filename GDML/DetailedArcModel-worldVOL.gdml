@@ -1223,7 +1223,7 @@
   </define>
   <materials/>
   <solids>
-    <box name="WorldBox" x="5000.0" y="5000.0" z="12000.0" lunit="mm"/>
+    <box name="WorldBox" x="4000.0" y="4000.0" z="8000.0" lunit="mm"/>
     <tessellated name="VacuumChamber">
       <triangular vertex1="VacuumChamber_0" vertex2="VacuumChamber_1" vertex3="VacuumChamber_2" type="ABSOLUTE"/>
       <triangular vertex1="VacuumChamber_2" vertex2="VacuumChamber_1" vertex3="VacuumChamber_3" type="ABSOLUTE"/>
@@ -3714,22 +3714,22 @@
       <solidref ref="WorldBox"/>
       <physvol name="PV_LV_VacuumChamber">
         <volumeref ref="LV_VacuumChamber"/>
-        <position name="P-LV_VacuumChamber1" unit="mm" x="-500.0" y="-1250.0" z="1350.0"/>
+        <position name="P-LV_VacuumChamber1" unit="mm" x="-500.0" y="-1650.0" z="3250.0"/>
         <rotationref ref="identity"/>
       </physvol>
       <physvol name="PV_LV_Arc">
         <volumeref ref="LV_Arc"/>
-        <position name="P-LV_Arc2" unit="mm" y="450.0" z="1200.0"/>
+        <position name="P-LV_Arc2" unit="mm" y="50.0" z="3100.0"/>
         <rotationref ref="identity"/>
       </physvol>
       <physvol name="PV_BeamDump">
         <volumeref ref="BeamDump"/>
-        <position name="P-BeamDump3" unit="mm" x="-200.0" y="199.99999999999974" z="-2000.0"/>
+        <position name="P-BeamDump3" unit="mm" x="-200.0" y="-200.0" z="-100.0"/>
         <rotation name="R-BeamDump1" unit="deg" x="-180.0"/>
       </physvol>
       <physvol name="PV_LV_Window">
         <volumeref ref="LV_Window"/>
-        <position name="P-LV_Window4" unit="mm" y="750.0" z="-1850.0"/>
+        <position name="P-LV_Window4" unit="mm" y="350.0" z="50.0"/>
         <rotationref ref="identity"/>
       </physvol>
     </volume>

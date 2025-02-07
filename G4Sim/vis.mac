@@ -1,13 +1,22 @@
-/run/initialize
+# Open a viewer
 /vis/open
+
+# Draw scene
 /vis/scene/create
 /vis/drawVolume
+
+# Set viewpoint
 /vis/viewer/set/autoRefresh true
+
+# Drawing the tracks
 /vis/scene/add/trajectories smooth
-/vis/scene/add/scale 1 m
-/vis/scene/add/axes
 /vis/scene/endOfEventAction accumulate -1
 
+# Draw markers
+/vis/scene/add/scale 1 m
+/vis/scene/add/axes
+
+# Set colors for particle identification
 /vis/modeling/trajectories/create/drawByParticleID
 /vis/modeling/trajectories/drawByParticleID-0/set e- red
 /vis/modeling/trajectories/drawByParticleID-0/set e+ red

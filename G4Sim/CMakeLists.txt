@@ -10,7 +10,6 @@ include(${ROOT_USE_FILE})
 
 file(GLOB sources src/*.cc)
 file(GLOB headers inc/*.hh)
-file(GLOB stlFiles geometryFiles/HDC18/*.stl)
 
 file(GLOB MACROS "*.mac")
 

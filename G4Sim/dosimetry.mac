@@ -1,0 +1,22 @@
+########################################
+# Define scoring mesh
+/score/create/boxMesh dosimeterMesh
+/score/mesh/boxSize 20. 20. 20. cm
+/score/mesh/nBin 20 20 40
+
+# Filters
+/score/quantity/doseDeposit doseDep
+/score/close
+/score/list
+
+########################################
+# Run control
+/vis/disable
+/control/verbose 2
+/run/verbose 2
+/run/beamOn 20000
+/vis/enable
+
+########################################
+# Dump scorers to a file
+/score/dumpQuantityToFile dosimeterMesh doseDep doseDep.txt
