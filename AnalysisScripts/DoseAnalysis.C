@@ -65,9 +65,16 @@ std::string voxelDataPath = "/home/dphan/Documents/GitHub/CarlsbadRadShield/cmak
 int main() {
     auto data = ReadVoxels(voxelDataPath);
 
-    for (const auto& voxel : data) {
-        std::cout << "X: " << std::get<0>(voxel) << " Y: " << std::get<1>(voxel) << " Z: " << std::get<2>(voxel) << " Dose: " << std::get<3>(voxel) << " DoseSSq: " << std::get<4>(voxel) << " NofEntries: " << std::get<5>(voxel) << std::endl;
+    double maxDose = 0;
+    int maxDoseIdx = 0;
+    for (int i = 0; i < data.size(); i++) {
+        if (std::get<3>(data[i]) > maxDose) {
+            maxDose = std::get<3>(data[i]);
+            maxDoseIdx = i;
+        }
     }
+    std::cout << "Max dose: " << maxDose << " Gy." << std::endl;
+    std::cout << "Max dose voxel: (" << std::get<0>(data[maxDoseIdx]) << ", " << std::get<1>(data[maxDoseIdx]) << ", " << std::get<2>(data[maxDoseIdx]) << ")." << std::endl;
 
     return 0;
 }
