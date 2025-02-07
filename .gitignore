@@ -41,3 +41,4 @@ AnalysisScripts/EDep_000_440000_Beam_TestConfig.root
 *.FCStd1
 
 *biasing*
+build/
