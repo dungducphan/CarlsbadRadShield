@@ -10,12 +10,12 @@ include(${ROOT_USE_FILE})
 
 file(GLOB sources src/*.cc)
 file(GLOB headers inc/*.hh)
+file(GLOB GDMLFiles GDML/*.gdml)
 
 file(GLOB MACROS "*.mac")
 
 file(COPY ${MACROS} DESTINATION ${PROJECT_BINARY_DIR}/G4Sim)
-file(COPY ${EXT_DATA} DESTINATION ${PROJECT_BINARY_DIR}/G4Sim)
-file(COPY ${stlFiles} DESTINATION ${PROJECT_BINARY_DIR}/G4Sim)
+file(COPY ${GDMLFiles} DESTINATION ${PROJECT_BINARY_DIR}/G4Sim)
 
 include_directories(${PROJECT_SOURCE_DIR}/G4Sim/inc)
 add_executable(CarlsbadRadShield sim.cc ${sources} ${headers})
