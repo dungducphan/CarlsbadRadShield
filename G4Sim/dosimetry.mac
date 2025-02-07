@@ -1,7 +1,8 @@
 ########################################
+
 # Define scoring mesh
 /score/create/boxMesh dosimeterMesh
-/score/mesh/boxSize 20. 20. 20. cm
+/score/mesh/boxSize 2000. 2000. 4000. mm
 /score/mesh/nBin 20 20 40
 
 # Filters
@@ -10,12 +11,18 @@
 /score/list
 
 ########################################
+
 # Run control
 /vis/disable
 /control/verbose 2
 /run/verbose 2
-/run/beamOn 20000
+/run/beamOn 5000
 /vis/enable
+
+########################################
+
+# Drawing projections
+/score/drawProjection dosimeterMesh doseDep
 
 ########################################
 # Dump scorers to a file

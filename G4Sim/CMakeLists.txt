@@ -11,7 +11,6 @@ include(${ROOT_USE_FILE})
 file(GLOB sources src/*.cc)
 file(GLOB headers inc/*.hh)
 file(GLOB GDMLFiles GDML/*.gdml)
-
 file(GLOB MACROS "*.mac")
 
 file(COPY ${MACROS} DESTINATION ${PROJECT_BINARY_DIR}/G4Sim)

@@ -1220,6 +1220,22 @@
     <position name="Window_197" unit="mm" x="98.81462097167969" y="-762.4832153320312" z="1612.5"/>
     <position name="Window_198" unit="mm" x="99.4034652709961" y="-756.25390625" z="1600.0"/>
     <position name="Window_199" unit="mm" x="99.4034652709961" y="-756.25390625" z="1612.5"/>
+    <position name="Phantom_0" unit="mm" x="2000.0" y="2000.0" z="4000.0"/>
+    <position name="Phantom_1" unit="mm" x="2000.0" y="2000.0" z="-4000.0"/>
+    <position name="Phantom_2" unit="mm" x="-2000.0" y="2000.0" z="-4000.0"/>
+    <position name="Phantom_3" unit="mm" x="-2000.0" y="2000.0" z="4000.0"/>
+    <position name="Phantom_4" unit="mm" x="2000.0" y="-2000.0" z="-4000.0"/>
+    <position name="Phantom_5" unit="mm" x="2000.0" y="-2000.0" z="4000.0"/>
+    <position name="Phantom_6" unit="mm" x="-2000.0" y="-2000.0" z="-4000.0"/>
+    <position name="Phantom_7" unit="mm" x="-2000.0" y="-2000.0" z="4000.0"/>
+    <position name="Phantom_8" unit="mm" x="1800.0" y="1800.0" z="-3800.0"/>
+    <position name="Phantom_9" unit="mm" x="1800.0" y="1800.0" z="3800.0"/>
+    <position name="Phantom_10" unit="mm" x="-1800.0" y="1800.0" z="-3800.0"/>
+    <position name="Phantom_11" unit="mm" x="-1800.0" y="1800.0" z="3800.0"/>
+    <position name="Phantom_12" unit="mm" x="1800.0" y="-1800.0" z="3800.0"/>
+    <position name="Phantom_13" unit="mm" x="1800.0" y="-1800.0" z="-3800.0"/>
+    <position name="Phantom_14" unit="mm" x="-1800.0" y="-1800.0" z="-3800.0"/>
+    <position name="Phantom_15" unit="mm" x="-1800.0" y="-1800.0" z="3800.0"/>
   </define>
   <materials/>
   <solids>
@@ -3640,6 +3656,32 @@
       <triangular vertex1="Window_84" vertex2="Window_80" vertex3="Window_74" type="ABSOLUTE"/>
       <triangular vertex1="Window_84" vertex2="Window_92" vertex3="Window_86" type="ABSOLUTE"/>
     </tessellated>
+    <tessellated name="Phantom">
+      <triangular vertex1="Phantom_0" vertex2="Phantom_1" vertex3="Phantom_2" type="ABSOLUTE"/>
+      <triangular vertex1="Phantom_0" vertex2="Phantom_2" vertex3="Phantom_3" type="ABSOLUTE"/>
+      <triangular vertex1="Phantom_4" vertex2="Phantom_5" vertex3="Phantom_6" type="ABSOLUTE"/>
+      <triangular vertex1="Phantom_6" vertex2="Phantom_5" vertex3="Phantom_7" type="ABSOLUTE"/>
+      <triangular vertex1="Phantom_6" vertex2="Phantom_7" vertex3="Phantom_2" type="ABSOLUTE"/>
+      <triangular vertex1="Phantom_2" vertex2="Phantom_7" vertex3="Phantom_3" type="ABSOLUTE"/>
+      <triangular vertex1="Phantom_0" vertex2="Phantom_3" vertex3="Phantom_7" type="ABSOLUTE"/>
+      <triangular vertex1="Phantom_0" vertex2="Phantom_7" vertex3="Phantom_5" type="ABSOLUTE"/>
+      <triangular vertex1="Phantom_2" vertex2="Phantom_1" vertex3="Phantom_6" type="ABSOLUTE"/>
+      <triangular vertex1="Phantom_6" vertex2="Phantom_1" vertex3="Phantom_4" type="ABSOLUTE"/>
+      <triangular vertex1="Phantom_5" vertex2="Phantom_4" vertex3="Phantom_1" type="ABSOLUTE"/>
+      <triangular vertex1="Phantom_5" vertex2="Phantom_1" vertex3="Phantom_0" type="ABSOLUTE"/>
+      <triangular vertex1="Phantom_8" vertex2="Phantom_9" vertex3="Phantom_10" type="ABSOLUTE"/>
+      <triangular vertex1="Phantom_10" vertex2="Phantom_9" vertex3="Phantom_11" type="ABSOLUTE"/>
+      <triangular vertex1="Phantom_12" vertex2="Phantom_13" vertex3="Phantom_14" type="ABSOLUTE"/>
+      <triangular vertex1="Phantom_12" vertex2="Phantom_14" vertex3="Phantom_15" type="ABSOLUTE"/>
+      <triangular vertex1="Phantom_15" vertex2="Phantom_14" vertex3="Phantom_10" type="ABSOLUTE"/>
+      <triangular vertex1="Phantom_15" vertex2="Phantom_10" vertex3="Phantom_11" type="ABSOLUTE"/>
+      <triangular vertex1="Phantom_11" vertex2="Phantom_9" vertex3="Phantom_15" type="ABSOLUTE"/>
+      <triangular vertex1="Phantom_15" vertex2="Phantom_9" vertex3="Phantom_12" type="ABSOLUTE"/>
+      <triangular vertex1="Phantom_8" vertex2="Phantom_10" vertex3="Phantom_14" type="ABSOLUTE"/>
+      <triangular vertex1="Phantom_8" vertex2="Phantom_14" vertex3="Phantom_13" type="ABSOLUTE"/>
+      <triangular vertex1="Phantom_13" vertex2="Phantom_12" vertex3="Phantom_8" type="ABSOLUTE"/>
+      <triangular vertex1="Phantom_8" vertex2="Phantom_12" vertex3="Phantom_9" type="ABSOLUTE"/>
+    </tessellated>
   </solids>
   <structure>
     <volume name="LV_VacuumChamber">
@@ -3709,6 +3751,11 @@
       <solidref ref="Window"/>
       <auxiliary auxtype="Color" auxvalue="#ffa40000"/>
     </volume>
+    <volume name="LV_Phantom">
+      <materialref ref="G4_A-150_TISSUE"/>
+      <solidref ref="Phantom"/>
+      <auxiliary auxtype="Color" auxvalue="#80808000"/>
+    </volume>
     <volume name="worldVOL">
       <materialref ref="G4_AIR"/>
       <solidref ref="WorldBox"/>
@@ -3730,6 +3777,11 @@
       <physvol name="PV_LV_Window">
         <volumeref ref="LV_Window"/>
         <position name="P-LV_Window4" unit="mm" y="350.0" z="50.0"/>
+        <rotationref ref="identity"/>
+      </physvol>
+      <physvol name="PV_LV_Phantom">
+        <volumeref ref="LV_Phantom"/>
+        <positionref ref="center"/>
         <rotationref ref="identity"/>
       </physvol>
     </volume>
