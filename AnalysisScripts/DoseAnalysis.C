@@ -60,7 +60,7 @@ std::vector<voxelData> ReadVoxels(const std::string& filename) {
 
 #if !defined(__CINT__) && !defined(__CLING__) && !defined(__ACLIC__)
 
-std::string voxelDataPath = "/home/dphan/Documents/GitHub/CarlsbadRadShield/cmake-build-debug/G4Sim/doseDep.txt";
+std::string voxelDataPath = "/home/dphan/Documents/GitHub/CarlsbadRadShield/AnalysisScripts/doseDep.txt";
 
 int main() {
     auto data = ReadVoxels(voxelDataPath);
