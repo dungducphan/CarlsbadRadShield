@@ -15,9 +15,10 @@ vacuumChamberVisAtt(nullptr),
 glassWindowVisAtt(nullptr),
 HDPEOuterVisAtt(nullptr),
 LeadVisAtt(nullptr),
-TungstenVisAtt(nullptr) {
+TungstenVisAtt(nullptr),
+PhantomVisAtt(nullptr) {
     fWorldVolume = parser.GetWorldVolume();
-//    logicalDetector    = parser.GetVolume("LV_Detector");
+    logicalDetector    = parser.GetVolume("LV_Phantom");
     logicalArc         = parser.GetVolume("LV_Arc");
     logicalChamber     = parser.GetVolume("LV_VacuumChamber");
     logicalFusedSilica = parser.GetVolume("LV_Window");
@@ -64,6 +65,12 @@ TungstenVisAtt(nullptr) {
     TungstenVisAtt->SetForceSolid(true);
     TungstenVisAtt->SetColour(0.1, 0.1, 0.1, 1);
     logicalWBlock->SetVisAttributes(TungstenVisAtt);
+
+    PhantomVisAtt = new G4VisAttributes();
+    PhantomVisAtt->SetVisibility(true);
+    PhantomVisAtt->SetForceSolid(true);
+    PhantomVisAtt->SetColour(0.1, 0.0, 0.1, 0.2);
+    logicalDetector->SetVisAttributes(PhantomVisAtt);
 }
 
 detcon::~detcon() {
@@ -83,6 +90,7 @@ detcon::~detcon() {
     delete HDPEOuterVisAtt;
     delete LeadVisAtt;
     delete TungstenVisAtt;
+    delete PhantomVisAtt;
 }
 
 G4VPhysicalVolume *detcon::Construct() {

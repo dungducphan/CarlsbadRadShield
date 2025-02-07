@@ -65,4 +65,5 @@ private:
     G4VisAttributes* HDPEOuterVisAtt;
     G4VisAttributes* LeadVisAtt;
     G4VisAttributes* TungstenVisAtt;
+    G4VisAttributes* PhantomVisAtt;
 };

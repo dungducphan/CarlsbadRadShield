@@ -13,16 +13,16 @@
 ########################################
 
 # Run control
-# /vis/disable
-# /control/verbose 2
-# /run/verbose 2
-# /run/beamOn 5000
-# /vis/enable
+/vis/disable
+/control/verbose 2
+/run/verbose 2
+/run/beamOn 5000
+/vis/enable
 
 ########################################
 
 # Drawing projections
-/score/drawProjection dosimeterMesh doseDep
+# /score/drawProjection dosimeterMesh doseDep
 
 ########################################
 # Dump scorers to a file
