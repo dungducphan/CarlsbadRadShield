@@ -6,9 +6,15 @@
 /score/mesh/nBin 20 20 40
 
 # Filters
-/score/quantity/doseDeposit doseDepGamma
+/score/quantity/doseDeposit doseDepAll
+/score/quantity/nOfTrack nOfTrackAll
+/score/quantity/nOfTrack nOfTrackNeutrino
+/score/filter/particle nueFilter nu_e
+/score/quantity/nOfTrack nOfTrackAntiNeutrino
+/score/filter/particle antinueFilter anti_nu_e
+/score/quantity/nOfTrack nOfTrackGamma
 /score/filter/particle gammaFilter gamma
-/score/quantity/doseDeposit doseDepNeutron
+/score/quantity/nOfTrack nOfTrackNeutron
 /score/filter/particle neutronFilter neutron
 /score/close
 /score/list
@@ -19,15 +25,19 @@
 # /vis/disable
 # /control/verbose 2
 # /run/verbose 2
-/run/beamOn 10000000
+/run/beamOn 10000
 # /vis/enable
 
 ########################################
 
 # Drawing projections
-# /score/drawProjection dosimeterMesh doseDep
+# /score/drawProjection dosimeterMesh doseDepAll
 
 ########################################
 # Dump scorers to a file
-/score/dumpQuantityToFile dosimeterMesh doseDepGamma doseDepGamma.csv
-/score/dumpQuantityToFile dosimeterMesh doseDepNeutron doseDepNeutron.csv
+/score/dumpQuantityToFile dosimeterMesh doseDepAll  doseDepAll.csv
+/score/dumpQuantityToFile dosimeterMesh nOfTrackAll  nOfTrackAll.csv
+/score/dumpQuantityToFile dosimeterMesh nOfTrackGamma  nOfTrackGamma.csv
+/score/dumpQuantityToFile dosimeterMesh nOfTrackNeutron  nOfTrackNeutron.csv
+/score/dumpQuantityToFile dosimeterMesh nOfTrackNeutrino  nOfTrackNeutrino.csv
+/score/dumpQuantityToFile dosimeterMesh nOfTrackAntiNeutrino  nOfTrackAntiNeutrino.csv

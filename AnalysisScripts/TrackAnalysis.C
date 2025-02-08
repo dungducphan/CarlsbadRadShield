@@ -16,18 +16,17 @@
 #include <vector>
 #include <tuple>
 
-std::string voxelDataPath_All = "/home/dphan/Documents/GitHub/CarlsbadRadShield/AnalysisScripts/doseDepAll.csv";
-std::string voxelDataPath_Gamma  = "/home/dphan/Documents/GitHub/CarlsbadRadShield/AnalysisScripts/doseDepCharged.csv";
-std::string voxelDataPath_Neutron  = "/home/dphan/Documents/GitHub/CarlsbadRadShield/AnalysisScripts/doseDepNeutral.csv";
-double numberOfElectrons = 10000000;
-double rescaleFactorTo100pC = (100E-12 / 1.6E-19) / numberOfElectrons;
-double rep_rate = 100;
-double seconds_in_a_business_year = 3600 * 8 * 250;
-double gy_to_rem = 100;
-double totalFactor = rescaleFactorTo100pC * rep_rate * seconds_in_a_business_year * gy_to_rem;
+std::string voxelDataPath_All = "/home/dphan/Documents/GitHub/CarlsbadRadShield/AnalysisScripts/nOfTrackAll.csv";
+std::string voxelDataPath_Neutrino = "/home/dphan/Documents/GitHub/CarlsbadRadShield/AnalysisScripts/nOfTrackNeutrino.csv";
+std::string voxelDataPath_AntiNeutrino = "/home/dphan/Documents/GitHub/CarlsbadRadShield/AnalysisScripts/nOfTrackAntiNeutrino.csv";
+std::string voxelDataPath_Gamma  = "/home/dphan/Documents/GitHub/CarlsbadRadShield/AnalysisScripts/nOfTrackGamma.csv";
+std::string voxelDataPath_Neutron  = "/home/dphan/Documents/GitHub/CarlsbadRadShield/AnalysisScripts/nOfTrackNeutron.csv";
 
+const int nBinX = 20;
+const int nBinY = 20;
+const int nBinZ = 40;
 
-using voxelData = std::tuple<int, int, int, double, double, int>;
+using voxelData = std::tuple<int, int, int, int, int, int>;
 
 std::vector<voxelData> ReadVoxels(const std::string& filename) {
     std::vector<voxelData> voxels;
@@ -47,19 +46,19 @@ std::vector<voxelData> ReadVoxels(const std::string& filename) {
     // Read data
     while (file >> line) {
         std::istringstream ss(line);
-        std::string str_x, str_y, str_z, str_dose, str_doseSSq, str_nofEntries;
+        std::string str_x, str_y, str_z, str_nTrack, str_nTrackSSq, str_nofEntries;
         if (std::getline(ss, str_x, ',') &&
             std::getline(ss, str_y, ',') &&
             std::getline(ss, str_z, ',') &&
-            std::getline(ss, str_dose, ',') &&
-            std::getline(ss, str_doseSSq, ',')&&
+            std::getline(ss, str_nTrack, ',') &&
+            std::getline(ss, str_nTrackSSq, ',')&&
             std::getline(ss, str_nofEntries, ',')) {
             voxels.push_back(
                 std::make_tuple(std::stoi(str_x),
                                 std::stoi(str_y),
                                 std::stoi(str_z),
-                                std::stod(str_dose),
-                                std::stod(str_doseSSq),
+                                std::stoi(str_nTrack),
+                                std::stoi(str_nTrackSSq),
                                 std::stoi(str_nofEntries))
             );
         }
@@ -69,102 +68,88 @@ std::vector<voxelData> ReadVoxels(const std::string& filename) {
     return voxels;
 }
 
-double MaxDose(const std::vector<voxelData>& data) {
-    double maxDose = 0;
-    int maxDoseIdx = 0;
-    for (int i = 0; i < data.size(); i++) {
-        if (std::get<3>(data[i]) > maxDose) {
-            maxDose = std::get<3>(data[i]);
-            maxDoseIdx = i;
-        }
-    }
-    std::cout << "Max dose: " << maxDose << " Gy." << std::endl;
-    std::cout << "Max dose voxel: (" << std::get<0>(data[maxDoseIdx]) << ", " << std::get<1>(data[maxDoseIdx]) << ", " << std::get<2>(data[maxDoseIdx]) << ")." << std::endl;
-    return maxDose;
-}
-
-void DoseSliceXZ(const std::vector<voxelData>& data, int y_Idx = 19) {
-    auto h = new TH2D("h", Form("Dose Slice (Y = %02i)", y_Idx), 40, 0, 40, 20, 0, 20);
+void TrackSliceXZ(const std::vector<voxelData>& data, int y_Idx = nBinY - 1) {
+    auto h = new TH2D("h", Form("Track Slice (Y = %02i)", y_Idx), nBinZ, 0, nBinZ, nBinX, 0, nBinX);
     h->GetXaxis()->SetTitle("Z");
     h->GetYaxis()->SetTitle("X");
     for (int i = 0; i < data.size(); i++) {
         if (std::get<1>(data[i]) == y_Idx) {
             int Z = std::get<2>(data[i]);
             int X = std::get<0>(data[i]);
-            double dose = std::get<3>(data[i]);
-            h->Fill(0.5 + (double) Z, 0.5 + (double) X, dose * totalFactor);
+            int nTrack = std::get<3>(data[i]);
+            h->Fill(0.5 + (double) Z, 0.5 + (double) X, nTrack);
         }
     }
 
     auto c = new TCanvas("c", "c", 1600, 800);
     c->SetMargin(0.1, 0.15, 0.15, 0.15);
     h->Draw("colz");
-    h->GetZaxis()->SetTitle("Dose (rem)");
+    h->GetZaxis()->SetTitle("No. of Tracks");
     h->GetXaxis()->CenterTitle();
     h->GetYaxis()->CenterTitle();
     h->GetZaxis()->CenterTitle();
-    c->SaveAs(Form("DoseSliceXZ_Y_%02i.png", y_Idx));
+    c->SaveAs(Form("TrackSliceXZ_Y_%02i.png", y_Idx));
 
     delete h;
     delete c;
 }
 
-void DoseSliceYZ(const std::vector<voxelData>& data, int x_Idx = 0) {
-    auto h = new TH2D("h", Form("Dose Slice (X = %02i)", x_Idx), 40, 0, 40, 20, 0, 20);
+void TrackSliceYZ(const std::vector<voxelData>& data, int x_Idx = 0) {
+    auto h = new TH2D("h", Form("Track Slice (X = %02i)", x_Idx), nBinZ, 0, nBinZ, nBinY, 0, nBinY);
     h->GetXaxis()->SetTitle("Z");
     h->GetYaxis()->SetTitle("Y");
     for (int i = 0; i < data.size(); i++) {
         if (std::get<0>(data[i]) == x_Idx) {
             int Z = std::get<2>(data[i]);
             int Y = std::get<1>(data[i]);
-            double dose = std::get<3>(data[i]);
-            h->Fill(0.5 + (double) Z, 0.5 + (double) Y, dose * totalFactor);
+            int nTrack = std::get<3>(data[i]);
+            h->Fill(0.5 + (double) Z, 0.5 + (double) Y, nTrack);
         }
     }
 
     auto c = new TCanvas("c", "c", 1600, 800);
     c->SetMargin(0.1, 0.15, 0.15, 0.15);
     h->Draw("colz");
-    h->GetZaxis()->SetTitle("Dose (rem)");
+    h->GetZaxis()->SetTitle("No. of Tracks");
     h->GetXaxis()->CenterTitle();
     h->GetYaxis()->CenterTitle();
     h->GetZaxis()->CenterTitle();
-    c->SaveAs(Form("DoseSliceYZ_X_%02i.png", x_Idx));
+    c->SaveAs(Form("TrackSliceYZ_X_%02i.png", x_Idx));
 
     delete h;
     delete c;
 }
 
-void DoseSliceXY(const std::vector<voxelData>& data, int z_Idx = 0) {
-    auto h = new TH2D("h", Form("Dose Slice (Z = %02i)", z_Idx), 20, 0, 20, 20, 0, 20);
+void TrackSliceXY(const std::vector<voxelData>& data, int z_Idx = 0) {
+    auto h = new TH2D("h", Form("Track Slice (Z = %02i)", z_Idx), nBinX, 0, nBinX, nBinY, 0, nBinY);
     h->GetXaxis()->SetTitle("X");
     h->GetYaxis()->SetTitle("Y");
     for (int i = 0; i < data.size(); i++) {
         if (std::get<2>(data[i]) == z_Idx) {
             int Y = std::get<1>(data[i]);
             int X = std::get<0>(data[i]);
-            double dose = std::get<3>(data[i]);
-            h->Fill(0.5 + (double) X, 0.5 + (double) Y, dose * totalFactor);
+            int nTrack = std::get<3>(data[i]);
+            h->Fill(0.5 + (double) X, 0.5 + (double) Y, nTrack);
         }
     }
 
     auto c = new TCanvas("c", "c", 800, 800);
     c->SetMargin(0.2, 0.2, 0.2, 0.2);
     h->Draw("colz");
-    h->GetZaxis()->SetTitle("Dose (rem)");
+    h->GetZaxis()->SetTitle("No. of Tracks");
     h->GetXaxis()->SetTitleOffset(1.5);
     h->GetYaxis()->SetTitleOffset(1.5);
     h->GetZaxis()->SetTitleOffset(2);
     h->GetXaxis()->CenterTitle();
     h->GetYaxis()->CenterTitle();
     h->GetZaxis()->CenterTitle();
-    c->SaveAs(Form("DoseSliceXY_Z_%02i.png", z_Idx));
+    c->SaveAs(Form("TrackSliceXY_Z_%02i.png", z_Idx));
 
     delete h;
     delete c;
 }
 
-std::vector<voxelData> AggregateDose(const std::vector<voxelData>& sample_a, const std::vector<voxelData>& sample_b) {
+std::vector<voxelData> AggregateTrack(const std::vector<voxelData>& sample_a, const std::vector<voxelData>& sample_b) {
     std::vector<voxelData> aggregated;
     for (int i = 0; i < sample_a.size(); i++) {
         aggregated.push_back(
@@ -181,22 +166,23 @@ std::vector<voxelData> AggregateDose(const std::vector<voxelData>& sample_a, con
     return aggregated;
 }
 
-void DoseComparison(const std::vector<voxelData>& sample_a, const std::vector<voxelData>& sample_b) {
-    auto h = new TH1D("h", "Dose Ratio", 300, 0, 15);
+void TrackComparison(const std::vector<voxelData>& sample_a, const std::vector<voxelData>& sample_b) {
+    auto h = new TH1D("h", "Track Ratio", 300, -15, 15);
 
     for (int i = 0; i < sample_a.size(); i++) {
-        double dose_a = std::get<3>(sample_a[i]);
-        double dose_b = std::get<3>(sample_b[i]);
-        double normedDiff = 2 * (dose_a - dose_b) / (dose_a + dose_b);
+        if (std::get<0>(sample_a[i]) != 0) {
+            continue;
+        }
+        double nTrack_a = std::get<3>(sample_a[i]);
+        double nTrack_b = std::get<3>(sample_b[i]);
+        double normedDiff = 2 * (nTrack_a - nTrack_b) / (nTrack_a + nTrack_b);
         h->Fill(normedDiff);
-        std::cout << "Dose A: " << dose_a << " Gy." << std::endl;
-        std::cout << "Dose B: " << dose_b << " Gy." << std::endl;
     }
 
     auto c = new TCanvas("c", "c", 800, 800);
     c->SetLogy();
     h->Draw();
-    c->SaveAs("DoseComparison.png");
+    c->SaveAs("TrackComparison.png");
 
     delete h;
     delete c;
@@ -208,10 +194,14 @@ int main() {
     gStyle->SetOptStat(0);
 
     auto data_All = ReadVoxels(voxelDataPath_All);
-    auto data_Charged = ReadVoxels(voxelDataPath_Gamma);
-    auto data_Neutral = ReadVoxels(voxelDataPath_Neutron);
-    auto data_All_Recon = AggregateDose(data_Charged, data_Neutral);
-    DoseComparison(data_All, data_Neutral);
+    auto data_Neutrino = ReadVoxels(voxelDataPath_Neutrino);
+    auto data_AntiNeutrino = ReadVoxels(voxelDataPath_AntiNeutrino);
+    auto data_Gamma = ReadVoxels(voxelDataPath_Gamma);
+    auto data_Neutron = ReadVoxels(voxelDataPath_Neutron);
+    auto data_GammaNeutron = AggregateTrack(data_Gamma, data_Neutron);
+    auto data_Nue = AggregateTrack(data_Neutrino, data_AntiNeutrino);
+    auto data_All_Recon = AggregateTrack(data_GammaNeutron, data_Nue);
+    TrackComparison(data_All, data_GammaNeutron);
 
     return 0;
 }
