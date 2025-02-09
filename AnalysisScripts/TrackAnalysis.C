@@ -16,11 +16,11 @@
 #include <vector>
 #include <tuple>
 
-std::string voxelDataPath_All = "/home/dphan/Documents/GitHub/CarlsbadRadShield/AnalysisScripts/nOfTrackAll.csv";
-std::string voxelDataPath_Neutrino = "/home/dphan/Documents/GitHub/CarlsbadRadShield/AnalysisScripts/nOfTrackNeutrino.csv";
+std::string voxelDataPath_All          = "/home/dphan/Documents/GitHub/CarlsbadRadShield/AnalysisScripts/nOfTrackAll.csv";
+std::string voxelDataPath_Neutrino     = "/home/dphan/Documents/GitHub/CarlsbadRadShield/AnalysisScripts/nOfTrackNeutrino.csv";
 std::string voxelDataPath_AntiNeutrino = "/home/dphan/Documents/GitHub/CarlsbadRadShield/AnalysisScripts/nOfTrackAntiNeutrino.csv";
-std::string voxelDataPath_Gamma  = "/home/dphan/Documents/GitHub/CarlsbadRadShield/AnalysisScripts/nOfTrackGamma.csv";
-std::string voxelDataPath_Neutron  = "/home/dphan/Documents/GitHub/CarlsbadRadShield/AnalysisScripts/nOfTrackNeutron.csv";
+std::string voxelDataPath_Gamma        = "/home/dphan/Documents/GitHub/CarlsbadRadShield/AnalysisScripts/nOfTrackGamma.csv";
+std::string voxelDataPath_Neutron      = "/home/dphan/Documents/GitHub/CarlsbadRadShield/AnalysisScripts/nOfTrackNeutron.csv";
 
 const int nBinX = 20;
 const int nBinY = 20;
@@ -51,20 +51,19 @@ std::vector<voxelData> ReadVoxels(const std::string& filename) {
             std::getline(ss, str_y, ',') &&
             std::getline(ss, str_z, ',') &&
             std::getline(ss, str_nTrack, ',') &&
-            std::getline(ss, str_nTrackSSq, ',')&&
+            std::getline(ss, str_nTrackSSq, ',') &&
             std::getline(ss, str_nofEntries, ',')) {
             voxels.push_back(
                 std::make_tuple(std::stoi(str_x),
-                                std::stoi(str_y),
-                                std::stoi(str_z),
-                                std::stoi(str_nTrack),
-                                std::stoi(str_nTrackSSq),
-                                std::stoi(str_nofEntries))
+                                  std::stoi(str_y),
+                                  std::stoi(str_z),
+                                  (int) std::stod(str_nTrack),
+                                  (int) std::stod(str_nTrackSSq),
+                                  std::stoi(str_nofEntries))
             );
         }
     }
     file.close();
-
     return voxels;
 }
 
@@ -167,7 +166,7 @@ std::vector<voxelData> AggregateTrack(const std::vector<voxelData>& sample_a, co
 }
 
 void TrackComparison(const std::vector<voxelData>& sample_a, const std::vector<voxelData>& sample_b) {
-    auto h = new TH1D("h", "Track Ratio", 300, -15, 15);
+    auto h = new TH1D("h", "Track Ratio", 300, 0, 1);
 
     for (int i = 0; i < sample_a.size(); i++) {
         if (std::get<0>(sample_a[i]) != 0) {
@@ -175,7 +174,8 @@ void TrackComparison(const std::vector<voxelData>& sample_a, const std::vector<v
         }
         double nTrack_a = std::get<3>(sample_a[i]);
         double nTrack_b = std::get<3>(sample_b[i]);
-        double normedDiff = 2 * (nTrack_a - nTrack_b) / (nTrack_a + nTrack_b);
+        // double normedDiff = 2 * (nTrack_a - nTrack_b) / (nTrack_a + nTrack_b);
+        double normedDiff = nTrack_a / nTrack_b;
         h->Fill(normedDiff);
     }
 
@@ -201,7 +201,7 @@ int main() {
     auto data_GammaNeutron = AggregateTrack(data_Gamma, data_Neutron);
     auto data_Nue = AggregateTrack(data_Neutrino, data_AntiNeutrino);
     auto data_All_Recon = AggregateTrack(data_GammaNeutron, data_Nue);
-    TrackComparison(data_All, data_GammaNeutron);
+    TrackComparison(data_Nue, data_All);
 
     return 0;
 }
