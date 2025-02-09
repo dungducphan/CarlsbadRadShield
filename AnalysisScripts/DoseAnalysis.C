@@ -16,10 +16,9 @@
 #include <vector>
 #include <tuple>
 
-std::string voxelDataPath_All = "/home/dphan/Documents/GitHub/CarlsbadRadShield/AnalysisScripts/doseDepAll.csv";
-std::string voxelDataPath_Gamma  = "/home/dphan/Documents/GitHub/CarlsbadRadShield/AnalysisScripts/doseDepCharged.csv";
-std::string voxelDataPath_Neutron  = "/home/dphan/Documents/GitHub/CarlsbadRadShield/AnalysisScripts/doseDepNeutral.csv";
-double numberOfElectrons = 10000000;
+std::string voxelDataPath_All_1E7 = "/home/dphan/Documents/GitHub/CarlsbadRadShield/AnalysisScripts/doseDepAll_1E7.csv";
+std::string voxelDataPath_All_2E7 = "/home/dphan/Documents/GitHub/CarlsbadRadShield/AnalysisScripts/doseDepAll_2E7.csv";
+double numberOfElectrons = 3E7;
 double rescaleFactorTo100pC = (100E-12 / 1.6E-19) / numberOfElectrons;
 double rep_rate = 100;
 double seconds_in_a_business_year = 3600 * 8 * 250;
@@ -207,11 +206,16 @@ void DoseComparison(const std::vector<voxelData>& sample_a, const std::vector<vo
 int main() {
     gStyle->SetOptStat(0);
 
-    auto data_All = ReadVoxels(voxelDataPath_All);
-    auto data_Charged = ReadVoxels(voxelDataPath_Gamma);
-    auto data_Neutral = ReadVoxels(voxelDataPath_Neutron);
-    auto data_All_Recon = AggregateDose(data_Charged, data_Neutral);
-    DoseComparison(data_All, data_Neutral);
+    auto data_All_1E7 = ReadVoxels(voxelDataPath_All_1E7);
+    auto data_All_2E7 = ReadVoxels(voxelDataPath_All_2E7);
+    auto data_All_Total = AggregateDose(data_All_1E7, data_All_2E7);
+
+    DoseSliceYZ(data_All_Total, 0);
+    DoseSliceYZ(data_All_Total, 19);
+    DoseSliceXZ(data_All_Total, 0);
+    DoseSliceXZ(data_All_Total, 19);
+    DoseSliceXY(data_All_Total, 0);
+    DoseSliceXY(data_All_Total, 39);
 
     return 0;
 }
