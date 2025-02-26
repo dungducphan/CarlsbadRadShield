@@ -49,21 +49,21 @@ public:
 
 private:
     G4VPhysicalVolume* fWorldVolume;
-    G4LogicalVolume* logicalDetector;
-    G4LogicalVolume* logicalArc;
-    G4LogicalVolume* logicalChamber;
-    G4LogicalVolume* logicalFusedSilica;
-    G4LogicalVolume* logicalPbBlock1;
-    G4LogicalVolume* logicalPbBlock2;
-    G4LogicalVolume* logicalHDPEBlock1;
-    G4LogicalVolume* logicalHDPEBlock2;
-    G4LogicalVolume* logicalWBlock;
-
-    G4VisAttributes* arcVisAtt;
-    G4VisAttributes* vacuumChamberVisAtt;
-    G4VisAttributes* glassWindowVisAtt;
-    G4VisAttributes* HDPEOuterVisAtt;
-    G4VisAttributes* LeadVisAtt;
-    G4VisAttributes* TungstenVisAtt;
-    G4VisAttributes* PhantomVisAtt;
+    // G4LogicalVolume* logicalDetector;
+    // G4LogicalVolume* logicalArc;
+    // G4LogicalVolume* logicalChamber;
+    // G4LogicalVolume* logicalFusedSilica;
+    // G4LogicalVolume* logicalPbBlock1;
+    // G4LogicalVolume* logicalPbBlock2;
+    // G4LogicalVolume* logicalHDPEBlock1;
+    // G4LogicalVolume* logicalHDPEBlock2;
+    // G4LogicalVolume* logicalWBlock;
+    //
+    // G4VisAttributes* arcVisAtt;
+    // G4VisAttributes* vacuumChamberVisAtt;
+    // G4VisAttributes* glassWindowVisAtt;
+    // G4VisAttributes* HDPEOuterVisAtt;
+    // G4VisAttributes* LeadVisAtt;
+    // G4VisAttributes* TungstenVisAtt;
+    // G4VisAttributes* PhantomVisAtt;
 };
