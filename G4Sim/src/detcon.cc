@@ -15,7 +15,7 @@ void detcon::BuildPhantomRegion(const G4double Lx,      const G4double Ly,      
             const double y = ScoringBoxSize * i_y + y_start + ScoringBoxSize / 2. + GDML_Y_OFFSET;
             for (int i_z = 0; i_z < Lz / ScoringBoxSize; i_z++) {
                 const double z = ScoringBoxSize * i_z + z_start + ScoringBoxSize / 2. + GDML_Z_OFFSET;
-                const G4String name = Form("pv_%s_%02i_%02i_%02i", areaName, i_x, i_y, i_z);
+                const G4String name = Form("pv_%03i_%03i_%03i_%s", i_x, i_y, i_z, areaName.c_str());
                 new G4PVPlacement(nullptr, G4ThreeVector(x, y, z), logical_PhantomBox, name, fWorldVolume->GetLogicalVolume(), false, 0);
             }
         }
@@ -116,10 +116,10 @@ detcon::detcon(const G4GDMLParser &parser) : G4VUserDetectorConstruction() {
     logical_ArcVault                 ->SetMaterial(mat_Concrete);
     logical_VacuumChamber            ->SetMaterial(mat_StainlessSteel);
     logical_VacuumWindow             ->SetMaterial(mat_Glass);
-    logical_BeamDump_LeadBlock       ->SetMaterial(mat_Lead);
-    logical_BeamDump_HDPEBlock_Inner ->SetMaterial(mat_HDPE);
-    logical_BeamDump_HDPEBlock_Outer ->SetMaterial(mat_HDPE);
-    logical_BeamDump_TungstenBlock   ->SetMaterial(mat_Tungsten);
+    logical_BeamDump_LeadBlock       ->SetMaterial(mat_Air); // FIXME: fix here before running
+    logical_BeamDump_HDPEBlock_Inner ->SetMaterial(mat_Air);
+    logical_BeamDump_HDPEBlock_Outer ->SetMaterial(mat_Air);
+    logical_BeamDump_TungstenBlock   ->SetMaterial(mat_Air);
 }
 
 detcon::~detcon() {
@@ -238,4 +238,10 @@ G4VPhysicalVolume *detcon::Construct() {
 }
 
 void detcon::ConstructSDandField() {
+    // Create a sensitive detector manager
+    G4SDManager* SDman = G4SDManager::GetSDMpointer();
+    SDman->AddNewDetector(new ParticleSD("DosiBox"));
+
+    // Attach the detector to the logical volume
+    SetSensitiveDetector(logical_PhantomBox, SDman->FindSensitiveDetector("DosiBox"));
 }

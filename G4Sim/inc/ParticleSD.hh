@@ -5,13 +5,6 @@
 #pragma once
 
 #include "G4VSensitiveDetector.hh"
-#include "G4Step.hh"
-#include "G4SDManager.hh"
-#include "G4ios.hh"
-#include "G4ParticleDefinition.hh"
-#include "G4ParticleTypes.hh"
-#include "G4ParticleTable.hh"
-#include "G4OpticalPhoton.hh"
 #include "G4TouchableHistory.hh"
 #include "G4Track.hh"
 #include "G4VPhysicalVolume.hh"
@@ -27,4 +20,11 @@ public:
     ParticleSD(const G4String& name);
     virtual ~ParticleSD();
     virtual G4bool  ProcessHits(G4Step*, G4TouchableHistory*);
+
+private:
+    G4AnalysisManager* man = nullptr;
+
+    tools::histo::h2d* h2_controlRoom = nullptr;
+    tools::histo::h2d* h2_parkingArea = nullptr;
+    tools::histo::h2d* h2_lunchArea = nullptr;
 };
