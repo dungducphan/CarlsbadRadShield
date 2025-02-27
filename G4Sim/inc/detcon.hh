@@ -1,9 +1,5 @@
 #pragma once
 
-#include <utility>
-#include <tuple>
-#include <fstream>
-
 #include "G4VUserDetectorConstruction.hh"
 #include "globals.hh"
 #include "G4RunManager.hh"
@@ -30,40 +26,64 @@
 #include "ParticleSD.hh"
 
 class G4VPhysicalVolume;
-
 class G4LogicalVolume;
 
 class detcon : public G4VUserDetectorConstruction {
 public:
-
     detcon(const G4GDMLParser& parser);
     ~detcon() override;
-
     G4VPhysicalVolume *Construct() override;
-
     void ConstructSDandField() override;
-
-    G4VPhysicalVolume* GetWorldVolume() {
-        return fWorldVolume;
-    }
+    G4VPhysicalVolume* GetWorldVolume() { return fWorldVolume; }
 
 private:
-    G4VPhysicalVolume* fWorldVolume;
-    // G4LogicalVolume* logicalDetector;
-    // G4LogicalVolume* logicalArc;
-    // G4LogicalVolume* logicalChamber;
-    // G4LogicalVolume* logicalFusedSilica;
-    // G4LogicalVolume* logicalPbBlock1;
-    // G4LogicalVolume* logicalPbBlock2;
-    // G4LogicalVolume* logicalHDPEBlock1;
-    // G4LogicalVolume* logicalHDPEBlock2;
-    // G4LogicalVolume* logicalWBlock;
-    //
-    // G4VisAttributes* arcVisAtt;
-    // G4VisAttributes* vacuumChamberVisAtt;
-    // G4VisAttributes* glassWindowVisAtt;
-    // G4VisAttributes* HDPEOuterVisAtt;
-    // G4VisAttributes* LeadVisAtt;
-    // G4VisAttributes* TungstenVisAtt;
-    // G4VisAttributes* PhantomVisAtt;
+    void SetVisualAttributes();
+    void SetMaterials();
+
+    G4Material*        mat_Air                          = nullptr;
+    G4Material*        mat_Concrete                     = nullptr;
+    G4Material*        mat_Glass                        = nullptr;
+    G4Material*        mat_Lead                         = nullptr;
+    G4Material*        mat_HDPE                         = nullptr;
+    G4Material*        mat_Tungsten                     = nullptr;
+    G4Material*        mat_Vacuum                       = nullptr;
+    G4Material*        mat_StainlessSteel               = nullptr;
+    G4Material*        mat_HumanTissue                  = nullptr;
+
+    G4VPhysicalVolume* fWorldVolume                     = nullptr;
+
+    G4LogicalVolume*   logical_Phantom_ControlRoom      = nullptr;
+    G4LogicalVolume*   logical_Phantom_LunchArea        = nullptr;
+    G4LogicalVolume*   logical_Phantom_ParkingArea      = nullptr;
+    G4LogicalVolume*   logical_Phantom_Office_1F        = nullptr;
+    G4LogicalVolume*   logical_Phantom_Office_2F        = nullptr;
+    G4LogicalVolume*   logical_Phantom_OpenLab          = nullptr;
+    G4LogicalVolume*   logical_FirstFloor               = nullptr;
+    G4LogicalVolume*   logical_SecondFloor              = nullptr;
+    G4LogicalVolume*   logical_OuterWalls               = nullptr;
+    G4LogicalVolume*   logical_InnerWalls               = nullptr;
+    G4LogicalVolume*   logical_GlassWindow_01           = nullptr;
+    G4LogicalVolume*   logical_GlassWindow_02           = nullptr;
+    G4LogicalVolume*   logical_GlassWindow_03           = nullptr;
+    G4LogicalVolume*   logical_GlassWindow_04           = nullptr;
+    G4LogicalVolume*   logical_GlassWindow_05           = nullptr;
+    G4LogicalVolume*   logical_GlassWindow_06           = nullptr;
+    G4LogicalVolume*   logical_ArcVault                 = nullptr;
+    G4LogicalVolume*   logical_VacuumChamber            = nullptr;
+    G4LogicalVolume*   logical_VacuumWindow             = nullptr;
+    G4LogicalVolume*   logical_BeamDump_LeadBlock       = nullptr;
+    G4LogicalVolume*   logical_BeamDump_HDPEBlock_Inner = nullptr;
+    G4LogicalVolume*   logical_BeamDump_HDPEBlock_Outer = nullptr;
+    G4LogicalVolume*   logical_BeamDump_TungstenBlock   = nullptr;
+
+    G4VisAttributes*   visAttr_ArcVault                 = nullptr;
+    G4VisAttributes*   visAttr_Floor                    = nullptr;
+    G4VisAttributes*   visAttr_Wall                     = nullptr;
+    G4VisAttributes*   visAttr_GlassWindow              = nullptr;
+    G4VisAttributes*   visAttr_VacuumChamber            = nullptr;
+    G4VisAttributes*   visAttr_VacuumWindow             = nullptr;
+    G4VisAttributes*   visAttr_BeamDump_LeadBlock       = nullptr;
+    G4VisAttributes*   visAttr_BeamDump_HDPEBlock       = nullptr;
+    G4VisAttributes*   visAttr_BeamDump_TungstenBlock   = nullptr;
+    G4VisAttributes*   visAttr_Phantom                  = nullptr;
 };
