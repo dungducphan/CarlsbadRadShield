@@ -116,10 +116,10 @@ detcon::detcon(const G4GDMLParser &parser) : G4VUserDetectorConstruction() {
     logical_ArcVault                 ->SetMaterial(mat_Concrete);
     logical_VacuumChamber            ->SetMaterial(mat_StainlessSteel);
     logical_VacuumWindow             ->SetMaterial(mat_Glass);
-    logical_BeamDump_LeadBlock       ->SetMaterial(mat_Air); // FIXME: fix here before running
-    logical_BeamDump_HDPEBlock_Inner ->SetMaterial(mat_Air);
-    logical_BeamDump_HDPEBlock_Outer ->SetMaterial(mat_Air);
-    logical_BeamDump_TungstenBlock   ->SetMaterial(mat_Air);
+    logical_BeamDump_LeadBlock       ->SetMaterial(mat_Lead);
+    logical_BeamDump_HDPEBlock_Inner ->SetMaterial(mat_HDPE);
+    logical_BeamDump_HDPEBlock_Outer ->SetMaterial(mat_HDPE);
+    logical_BeamDump_TungstenBlock   ->SetMaterial(mat_Tungsten);
 }
 
 detcon::~detcon() {
