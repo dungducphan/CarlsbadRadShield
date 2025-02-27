@@ -41,7 +41,7 @@ int main(int argc, char **argv) {
     G4GDMLParser parser;
     parser.SetStripFlag(false);
     parser.SetOverlapCheck(true);
-    parser.Read("Setup.gdml"); // Replace with your GDML file path
+    parser.Read("Setup_NoPhantoms.gdml"); // Replace with your GDML file path
     auto detector = new detcon(parser);
     runManager->SetUserInitialization(detector);
 

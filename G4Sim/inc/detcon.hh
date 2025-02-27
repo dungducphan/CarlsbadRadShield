@@ -36,9 +36,17 @@ public:
     void ConstructSDandField() override;
     G4VPhysicalVolume* GetWorldVolume() { return fWorldVolume; }
 
+    void BuildPhantomRegion(G4double Lx, G4double Ly, G4double Lz, G4double x_start, G4double y_start, G4double z_start, const std::string& areaName) const;
+
 private:
     void SetVisualAttributes();
-    void SetMaterials();
+
+    G4double           GDML_X_OFFSET                    = 0 * mm;
+    G4double           GDML_Y_OFFSET                    = 0 * mm;
+    G4double           GDML_Z_OFFSET                    = -4373 * mm;
+    G4double           ScoringBoxSize                   = 200 * mm;
+    G4Box*             SolidScoringBox                  = nullptr;
+
 
     G4Material*        mat_Air                          = nullptr;
     G4Material*        mat_Concrete                     = nullptr;
@@ -52,12 +60,7 @@ private:
 
     G4VPhysicalVolume* fWorldVolume                     = nullptr;
 
-    G4LogicalVolume*   logical_Phantom_ControlRoom      = nullptr;
-    G4LogicalVolume*   logical_Phantom_LunchArea        = nullptr;
-    G4LogicalVolume*   logical_Phantom_ParkingArea      = nullptr;
-    G4LogicalVolume*   logical_Phantom_Office_1F        = nullptr;
-    G4LogicalVolume*   logical_Phantom_Office_2F        = nullptr;
-    G4LogicalVolume*   logical_Phantom_OpenLab          = nullptr;
+    G4LogicalVolume*   logical_PhantomBox               = nullptr;
     G4LogicalVolume*   logical_FirstFloor               = nullptr;
     G4LogicalVolume*   logical_SecondFloor              = nullptr;
     G4LogicalVolume*   logical_OuterWalls               = nullptr;

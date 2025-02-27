@@ -13,7 +13,7 @@ generator::generator() {
     sps->SetNumberOfParticles(1);
 
     auto sourcePosition_FreeCAD = G4ThreeVector(9430.00*mm, 9400.00*mm, 1250.00*mm);
-    auto u_FreeCAD_GDML = G4ThreeVector(334.80*mm, 1869.60*mm, 4374.00*mm);
+    auto u_FreeCAD_GDML = G4ThreeVector(0.00*mm, 0.00*mm, 4373.00*mm);
     sps->GetPosDist()->SetPosDisType("Point"); // Point, Beam, Plane, Surface, Volume
     sps->GetPosDist()->SetCentreCoords(sourcePosition_FreeCAD - u_FreeCAD_GDML);
     sps->GetPosDist()->ConfineSourceToVolume("NULL");
