@@ -7,7 +7,7 @@ generator::generator() {
     fGeneralParticleSource = new G4GeneralParticleSource();
 
     G4SingleParticleSource *sps = fGeneralParticleSource->GetCurrentSource();
-    G4ParticleDefinition *particle = G4ParticleTable::GetParticleTable()->FindParticle("geantino");
+    G4ParticleDefinition *particle = G4ParticleTable::GetParticleTable()->FindParticle("e-");
 
     sps->SetParticleDefinition(particle);
     sps->SetNumberOfParticles(1);
@@ -34,7 +34,7 @@ void generator::GeneratePrimaries(G4Event *anEvent) {
 }
 
 G4ThreeVector generator::RandomizedDirection() {
-    double openingAngle = 5; // mrad
+    double openingAngle = 10; // mrad
     double rdm1 = fRandom->Gaus(0, openingAngle);
     double y_mom = TMath::Cos(rdm1 * mrad);
     double tmp = TMath::Sin(rdm1 * mrad);
