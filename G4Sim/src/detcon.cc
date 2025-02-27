@@ -89,7 +89,7 @@ void detcon::SetMaterials() {
     mat_Vacuum         = nist->FindOrBuildMaterial( "G4_Galactic");
     mat_HumanTissue    = nist->FindOrBuildMaterial( "G4_TISSUE_SOFT_ICRP");
 
-    fWorldVolume->GetLogicalVolume()->SetMaterial(mat_Air);
+    fWorldVolume->GetLogicalVolume()->SetMaterial(mat_Vacuum);
 
     logical_Phantom_ControlRoom      ->SetMaterial(mat_Vacuum);
     logical_Phantom_LunchArea        ->SetMaterial(mat_Vacuum);

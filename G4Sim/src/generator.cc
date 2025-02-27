@@ -7,13 +7,15 @@ generator::generator() {
     fGeneralParticleSource = new G4GeneralParticleSource();
 
     G4SingleParticleSource *sps = fGeneralParticleSource->GetCurrentSource();
-    G4ParticleDefinition *particle = G4ParticleTable::GetParticleTable()->FindParticle("e-");
+    G4ParticleDefinition *particle = G4ParticleTable::GetParticleTable()->FindParticle("geantino");
 
     sps->SetParticleDefinition(particle);
     sps->SetNumberOfParticles(1);
 
+    auto sourcePosition_FreeCAD = G4ThreeVector(9430.00*mm, 9400.00*mm, 1250.00*mm);
+    auto u_FreeCAD_GDML = G4ThreeVector(334.80*mm, 1869.60*mm, 4374.00*mm);
     sps->GetPosDist()->SetPosDisType("Point"); // Point, Beam, Plane, Surface, Volume
-    sps->GetPosDist()->SetCentreCoords(G4ThreeVector(0., -400*mm, 1900*mm));
+    sps->GetPosDist()->SetCentreCoords(sourcePosition_FreeCAD - u_FreeCAD_GDML);
     sps->GetPosDist()->ConfineSourceToVolume("NULL");
 
     sps->GetEneDist()->SetEnergyDisType("Mono"); // Mono, Lin, Pow, Exp, Gaus, Brem, BBody, Cdg (cosmic diffuse gamma), User, Arb, Epn (energy per nucleon)
@@ -32,12 +34,14 @@ void generator::GeneratePrimaries(G4Event *anEvent) {
 }
 
 G4ThreeVector generator::RandomizedDirection() {
-    double rdm1 = fRandom->Gaus(0, 10);
-    double x_mom = TMath::Cos(rdm1 * mrad);
+    double openingAngle = 5; // mrad
+    double rdm1 = fRandom->Gaus(0, openingAngle);
+    double y_mom = TMath::Cos(rdm1 * mrad);
     double tmp = TMath::Sin(rdm1 * mrad);
-    double rdm2 = fRandom->Gaus(TMath::PiOver2(), 10);
-    double y_mom = TMath::Sin(rdm2 * rad) * tmp;
+
+    double rdm2 = fRandom->Uniform(0, TMath::TwoPi());
+    double x_mom = TMath::Sin(rdm2 * rad) * tmp;
     double z_mom = TMath::Cos(rdm2 * rad) * tmp;
 
-    return {z_mom, y_mom, -x_mom};
+    return {x_mom, y_mom, z_mom};
 }
