@@ -230,8 +230,10 @@ void detcon::SetVisualAttributes() {
 G4VPhysicalVolume *detcon::Construct() {
 
     std::cout << "________________________________________________________________________" << std::endl;
-    std::cout << "Mass of Arc " << logical_ArcVault->GetMass() / kg << " kg" << std::endl;
-    std::cout << "Mass of Beam Dump: " << logical_BeamDump_TungstenBlock->GetMass() / kg + logical_BeamDump_HDPEBlock_Outer->GetMass() / kg + logical_BeamDump_HDPEBlock_Inner->GetMass() / kg + logical_BeamDump_LeadBlock->GetMass() / kg << " kg" << std::endl;
+    std::cout << "Mass of Arc " << logical_ArcVault->GetMass() / kg << " kg." << std::endl;
+    std::cout << "Mass of Beam Dump: " << logical_BeamDump_TungstenBlock->GetMass() / kg + logical_BeamDump_HDPEBlock_Outer->GetMass() / kg + logical_BeamDump_HDPEBlock_Inner->GetMass() / kg + logical_BeamDump_LeadBlock->GetMass() / kg << " kg." << std::endl;
+    std::cout << "________________________________________________________________________" << std::endl;
+    std::cout << "Mass of ScoringBox: " << logical_PhantomBox->GetMass() / kg << " kg." << std::endl;
     std::cout << "________________________________________________________________________" << std::endl;
 
     return fWorldVolume;
