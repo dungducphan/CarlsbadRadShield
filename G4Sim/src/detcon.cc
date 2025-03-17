@@ -137,14 +137,11 @@ detcon::detcon(const G4GDMLParser &parser) : G4VUserDetectorConstruction() {
     logical_GlassWindow_06           ->SetMaterial(mat_Glass);
     logical_ArcVault                 ->SetMaterial(mat_Concrete);
     logical_VacuumChamber            ->SetMaterial(mat_StainlessSteel);
-    logical_VacuumWindow             ->SetMaterial(mat_Glass);
+    logical_VacuumWindow             ->SetMaterial(mat_Air); // FIXME
     logical_MagnetField              ->SetMaterial(mat_Air);
 }
 
 detcon::~detcon() {
-    delete magField;
-    delete fieldMgr;
-
     delete SolidScoringBox;
     delete logical_PhantomBox;
     delete logical_FirstFloor;
