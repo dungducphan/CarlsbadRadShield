@@ -21,6 +21,10 @@
 #include "G4VIStore.hh"
 #include "G4GDMLParser.hh"
 
+#include <G4FieldManager.hh>
+#include <G4MagneticField.hh>
+#include <G4UniformMagField.hh>
+
 #include "TMath.h"
 
 #include "ParticleSD.hh"
@@ -43,12 +47,15 @@ private:
 
     G4double           GDML_X_OFFSET                    = 0 * mm;
     G4double           GDML_Y_OFFSET                    = 0 * mm;
-    G4double           GDML_Z_OFFSET                    = -4373 * mm;
+    G4double           GDML_Z_OFFSET                    = -3458.6 * mm;
     G4double           ScoringBoxSize                   = 200 * mm;
     G4Box*             SolidScoringBox                  = nullptr;
 
 
     G4Material*        mat_Air                          = nullptr;
+    G4Material*        mat_Hardwood                     = nullptr;
+    G4Material*        mat_Softwood                     = nullptr;
+    G4Material*        mat_WallMaterial                 = nullptr;
     G4Material*        mat_Concrete                     = nullptr;
     G4Material*        mat_Glass                        = nullptr;
     G4Material*        mat_Lead                         = nullptr;
@@ -62,6 +69,7 @@ private:
 
     G4LogicalVolume*   logical_PhantomBox               = nullptr;
     G4LogicalVolume*   logical_FirstFloor               = nullptr;
+    G4LogicalVolume*   logical_ConcreteSlab             = nullptr;
     G4LogicalVolume*   logical_SecondFloor              = nullptr;
     G4LogicalVolume*   logical_OuterWalls               = nullptr;
     G4LogicalVolume*   logical_InnerWalls               = nullptr;
@@ -74,10 +82,7 @@ private:
     G4LogicalVolume*   logical_ArcVault                 = nullptr;
     G4LogicalVolume*   logical_VacuumChamber            = nullptr;
     G4LogicalVolume*   logical_VacuumWindow             = nullptr;
-    G4LogicalVolume*   logical_BeamDump_LeadBlock       = nullptr;
-    G4LogicalVolume*   logical_BeamDump_HDPEBlock_Inner = nullptr;
-    G4LogicalVolume*   logical_BeamDump_HDPEBlock_Outer = nullptr;
-    G4LogicalVolume*   logical_BeamDump_TungstenBlock   = nullptr;
+    G4LogicalVolume*   logical_MagnetField              = nullptr;
 
     G4VisAttributes*   visAttr_ArcVault                 = nullptr;
     G4VisAttributes*   visAttr_Floor                    = nullptr;
@@ -85,8 +90,9 @@ private:
     G4VisAttributes*   visAttr_GlassWindow              = nullptr;
     G4VisAttributes*   visAttr_VacuumChamber            = nullptr;
     G4VisAttributes*   visAttr_VacuumWindow             = nullptr;
-    G4VisAttributes*   visAttr_BeamDump_LeadBlock       = nullptr;
-    G4VisAttributes*   visAttr_BeamDump_HDPEBlock       = nullptr;
-    G4VisAttributes*   visAttr_BeamDump_TungstenBlock   = nullptr;
+    G4VisAttributes*   visAttr_MagneticField            = nullptr;
     G4VisAttributes*   visAttr_Phantom                  = nullptr;
+
+    G4FieldManager* fieldMgr = nullptr;
+    G4MagneticField* magField = nullptr;
 };

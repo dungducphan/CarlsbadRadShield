@@ -3,6 +3,8 @@
 
 #include <G4Colour.hh>
 #include <G4VisAttributes.hh>
+#include <G4NistManager.hh>
+
 
 #include <TString.h>
 
@@ -38,27 +40,46 @@ detcon::detcon(const G4GDMLParser &parser) : G4VUserDetectorConstruction() {
     mat_Vacuum         = nist->FindOrBuildMaterial( "G4_Galactic");
     mat_HumanTissue    = nist->FindOrBuildMaterial( "G4_TISSUE_SOFT_ICRP");
 
+    // Build hardwood material (ref: https://www.sciencedirect.com/science/article/pii/S0969804320307016)
+    auto el_C = nist->FindOrBuildElement("C");
+    auto el_H = nist->FindOrBuildElement("H");
+    auto el_O = nist->FindOrBuildElement("O");
+    auto el_N = nist->FindOrBuildElement("N");
+    mat_Hardwood = new G4Material("Hardwood", 0.68725 * g / cm3, 4);
+    mat_Hardwood->AddElement(el_C, 0.502);
+    mat_Hardwood->AddElement(el_H, 0.062);
+    mat_Hardwood->AddElement(el_O, 0.435);
+    mat_Hardwood->AddElement(el_N, 0.001);
+    mat_Softwood = new G4Material("Softwood", 0.49160 * g / cm3, 4);
+    mat_Softwood->AddElement(el_C, 0.527);
+    mat_Softwood->AddElement(el_H, 0.063);
+    mat_Softwood->AddElement(el_O, 0.408);
+    mat_Softwood->AddElement(el_N, 0.002);
+
+    // Build wall material
+    mat_WallMaterial = new G4Material("WallMaterial", 0.08 * g / cm3, 2);
+    mat_WallMaterial->AddMaterial(mat_Softwood, 0.9);
+    mat_WallMaterial->AddMaterial(mat_Air, 0.1);
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /* Get volumes from GDML */
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     fWorldVolume                     = parser.GetWorldVolume();
-    logical_FirstFloor               = parser.GetVolume( "V-FirstFloor-9");
-    logical_SecondFloor              = parser.GetVolume( "V-SecondFloor-10");
-    logical_OuterWalls               = parser.GetVolume( "V-FirstFloorWalls-11");
-    logical_InnerWalls               = parser.GetVolume( "V-SecondFloorWalls-12");
-    logical_GlassWindow_01           = parser.GetVolume( "V-Glass001-14");
-    logical_GlassWindow_02           = parser.GetVolume( "V-Glass002-15");
-    logical_GlassWindow_03           = parser.GetVolume( "V-Glass003-16");
-    logical_GlassWindow_04           = parser.GetVolume( "V-Glass004-17");
-    logical_GlassWindow_05           = parser.GetVolume( "V-Glass005-18");
-    logical_GlassWindow_06           = parser.GetVolume( "V-Glass006-19");
-    logical_ArcVault                 = parser.GetVolume( "V-Arc-7");
-    logical_VacuumChamber            = parser.GetVolume( "V-VacuumChamber-21");
-    logical_VacuumWindow             = parser.GetVolume( "V-Window-22");
-    logical_BeamDump_LeadBlock       = parser.GetVolume( "V-Pb_Block-4");
-    logical_BeamDump_HDPEBlock_Inner = parser.GetVolume( "V-HDPE_Block_02-3");
-    logical_BeamDump_HDPEBlock_Outer = parser.GetVolume( "V-HDPE_Block_01-5");
-    logical_BeamDump_TungstenBlock   = parser.GetVolume( "V-W_Plate-2");
+    logical_FirstFloor               = parser.GetVolume( "V-FirstFloor-7");
+    logical_ConcreteSlab             = parser.GetVolume( "V-ConcreteSlab-18");
+    logical_SecondFloor              = parser.GetVolume( "V-SecondFloor-8");
+    logical_OuterWalls               = parser.GetVolume( "V-FirstFloorWalls-9");
+    logical_InnerWalls               = parser.GetVolume( "V-SecondFloorWalls-10");
+    logical_GlassWindow_01           = parser.GetVolume( "V-Glass001-12");
+    logical_GlassWindow_02           = parser.GetVolume( "V-Glass002-13");
+    logical_GlassWindow_03           = parser.GetVolume( "V-Glass003-14");
+    logical_GlassWindow_04           = parser.GetVolume( "V-Glass004-15");
+    logical_GlassWindow_05           = parser.GetVolume( "V-Glass005-16");
+    logical_GlassWindow_06           = parser.GetVolume( "V-Glass006-17");
+    logical_ArcVault                 = parser.GetVolume( "V-Arc-20");
+    logical_VacuumChamber            = parser.GetVolume( "V-VacuumChamber-4");
+    logical_VacuumWindow             = parser.GetVolume( "V-Window-5");
+    logical_MagnetField              = parser.GetVolume( "V-MagneticRegion_1-2");
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /* Sensitive/Dosimetry Region */
@@ -104,9 +125,10 @@ detcon::detcon(const G4GDMLParser &parser) : G4VUserDetectorConstruction() {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     fWorldVolume->GetLogicalVolume() ->SetMaterial(mat_Air);
     logical_FirstFloor               ->SetMaterial(mat_Concrete);
-    logical_SecondFloor              ->SetMaterial(mat_Concrete);
-    logical_OuterWalls               ->SetMaterial(mat_Air);
-    logical_InnerWalls               ->SetMaterial(mat_Air);
+    logical_ConcreteSlab             ->SetMaterial(mat_Concrete);
+    logical_SecondFloor              ->SetMaterial(mat_Softwood);
+    logical_OuterWalls               ->SetMaterial(mat_WallMaterial);
+    logical_InnerWalls               ->SetMaterial(mat_WallMaterial);
     logical_GlassWindow_01           ->SetMaterial(mat_Glass);
     logical_GlassWindow_02           ->SetMaterial(mat_Glass);
     logical_GlassWindow_03           ->SetMaterial(mat_Glass);
@@ -116,16 +138,17 @@ detcon::detcon(const G4GDMLParser &parser) : G4VUserDetectorConstruction() {
     logical_ArcVault                 ->SetMaterial(mat_Concrete);
     logical_VacuumChamber            ->SetMaterial(mat_StainlessSteel);
     logical_VacuumWindow             ->SetMaterial(mat_Glass);
-    logical_BeamDump_LeadBlock       ->SetMaterial(mat_Lead);
-    logical_BeamDump_HDPEBlock_Inner ->SetMaterial(mat_HDPE);
-    logical_BeamDump_HDPEBlock_Outer ->SetMaterial(mat_HDPE);
-    logical_BeamDump_TungstenBlock   ->SetMaterial(mat_Tungsten);
+    logical_MagnetField              ->SetMaterial(mat_Air);
 }
 
 detcon::~detcon() {
+    delete magField;
+    delete fieldMgr;
+
     delete SolidScoringBox;
     delete logical_PhantomBox;
     delete logical_FirstFloor;
+    delete logical_ConcreteSlab;
     delete logical_SecondFloor;
     delete logical_OuterWalls;
     delete logical_InnerWalls;
@@ -138,10 +161,7 @@ detcon::~detcon() {
     delete logical_ArcVault;
     delete logical_VacuumChamber;
     delete logical_VacuumWindow;
-    delete logical_BeamDump_LeadBlock;
-    delete logical_BeamDump_HDPEBlock_Inner;
-    delete logical_BeamDump_HDPEBlock_Outer;
-    delete logical_BeamDump_TungstenBlock;
+    delete logical_MagnetField;
 
     delete visAttr_Phantom;
     delete visAttr_Floor;
@@ -150,16 +170,14 @@ detcon::~detcon() {
     delete visAttr_ArcVault;
     delete visAttr_VacuumChamber;
     delete visAttr_VacuumWindow;
-    delete visAttr_BeamDump_LeadBlock;
-    delete visAttr_BeamDump_HDPEBlock;
-    delete visAttr_BeamDump_TungstenBlock;
+    delete visAttr_MagneticField;
 
     delete fWorldVolume;
 }
 
 void detcon::SetVisualAttributes() {
     visAttr_Phantom = new G4VisAttributes();
-    visAttr_Phantom->SetVisibility(true);
+    visAttr_Phantom->SetVisibility(false); // FIXME: set to true later
     visAttr_Phantom->SetForceSolid(true);
     visAttr_Phantom->SetColour(1, 0, 0, 0.9);
     logical_PhantomBox->SetVisAttributes(visAttr_Phantom);
@@ -169,7 +187,7 @@ void detcon::SetVisualAttributes() {
     visAttr_Floor->SetForceSolid(true);
     visAttr_Floor->SetColour(0.2, 0.8, 0.1, 0.2);
     logical_FirstFloor->SetVisAttributes(visAttr_Floor);
-    logical_SecondFloor->SetVisAttributes(visAttr_Floor);
+    logical_ConcreteSlab->SetVisAttributes(visAttr_Floor);
 
     visAttr_Wall = new G4VisAttributes();
     visAttr_Wall->SetVisibility(true);
@@ -177,6 +195,7 @@ void detcon::SetVisualAttributes() {
     visAttr_Wall->SetColour(0.2, 0.1, 0.8, 0.2);
     logical_OuterWalls->SetVisAttributes(visAttr_Wall);
     logical_InnerWalls->SetVisAttributes(visAttr_Wall);
+    logical_SecondFloor->SetVisAttributes(visAttr_Wall);
 
     visAttr_GlassWindow = new G4VisAttributes();
     visAttr_GlassWindow->SetVisibility(true);
@@ -207,31 +226,17 @@ void detcon::SetVisualAttributes() {
     visAttr_VacuumWindow->SetColour(0.8, 0.1, 0.2, 0.1);
     logical_VacuumWindow->SetVisAttributes(visAttr_VacuumWindow);
 
-    visAttr_BeamDump_LeadBlock = new G4VisAttributes();
-    visAttr_BeamDump_LeadBlock->SetVisibility(true);
-    visAttr_BeamDump_LeadBlock->SetForceSolid(true);
-    visAttr_BeamDump_LeadBlock->SetColour(0.8, 0.8, 0.1, 0.7);
-    logical_BeamDump_LeadBlock->SetVisAttributes(visAttr_BeamDump_LeadBlock);
-
-    visAttr_BeamDump_HDPEBlock = new G4VisAttributes();
-    visAttr_BeamDump_HDPEBlock->SetVisibility(true);
-    visAttr_BeamDump_HDPEBlock->SetForceSolid(true);
-    visAttr_BeamDump_HDPEBlock->SetColour(1., 0., 1., 0.9);
-    logical_BeamDump_HDPEBlock_Inner->SetVisAttributes(visAttr_BeamDump_HDPEBlock);
-    logical_BeamDump_HDPEBlock_Outer->SetVisAttributes(visAttr_BeamDump_HDPEBlock);
-
-    visAttr_BeamDump_TungstenBlock = new G4VisAttributes();
-    visAttr_BeamDump_TungstenBlock->SetVisibility(true);
-    visAttr_BeamDump_TungstenBlock->SetForceSolid(true);
-    visAttr_BeamDump_TungstenBlock->SetColour(1., 0., 0., 1);
-    logical_BeamDump_TungstenBlock->SetVisAttributes(visAttr_BeamDump_TungstenBlock);
+    visAttr_MagneticField = new G4VisAttributes();
+    visAttr_MagneticField->SetVisibility(true);
+    visAttr_MagneticField->SetForceSolid(true);
+    visAttr_MagneticField->SetColour(0.8, 0.1, 0.2, 0.1);
+    logical_MagnetField->SetVisAttributes(visAttr_MagneticField);
 }
 
 G4VPhysicalVolume *detcon::Construct() {
 
     std::cout << "________________________________________________________________________" << std::endl;
     std::cout << "Mass of Arc " << logical_ArcVault->GetMass() / kg << " kg." << std::endl;
-    std::cout << "Mass of Beam Dump: " << logical_BeamDump_TungstenBlock->GetMass() / kg + logical_BeamDump_HDPEBlock_Outer->GetMass() / kg + logical_BeamDump_HDPEBlock_Inner->GetMass() / kg + logical_BeamDump_LeadBlock->GetMass() / kg << " kg." << std::endl;
     std::cout << "________________________________________________________________________" << std::endl;
     std::cout << "Mass of ScoringBox: " << logical_PhantomBox->GetMass() / kg << " kg." << std::endl;
     std::cout << "________________________________________________________________________" << std::endl;
@@ -246,4 +251,11 @@ void detcon::ConstructSDandField() {
 
     // Attach the detector to the logical volume
     SetSensitiveDetector(logical_PhantomBox, SDman->FindSensitiveDetector("DosiBox"));
+
+    // Define magnetic field region
+    fieldMgr = new G4FieldManager();
+    magField = new G4UniformMagField(G4ThreeVector(-1 * tesla, 0, 0));
+    fieldMgr->SetDetectorField(magField);
+    fieldMgr->CreateChordFinder(magField);
+    logical_MagnetField->SetFieldManager(fieldMgr, true);
 }
