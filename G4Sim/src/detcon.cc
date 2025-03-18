@@ -79,7 +79,7 @@ detcon::detcon(const G4GDMLParser &parser) : G4VUserDetectorConstruction() {
     logical_ArcVault                 = parser.GetVolume( "V-Arc-20");
     logical_VacuumChamber            = parser.GetVolume( "V-VacuumChamber-4");
     logical_VacuumWindow             = parser.GetVolume( "V-Window-5");
-    logical_MagnetField              = parser.GetVolume( "V-MagneticRegion_1-2");
+    logical_MagnetField              = parser.GetVolume( "V-MagneticRegion_002-2");
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /* Sensitive/Dosimetry Region */
