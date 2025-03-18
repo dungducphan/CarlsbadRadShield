@@ -19,7 +19,7 @@ generator::generator() {
     sps->GetPosDist()->ConfineSourceToVolume("NULL");
 
     sps->GetEneDist()->SetEnergyDisType("Mono"); // Mono, Lin, Pow, Exp, Gaus, Brem, BBody, Cdg (cosmic diffuse gamma), User, Arb, Epn (energy per nucleon)
-    sps->GetEneDist()->SetMonoEnergy(100 * MeV);
+    sps->GetEneDist()->SetMonoEnergy(50 * MeV);
 
     fRandom = new TRandom3();
 }
@@ -34,7 +34,7 @@ void generator::GeneratePrimaries(G4Event *anEvent) {
 }
 
 G4ThreeVector generator::RandomizedDirection() {
-    double openingAngle = 0.1; // mrad
+    double openingAngle = 5; // mrad
     double rdm1 = fRandom->Gaus(0, openingAngle);
     double y_mom = TMath::Cos(rdm1 * mrad);
     double tmp = TMath::Sin(rdm1 * mrad);
