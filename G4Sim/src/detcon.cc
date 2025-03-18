@@ -137,7 +137,7 @@ detcon::detcon(const G4GDMLParser &parser) : G4VUserDetectorConstruction() {
     logical_GlassWindow_06           ->SetMaterial(mat_Glass);
     logical_ArcVault                 ->SetMaterial(mat_Concrete);
     logical_VacuumChamber            ->SetMaterial(mat_StainlessSteel);
-    logical_VacuumWindow             ->SetMaterial(mat_Air); // FIXME
+    logical_VacuumWindow             ->SetMaterial(mat_Air); // FIXME: has to be air for the beam to be focused enough
     logical_MagnetField              ->SetMaterial(mat_Air);
 }
 
@@ -251,7 +251,7 @@ void detcon::ConstructSDandField() {
 
     // Define magnetic field region
     fieldMgr = new G4FieldManager();
-    magField = new G4UniformMagField(G4ThreeVector(-1 * tesla, 0, 0));
+    magField = new G4UniformMagField(G4ThreeVector(-0.35 * tesla, 0, 0));
     fieldMgr->SetDetectorField(magField);
     fieldMgr->CreateChordFinder(magField);
     logical_MagnetField->SetFieldManager(fieldMgr, true);
