@@ -30,7 +30,7 @@ detcon::detcon(const G4GDMLParser &parser) : G4VUserDetectorConstruction() {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     const auto nist = G4NistManager::Instance();
 
-    mat_Air            = nist->FindOrBuildMaterial( "G4_AIR");
+    mat_Air            = nist->FindOrBuildMaterial( "G4_Galactic"); // FIXME: check and change before production runs
     mat_Concrete       = nist->FindOrBuildMaterial( "G4_CONCRETE");
     mat_Lead           = nist->FindOrBuildMaterial( "G4_Pb");
     mat_HDPE           = nist->FindOrBuildMaterial( "G4_POLYETHYLENE");

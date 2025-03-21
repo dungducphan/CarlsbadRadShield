@@ -34,7 +34,7 @@ void generator::GeneratePrimaries(G4Event *anEvent) {
 }
 
 G4ThreeVector generator::RandomizedDirection() {
-    double openingAngle = 2.5; // mrad
+    double openingAngle = 0.1; // mrad // FIXME: check and change before production runs
     double rdm1 = fRandom->Gaus(0, openingAngle);
     double y_mom = TMath::Cos(rdm1 * mrad);
     double tmp = TMath::Sin(rdm1 * mrad);
