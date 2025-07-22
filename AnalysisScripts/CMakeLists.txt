@@ -6,3 +6,6 @@ target_link_libraries(DoseAnalysis ${ROOT_LIBRARIES})
 
 add_executable(TrackAnalysis TrackAnalysis.C)
 target_link_libraries(TrackAnalysis ${ROOT_LIBRARIES})
+
+add_executable(DoseMap DoseMap.C)
+target_link_libraries(DoseMap ${ROOT_LIBRARIES})
