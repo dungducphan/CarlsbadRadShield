@@ -14,6 +14,8 @@ ParticleSD::ParticleSD(const G4String &name) : G4VSensitiveDetector(name) {
     h2_controlRoom = man->GetH2(man->GetH2Id("DoseMap_ControlRoom"));
     h2_parkingArea = man->GetH2(man->GetH2Id("DoseMap_ParkingArea"));
     h2_lunchArea = man->GetH2(man->GetH2Id("DoseMap_LunchArea"));
+    h2_officeArea = man->GetH2(man->GetH2Id("DoseMap_OfficeArea"));
+    h2_laserRoom = man->GetH2(man->GetH2Id("DoseMap_LaserRoom"));
 }
 
 ParticleSD::~ParticleSD() noexcept {
@@ -50,6 +52,10 @@ G4bool ParticleSD::ProcessHits(G4Step * aStep, G4TouchableHistory *) {
         h2_parkingArea->fill(y, z, eDep);
     } else if (volName.find("LunchArea") != std::string::npos) {
         h2_lunchArea->fill(x, z, eDep);
+    } else if (volName.find("LaserRoom") != std::string::npos) {
+        h2_laserRoom->fill(x, z, eDep);
+    } else if (volName.find("OfficeArea") != std::string::npos) {
+        h2_officeArea->fill(x, z, eDep);
     } else {
         G4cout << "Volume name not found: " << volName << G4endl;
     }

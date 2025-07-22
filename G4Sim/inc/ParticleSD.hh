@@ -27,4 +27,6 @@ private:
     tools::histo::h2d* h2_controlRoom = nullptr;
     tools::histo::h2d* h2_parkingArea = nullptr;
     tools::histo::h2d* h2_lunchArea = nullptr;
+    tools::histo::h2d* h2_officeArea = nullptr;
+    tools::histo::h2d* h2_laserRoom = nullptr;
 };

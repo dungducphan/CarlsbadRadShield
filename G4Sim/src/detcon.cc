@@ -120,8 +120,8 @@ detcon::detcon(const G4GDMLParser &parser) : G4VUserDetectorConstruction() {
     /* Laser room */
     Lx = 15000 * mm;
     Ly = 200 * mm;
-    x_start = -834.45 * mm;
-    y_start = -2313.58 * mm;
+    x_start = -1000 * mm;
+    y_start = -3000 * mm;
     z_start = 0 * mm;
     areaName = "LaserRoom";
     BuildPhantomRegion(Lx, Ly, Lz, x_start, y_start, z_start, areaName);
@@ -132,7 +132,7 @@ detcon::detcon(const G4GDMLParser &parser) : G4VUserDetectorConstruction() {
     x_start = -4000 * mm;
     y_start = -16000 * mm;
     z_start = 4200 * mm;
-    areaName = "OfficeArea2ndFloor";
+    areaName = "OfficeArea";
     BuildPhantomRegion(Lx, Ly, Lz, x_start, y_start, z_start, areaName);
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
