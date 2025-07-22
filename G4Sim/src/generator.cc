@@ -10,16 +10,27 @@ generator::generator() {
     G4ParticleDefinition *particle = G4ParticleTable::GetParticleTable()->FindParticle("e-");
 
     sps->SetParticleDefinition(particle);
-    sps->SetNumberOfParticles(1);
+    sps->SetNumberOfParticles(1000);
 
     auto sourcePosition_FreeCAD = G4ThreeVector(9430.00*mm, 9400.00*mm, 1250.00*mm);
-    auto u_FreeCAD_GDML = G4ThreeVector(0.00*mm, 0.00*mm, 3458.6*mm);
+    auto u_FreeCAD_GDML = G4ThreeVector(0.00*mm, 0.00*mm, 3467.47*mm);
     sps->GetPosDist()->SetPosDisType("Point"); // Point, Beam, Plane, Surface, Volume
     sps->GetPosDist()->SetCentreCoords(sourcePosition_FreeCAD - u_FreeCAD_GDML);
     sps->GetPosDist()->ConfineSourceToVolume("NULL");
 
-    sps->GetEneDist()->SetEnergyDisType("Mono"); // Mono, Lin, Pow, Exp, Gaus, Brem, BBody, Cdg (cosmic diffuse gamma), User, Arb, Epn (energy per nucleon)
-    sps->GetEneDist()->SetMonoEnergy(200 * MeV);
+    sps->GetEneDist()->SetEnergyDisType("Gauss"); // Mono, Lin, Pow, Exp, Gauss, Brem, BBody, Cdg (cosmic diffuse gamma), User, Arb, Epn (energy per nucleon)
+    sps->GetEneDist()->SetMonoEnergy(2 * MeV);
+    sps->GetEneDist()->SetBeamSigmaInE(0.2 * MeV);
+
+    // Use isotropic angular distribution
+    // Comment out for beam
+    //==================================================
+    sps->GetAngDist()->SetAngDistType("iso");
+    sps->GetAngDist()->SetMinTheta(0.0 * degree);
+    sps->GetAngDist()->SetMaxTheta(180.0 * degree);
+    sps->GetAngDist()->SetMinPhi(0.0 * degree);
+    sps->GetAngDist()->SetMaxPhi(360.0 * degree);
+    //==================================================
 
     fRandom = new TRandom3();
 }
@@ -29,7 +40,8 @@ generator::~generator() {
 }
 
 void generator::GeneratePrimaries(G4Event *anEvent) {
-    fGeneralParticleSource->GetCurrentSource()->GetAngDist()->SetParticleMomentumDirection(RandomizedDirection());
+    // Comment out the following line to use the isotropic angular distribution
+    // fGeneralParticleSource->GetCurrentSource()->GetAngDist()->SetParticleMomentumDirection(RandomizedDirection());
     fGeneralParticleSource->GeneratePrimaryVertex(anEvent);
 }
 

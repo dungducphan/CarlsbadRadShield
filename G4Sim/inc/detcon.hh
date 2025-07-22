@@ -47,13 +47,14 @@ private:
 
     G4double           GDML_X_OFFSET                    = 0 * mm;
     G4double           GDML_Y_OFFSET                    = 0 * mm;
-    G4double           GDML_Z_OFFSET                    = -3458.6 * mm;
+    G4double           GDML_Z_OFFSET                    = -3467.47 * mm;
     G4double           ScoringBoxSize                   = 200 * mm;
     G4Box*             SolidScoringBox                  = nullptr;
 
 
     G4Material*        mat_Air                          = nullptr;
     G4Material*        mat_Hardwood                     = nullptr;
+    G4Material*        mat_Aluminum                     = nullptr;
     G4Material*        mat_Softwood                     = nullptr;
     G4Material*        mat_WallMaterial                 = nullptr;
     G4Material*        mat_Concrete                     = nullptr;
@@ -68,6 +69,7 @@ private:
     G4VPhysicalVolume* fWorldVolume                     = nullptr;
 
     G4LogicalVolume*   logical_PhantomBox               = nullptr;
+    G4LogicalVolume*   logical_AluminumCeiling          = nullptr;
     G4LogicalVolume*   logical_FirstFloor               = nullptr;
     G4LogicalVolume*   logical_ConcreteSlab             = nullptr;
     G4LogicalVolume*   logical_SecondFloor              = nullptr;
@@ -87,6 +89,7 @@ private:
     G4VisAttributes*   visAttr_ArcVault                 = nullptr;
     G4VisAttributes*   visAttr_Floor                    = nullptr;
     G4VisAttributes*   visAttr_Wall                     = nullptr;
+    G4VisAttributes*   visAttr_Aluminum                 = nullptr;
     G4VisAttributes*   visAttr_GlassWindow              = nullptr;
     G4VisAttributes*   visAttr_VacuumChamber            = nullptr;
     G4VisAttributes*   visAttr_VacuumWindow             = nullptr;

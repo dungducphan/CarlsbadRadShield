@@ -38,6 +38,7 @@ detcon::detcon(const G4GDMLParser &parser) : G4VUserDetectorConstruction() {
     mat_StainlessSteel = nist->FindOrBuildMaterial( "G4_STAINLESS-STEEL");
     mat_Glass          = nist->FindOrBuildMaterial( "G4_SILICON_DIOXIDE");
     mat_Vacuum         = nist->FindOrBuildMaterial( "G4_Galactic");
+    mat_Aluminum       = nist->FindOrBuildMaterial( "G4_Al");
     mat_HumanTissue    = nist->FindOrBuildMaterial( "G4_TISSUE_SOFT_ICRP");
 
     // Build hardwood material (ref: https://www.sciencedirect.com/science/article/pii/S0969804320307016)
@@ -65,21 +66,22 @@ detcon::detcon(const G4GDMLParser &parser) : G4VUserDetectorConstruction() {
     /* Get volumes from GDML */
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     fWorldVolume                     = parser.GetWorldVolume();
-    logical_FirstFloor               = parser.GetVolume( "V-FirstFloor-7");
-    logical_ConcreteSlab             = parser.GetVolume( "V-ConcreteSlab-18");
-    logical_SecondFloor              = parser.GetVolume( "V-SecondFloor-8");
-    logical_OuterWalls               = parser.GetVolume( "V-FirstFloorWalls-9");
-    logical_InnerWalls               = parser.GetVolume( "V-SecondFloorWalls-10");
-    logical_GlassWindow_01           = parser.GetVolume( "V-Glass001-12");
-    logical_GlassWindow_02           = parser.GetVolume( "V-Glass002-13");
-    logical_GlassWindow_03           = parser.GetVolume( "V-Glass003-14");
-    logical_GlassWindow_04           = parser.GetVolume( "V-Glass004-15");
-    logical_GlassWindow_05           = parser.GetVolume( "V-Glass005-16");
-    logical_GlassWindow_06           = parser.GetVolume( "V-Glass006-17");
-    logical_ArcVault                 = parser.GetVolume( "V-Arc-20");
-    logical_VacuumChamber            = parser.GetVolume( "V-VacuumChamber-4");
-    logical_VacuumWindow             = parser.GetVolume( "V-Window-5");
-    logical_MagnetField              = parser.GetVolume( "V-MagneticRegion_002-2");
+    logical_FirstFloor               = parser.GetVolume( "V-FirstFloor-4");
+    logical_ConcreteSlab             = parser.GetVolume( "V-ConcreteSlab-15");
+    logical_AluminumCeiling          = parser.GetVolume( "V-AluminumCeiling-16");
+    logical_SecondFloor              = parser.GetVolume( "V-SecondFloor-5");
+    logical_OuterWalls               = parser.GetVolume( "V-FirstFloorWalls-6");
+    logical_InnerWalls               = parser.GetVolume( "V-SecondFloorWalls-7");
+    logical_GlassWindow_01           = parser.GetVolume( "V-Glass001-9");
+    logical_GlassWindow_02           = parser.GetVolume( "V-Glass002-10");
+    logical_GlassWindow_03           = parser.GetVolume( "V-Glass003-11");
+    logical_GlassWindow_04           = parser.GetVolume( "V-Glass004-12");
+    logical_GlassWindow_05           = parser.GetVolume( "V-Glass005-13");
+    logical_GlassWindow_06           = parser.GetVolume( "V-Glass006-14");
+    logical_ArcVault                 = parser.GetVolume( "V-Arc-2");
+    logical_VacuumChamber            = parser.GetVolume( "V-VacuumChamber-18");
+    logical_VacuumWindow             = parser.GetVolume( "V-Window-19");
+    logical_MagnetField              = parser.GetVolume( "V-MagneticRegion_1-21");
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /* Sensitive/Dosimetry Region */
@@ -115,6 +117,24 @@ detcon::detcon(const G4GDMLParser &parser) : G4VUserDetectorConstruction() {
     areaName = "ControlRoom";
     BuildPhantomRegion(Lx, Ly, Lz, x_start, y_start, z_start, areaName);
 
+    /* Laser room */
+    Lx = 15000 * mm;
+    Ly = 200 * mm;
+    x_start = -834.45 * mm;
+    y_start = -2313.58 * mm;
+    z_start = 0 * mm;
+    areaName = "LaserRoom";
+    BuildPhantomRegion(Lx, Ly, Lz, x_start, y_start, z_start, areaName);
+
+    /* Office Area 2nd Floor */
+    Lx = 15000 * mm;
+    Ly = 200 * mm;
+    x_start = -4000 * mm;
+    y_start = -16000 * mm;
+    z_start = 4200 * mm;
+    areaName = "OfficeArea2ndFloor";
+    BuildPhantomRegion(Lx, Ly, Lz, x_start, y_start, z_start, areaName);
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /* Visual Props */
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -124,9 +144,10 @@ detcon::detcon(const G4GDMLParser &parser) : G4VUserDetectorConstruction() {
     /* Assigns Materials */
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     fWorldVolume->GetLogicalVolume() ->SetMaterial(mat_Air);
+    logical_AluminumCeiling          ->SetMaterial(mat_Aluminum);
     logical_FirstFloor               ->SetMaterial(mat_Concrete);
     logical_ConcreteSlab             ->SetMaterial(mat_Concrete);
-    logical_SecondFloor              ->SetMaterial(mat_Softwood);
+    logical_SecondFloor              ->SetMaterial(mat_Hardwood);
     logical_OuterWalls               ->SetMaterial(mat_WallMaterial);
     logical_InnerWalls               ->SetMaterial(mat_WallMaterial);
     logical_GlassWindow_01           ->SetMaterial(mat_Glass);
@@ -137,7 +158,7 @@ detcon::detcon(const G4GDMLParser &parser) : G4VUserDetectorConstruction() {
     logical_GlassWindow_06           ->SetMaterial(mat_Glass);
     logical_ArcVault                 ->SetMaterial(mat_Concrete);
     logical_VacuumChamber            ->SetMaterial(mat_StainlessSteel);
-    logical_VacuumWindow             ->SetMaterial(mat_Air); // FIXME
+    logical_VacuumWindow             ->SetMaterial(mat_Glass);
     logical_MagnetField              ->SetMaterial(mat_Air);
 }
 
@@ -145,6 +166,7 @@ detcon::~detcon() {
     delete SolidScoringBox;
     delete logical_PhantomBox;
     delete logical_FirstFloor;
+    delete logical_AluminumCeiling;
     delete logical_ConcreteSlab;
     delete logical_SecondFloor;
     delete logical_OuterWalls;
@@ -163,6 +185,7 @@ detcon::~detcon() {
     delete visAttr_Phantom;
     delete visAttr_Floor;
     delete visAttr_Wall;
+    delete visAttr_Aluminum;
     delete visAttr_GlassWindow;
     delete visAttr_ArcVault;
     delete visAttr_VacuumChamber;
@@ -173,8 +196,14 @@ detcon::~detcon() {
 }
 
 void detcon::SetVisualAttributes() {
+    visAttr_Aluminum = new G4VisAttributes();
+    visAttr_Aluminum->SetVisibility(true);
+    visAttr_Aluminum->SetForceSolid(true);
+    visAttr_Aluminum->SetColour(0.8, 0.8, 0.8, 0.5);
+    logical_AluminumCeiling->SetVisAttributes(visAttr_Aluminum);
+
     visAttr_Phantom = new G4VisAttributes();
-    visAttr_Phantom->SetVisibility(false); // FIXME: set to true later
+    visAttr_Phantom->SetVisibility(true); // FIXME: set to true later
     visAttr_Phantom->SetForceSolid(true);
     visAttr_Phantom->SetColour(1, 0, 0, 0.9);
     logical_PhantomBox->SetVisAttributes(visAttr_Phantom);
