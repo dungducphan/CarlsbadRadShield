@@ -18,18 +18,17 @@ generator::generator() {
     sps->GetPosDist()->SetCentreCoords(sourcePosition_FreeCAD - u_FreeCAD_GDML);
     sps->GetPosDist()->ConfineSourceToVolume("NULL");
 
-    sps->GetEneDist()->SetEnergyDisType("Gauss"); // Mono, Lin, Pow, Exp, Gauss, Brem, BBody, Cdg (cosmic diffuse gamma), User, Arb, Epn (energy per nucleon)
-    sps->GetEneDist()->SetMonoEnergy(2 * MeV);
-    sps->GetEneDist()->SetBeamSigmaInE(0.2 * MeV);
+    sps->GetEneDist()->SetEnergyDisType("Mono"); // Mono, Lin, Pow, Exp, Gauss, Brem, BBody, Cdg (cosmic diffuse gamma), User, Arb, Epn (energy per nucleon)
+    sps->GetEneDist()->SetMonoEnergy(200 * MeV);
 
     // Use isotropic angular distribution
     // Comment out for beam
     //==================================================
-    sps->GetAngDist()->SetAngDistType("iso");
-    sps->GetAngDist()->SetMinTheta(0.0 * degree);
-    sps->GetAngDist()->SetMaxTheta(180.0 * degree);
-    sps->GetAngDist()->SetMinPhi(0.0 * degree);
-    sps->GetAngDist()->SetMaxPhi(360.0 * degree);
+    // sps->GetAngDist()->SetAngDistType("iso");
+    // sps->GetAngDist()->SetMinTheta(0.0 * degree);
+    // sps->GetAngDist()->SetMaxTheta(180.0 * degree);
+    // sps->GetAngDist()->SetMinPhi(0.0 * degree);
+    // sps->GetAngDist()->SetMaxPhi(360.0 * degree);
     //==================================================
 
     fRandom = new TRandom3();
@@ -41,12 +40,12 @@ generator::~generator() {
 
 void generator::GeneratePrimaries(G4Event *anEvent) {
     // Comment out the following line to use the isotropic angular distribution
-    // fGeneralParticleSource->GetCurrentSource()->GetAngDist()->SetParticleMomentumDirection(RandomizedDirection());
+    fGeneralParticleSource->GetCurrentSource()->GetAngDist()->SetParticleMomentumDirection(RandomizedDirection());
     fGeneralParticleSource->GeneratePrimaryVertex(anEvent);
 }
 
 G4ThreeVector generator::RandomizedDirection() {
-    double openingAngle = 0.1; // mrad // FIXME: check and change before production runs
+    double openingAngle = 0.5; // mrad // FIXME: check and change before production runs
     double rdm1 = fRandom->Gaus(0, openingAngle);
     double y_mom = TMath::Cos(rdm1 * mrad);
     double tmp = TMath::Sin(rdm1 * mrad);

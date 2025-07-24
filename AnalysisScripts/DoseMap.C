@@ -21,20 +21,21 @@
 int main() {
     gStyle->SetOptStat(0);
 
-    auto infile = new TFile("/home/dphan/Documents/GitHub/CarlsbadRadShield/Results/NoRoof_07222025/Dose_000.root");
+    auto infile = new TFile("/home/dphan/Documents/GitHub/CarlsbadRadShield/Results/NoRoof_07222025/DoseMap_NoRoof_Beam50MeV_62500000.root");
     auto h2_ControlRoom = (TH2D*)infile->Get("DoseMap_ControlRoom");
     auto h2_ParkingArea = (TH2D*)infile->Get("DoseMap_ParkingArea");
     auto h2_LunchArea   = (TH2D*)infile->Get("DoseMap_LunchArea");
     auto h2_OfficeArea  = (TH2D*)infile->Get("DoseMap_OfficeArea");
     auto h2_LaserRoom   = (TH2D*)infile->Get("DoseMap_LaserRoom");
 
-    // Scaling to 1nC
+    // Scaling
     double massOfScoringBox = 8.24; // kg
-    double scaleTo1nC = 10;
+    double scaleTo1nC = 10; // For 625000000 events
+    double scaleTo15pC = 1.5; // For 62500000 events
     double scaleTo100Hz = 100;
     double eVtoJoules = 1.60218E-19; // eV to Joules
     double GyToMillirem = 100000; // Gy to millirem
-    double scalingFactor = scaleTo1nC * scaleTo100Hz * (eVtoJoules / massOfScoringBox) * GyToMillirem;
+    double scalingFactor = scaleTo15pC * scaleTo100Hz * (eVtoJoules / massOfScoringBox) * GyToMillirem;
     h2_ControlRoom->Scale(scalingFactor);
     h2_ParkingArea->Scale(scalingFactor);
     h2_LunchArea->Scale(scalingFactor);
@@ -51,7 +52,7 @@ int main() {
     h2_ControlRoom->GetYaxis()->CenterTitle();
     h2_ControlRoom->GetXaxis()->SetTitle("Cell Number");
     h2_ControlRoom->GetYaxis()->SetTitle("Cell Number");
-    c_ControlRoom->SaveAs("/home/dphan/Documents/GitHub/CarlsbadRadShield/Results/NoRoof_07222025/DoseMap_ControlRoom.png");
+    c_ControlRoom->SaveAs("/home/dphan/Documents/GitHub/CarlsbadRadShield/Results/NoRoof_07222025/Beam50MeV/DoseMap_ControlRoom.png");
 
     auto c_ParkingArea = new TCanvas("c_ParkingArea", "c_ParkingArea", 1800, 800);
     c_ParkingArea->SetMargin(0.1, 0.15, 0.15, 0.15);
@@ -63,7 +64,7 @@ int main() {
     h2_ParkingArea->GetYaxis()->CenterTitle();
     h2_ParkingArea->GetXaxis()->SetTitle("Cell Number");
     h2_ParkingArea->GetYaxis()->SetTitle("Cell Number");
-    c_ParkingArea->SaveAs("/home/dphan/Documents/GitHub/CarlsbadRadShield/Results/NoRoof_07222025/DoseMap_ParkingArea.png");
+    c_ParkingArea->SaveAs("/home/dphan/Documents/GitHub/CarlsbadRadShield/Results/NoRoof_07222025/Beam50MeV/DoseMap_ParkingArea.png");
 
     auto c_LunchArea = new TCanvas("c_LunchArea", "c_LunchArea", 1800, 800);
     c_LunchArea->SetMargin(0.1, 0.15, 0.15, 0.15);
@@ -75,7 +76,7 @@ int main() {
     h2_LunchArea->GetYaxis()->CenterTitle();
     h2_LunchArea->GetXaxis()->SetTitle("Cell Number");
     h2_LunchArea->GetYaxis()->SetTitle("Cell Number");
-    c_LunchArea->SaveAs("/home/dphan/Documents/GitHub/CarlsbadRadShield/Results/NoRoof_07222025/DoseMap_LunchArea.png");
+    c_LunchArea->SaveAs("/home/dphan/Documents/GitHub/CarlsbadRadShield/Results/NoRoof_07222025/Beam50MeV/DoseMap_LunchArea.png");
 
     auto c_OfficeArea = new TCanvas("c_OfficeArea", "c_OfficeArea", 1800, 800);
     c_OfficeArea->SetMargin(0.1, 0.15, 0.15, 0.15);
@@ -87,7 +88,7 @@ int main() {
     h2_OfficeArea->GetYaxis()->CenterTitle();
     h2_OfficeArea->GetXaxis()->SetTitle("Cell Number");
     h2_OfficeArea->GetYaxis()->SetTitle("Cell Number");
-    c_OfficeArea->SaveAs("/home/dphan/Documents/GitHub/CarlsbadRadShield/Results/NoRoof_07222025/DoseMap_OfficeArea.png");
+    c_OfficeArea->SaveAs("/home/dphan/Documents/GitHub/CarlsbadRadShield/Results/NoRoof_07222025/Beam50MeV/DoseMap_OfficeArea.png");
 
     auto c_LaserRoom = new TCanvas("c_LaserRoom", "c_LaserRoom", 1800, 800);
     c_LaserRoom->SetMargin(0.1, 0.15, 0.15, 0.15);
@@ -99,7 +100,7 @@ int main() {
     h2_LaserRoom->GetYaxis()->CenterTitle();
     h2_LaserRoom->GetXaxis()->SetTitle("Cell Number");
     h2_LaserRoom->GetYaxis()->SetTitle("Cell Number");
-    c_LaserRoom->SaveAs("/home/dphan/Documents/GitHub/CarlsbadRadShield/Results/NoRoof_07222025/DoseMap_LaserRoom.png");
+    c_LaserRoom->SaveAs("/home/dphan/Documents/GitHub/CarlsbadRadShield/Results/NoRoof_07222025/Beam50MeV/DoseMap_LaserRoom.png");
 
     return 0;
 }
