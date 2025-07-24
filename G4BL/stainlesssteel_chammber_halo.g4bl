@@ -1,0 +1,51 @@
+# ====================================================================================================================
+# QGSP_BERT is best fpr low-energy EM physics
+physics QGSP_BERT
+# ====================================================================================================================
+
+# ====================================================================================================================
+# isotropic point source of electrons with 2 MeV energy
+isotropicsource particle=e- \
+                nEvents=1000000 \
+                firstEvent=1 \
+                x=0.0 \
+                y=0.0 \
+                z=0.0 \
+                weight=1.0 \
+                secondaryTrackID=1001 \
+                meanP=2.46 \
+                sigmaP=0.3 \
+                meanT=1.0 \
+                sigmaT=0.1
+
+# BeamVis just shows where the beam comes from
+box BeamVis width=1.0 height=1.0 length=1.0 material=Vacuum color=1,0,0
+place BeamVis z=0
+# ====================================================================================================================
+
+
+# ====================================================================================================================
+# Target Chamber - stainless steel, 1/4 inch thick walls, 50cm outer dimensions
+# Outer chamber (50cm x 50cm x 50cm)
+box OuterChamber width=500.0 height=500.0 length=500.0 material=STAINLESS-STEEL color=0.7,0.7,0.7
+# Inner cavity (outer - 2*thickness = 500 - 2*6.35 = 487.3mm)
+box InnerCavity width=487.3 height=487.3 length=487.3 material=Vacuum
+# Create hollow chamber by subtracting inner cavity from outer chamber
+boolean op=subtraction TargetChamber OuterChamber InnerCavity material=STAINLESS-STEEL color=0.7,0.7,0.7
+# Place the target chamber centered at origin (around the isotropic source)
+place TargetChamber z=0
+# ====================================================================================================================
+
+
+# ====================================================================================================================
+# Spectrum Detector
+# virtualdetector Spec radius=4000.0 length=1.0 color=0,1,0
+# place Spec z=600.0 rename=Spec#
+# ====================================================================================================================
+
+
+# ====================================================================================================================
+# Dosimeters
+detector Det width=4000.0 height=4000.0 length=100.0 material=TISSUE_SOFT_ICRU-4 color=0,1,0
+place Det z=10000.0 
+# ====================================================================================================================
