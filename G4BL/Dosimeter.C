@@ -45,15 +45,18 @@ void Dosimeter::Loop()
       hDoseMap->Fill(x, y, Edep);
    }
 
-   double numSimulations = 1E6;
+   double numSimulations = 1.2E9;
    double targetCharge = 1E-9;
    double eCharge = 1.6E-19;
    double scaleTo1nC = (targetCharge / (numSimulations * eCharge));
    double scaleTo100Hz = 100;
+   double scaleTo4Hz = 4;
    double MeVToJoule = 1.60218e-13; 
    double mass = 1.0;
    double GyToMilliRem = 100000;
-   double scaleFactor = scaleTo1nC * scaleTo100Hz * (MeVToJoule / mass) * GyToMilliRem;
+   double scaleToWorkingYear = 3600 * 8 * 228;
+   // double scaleFactor = scaleTo1nC * scaleTo100Hz * (MeVToJoule / mass) * GyToMilliRem;
+   double scaleFactor = scaleTo1nC * scaleTo4Hz * (MeVToJoule / mass) * GyToMilliRem; // * scaleToWorkingYear;
    hDoseMap->Scale(scaleFactor);
 
    TCanvas *c1 = new TCanvas("c1", "Dose Rate Map", 800, 800);
@@ -63,5 +66,5 @@ void Dosimeter::Loop()
    hDoseMap->SetTitle("Dose Rate Map (mrem/s)");
    hDoseMap->GetXaxis()->SetTitle("X (mm)");
    hDoseMap->GetYaxis()->SetTitle("Y (mm)");
-   c1->SaveAs("DoseMap_10M.pdf");
+   c1->SaveAs("DoseRateMap_5M.png");
 }

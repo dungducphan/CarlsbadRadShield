@@ -42,3 +42,5 @@ AnalysisScripts/EDep_000_440000_Beam_TestConfig.root
 
 *biasing*
 build/
+*.log
+*.err
