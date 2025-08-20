@@ -59,6 +59,7 @@ private:
     G4Material*        mat_WallMaterial                 = nullptr;
     G4Material*        mat_Concrete                     = nullptr;
     G4Material*        mat_Glass                        = nullptr;
+    G4Material*        mat_Mylar                        = nullptr;
     G4Material*        mat_Lead                         = nullptr;
     G4Material*        mat_HDPE                         = nullptr;
     G4Material*        mat_Tungsten                     = nullptr;
@@ -84,6 +85,7 @@ private:
     G4LogicalVolume*   logical_ArcVault                 = nullptr;
     G4LogicalVolume*   logical_VacuumChamber            = nullptr;
     G4LogicalVolume*   logical_VacuumWindow             = nullptr;
+    G4LogicalVolume*   logical_WPinhole                 = nullptr;
     G4LogicalVolume*   logical_MagnetField              = nullptr;
 
     G4VisAttributes*   visAttr_ArcVault                 = nullptr;
@@ -94,6 +96,7 @@ private:
     G4VisAttributes*   visAttr_VacuumChamber            = nullptr;
     G4VisAttributes*   visAttr_VacuumWindow             = nullptr;
     G4VisAttributes*   visAttr_MagneticField            = nullptr;
+    G4VisAttributes*   visAttr_WPinhole                 = nullptr;
     G4VisAttributes*   visAttr_Phantom                  = nullptr;
 
     G4FieldManager* fieldMgr = nullptr;

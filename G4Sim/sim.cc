@@ -28,7 +28,7 @@ int main(int argc, char **argv) {
     // Construct the run manager
 #ifdef G4MULTITHREADED
     G4MTRunManager *runManager = new G4MTRunManager();
-    runManager->SetNumberOfThreads(48); // CHECKME
+    runManager->SetNumberOfThreads(1); // CHECKME
 #else
     G4RunManager* runManager = new G4RunManager();
 #endif
@@ -41,7 +41,7 @@ int main(int argc, char **argv) {
     G4GDMLParser parser;
     parser.SetStripFlag(false);
     parser.SetOverlapCheck(true);
-    parser.Read("Setup_NoRoofVault.gdml"); // Replace with your GDML file path
+    parser.Read("Setup_NoRoofVault_LEGO_WPinhole.gdml");
     auto detector = new detcon(parser);
     runManager->SetUserInitialization(detector);
 
