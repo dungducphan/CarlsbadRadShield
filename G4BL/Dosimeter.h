@@ -74,12 +74,12 @@ Dosimeter::Dosimeter(TTree *tree) : fChain(0)
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
    if (tree == 0) {
-      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("./GammaDosimeter_10M.root");
+      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("./results_20250728_081951.root");
       if (!f || !f->IsOpen()) {
-         f = new TFile("./GammaDosimeter_10M.root");
+         f = new TFile("./results_20250728_081951.root");
       }
-      TDirectory * dir = (TDirectory*)f->Get("./GammaDosimeter_10M.root:/Detector");
-      dir->GetObject("Det",tree);
+      TDirectory * dir = (TDirectory*)f->Get("./results_20250728_081951.root:/Detector");
+      dir->GetObject("Det1",tree);
 
    }
    Init(tree);
