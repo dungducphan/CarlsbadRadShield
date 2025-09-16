@@ -19,7 +19,7 @@ generator::generator() {
     sps->GetPosDist()->ConfineSourceToVolume("NULL");
 
     sps->GetEneDist()->SetEnergyDisType("Mono"); // Mono, Lin, Pow, Exp, Gauss, Brem, BBody, Cdg (cosmic diffuse gamma), User, Arb, Epn (energy per nucleon)
-    sps->GetEneDist()->SetMonoEnergy(50 * MeV);
+    sps->GetEneDist()->SetMonoEnergy(45 * MeV);
 
     // Use isotropic angular distribution
     // Comment out for beam
@@ -45,7 +45,7 @@ void generator::GeneratePrimaries(G4Event *anEvent) {
 }
 
 G4ThreeVector generator::RandomizedDirection() {
-    double openingAngle = 6.35; // mrad // FIXME: check and change before production runs
+    double openingAngle = 6; // mrad // FIXME: check and change before production runs
     double rdm1 = fRandom->Gaus(0, openingAngle);
     double y_mom = TMath::Cos(rdm1 * mrad);
     double tmp = TMath::Sin(rdm1 * mrad);
