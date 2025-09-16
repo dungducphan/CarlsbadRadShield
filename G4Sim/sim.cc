@@ -41,7 +41,7 @@ int main(int argc, char **argv) {
     G4GDMLParser parser;
     parser.SetStripFlag(false);
     parser.SetOverlapCheck(true);
-    parser.Read("Setup_NoRoofVault_LEGO_WPinhole.gdml");
+    parser.Read("Setup_NoRoofVault_LEGO_WPinholeBigger.gdml");
     auto detector = new detcon(parser);
     runManager->SetUserInitialization(detector);
 

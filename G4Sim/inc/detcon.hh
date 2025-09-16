@@ -51,7 +51,6 @@ private:
     G4double           ScoringBoxSize                   = 200 * mm;
     G4Box*             SolidScoringBox                  = nullptr;
 
-
     G4Material*        mat_Air                          = nullptr;
     G4Material*        mat_Hardwood                     = nullptr;
     G4Material*        mat_Aluminum                     = nullptr;
@@ -84,7 +83,9 @@ private:
     G4LogicalVolume*   logical_GlassWindow_06           = nullptr;
     G4LogicalVolume*   logical_ArcVault                 = nullptr;
     G4LogicalVolume*   logical_VacuumChamber            = nullptr;
-    G4LogicalVolume*   logical_VacuumWindow             = nullptr;
+    G4LogicalVolume*   logical_VacuumChamberForPinhole  = nullptr;
+    G4LogicalVolume*   logical_BeamPipe                 = nullptr;
+    G4LogicalVolume*   logical_AdditionalConcreteWall   = nullptr;
     G4LogicalVolume*   logical_WPinhole                 = nullptr;
     G4LogicalVolume*   logical_MagnetField              = nullptr;
 
@@ -94,7 +95,6 @@ private:
     G4VisAttributes*   visAttr_Aluminum                 = nullptr;
     G4VisAttributes*   visAttr_GlassWindow              = nullptr;
     G4VisAttributes*   visAttr_VacuumChamber            = nullptr;
-    G4VisAttributes*   visAttr_VacuumWindow             = nullptr;
     G4VisAttributes*   visAttr_MagneticField            = nullptr;
     G4VisAttributes*   visAttr_WPinhole                 = nullptr;
     G4VisAttributes*   visAttr_Phantom                  = nullptr;

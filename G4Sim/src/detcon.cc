@@ -5,7 +5,6 @@
 #include <G4VisAttributes.hh>
 #include <G4NistManager.hh>
 
-
 #include <TString.h>
 
 void detcon::BuildPhantomRegion(const G4double Lx,      const G4double Ly,      const G4double Lz,
@@ -68,8 +67,6 @@ detcon::detcon(const G4GDMLParser &parser) : G4VUserDetectorConstruction() {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     fWorldVolume                     = parser.GetWorldVolume();
     logical_FirstFloor               = parser.GetVolume( "V-FirstFloor-2");
-    logical_ConcreteSlab             = parser.GetVolume( "V-ConcreteSlab-13");
-    logical_AluminumCeiling          = parser.GetVolume( "V-AluminumCeiling-14");
     logical_SecondFloor              = parser.GetVolume( "V-SecondFloor-3");
     logical_OuterWalls               = parser.GetVolume( "V-FirstFloorWalls-4");
     logical_InnerWalls               = parser.GetVolume( "V-SecondFloorWalls-5");
@@ -79,11 +76,15 @@ detcon::detcon(const G4GDMLParser &parser) : G4VUserDetectorConstruction() {
     logical_GlassWindow_04           = parser.GetVolume( "V-Glass004-10");
     logical_GlassWindow_05           = parser.GetVolume( "V-Glass005-11");
     logical_GlassWindow_06           = parser.GetVolume( "V-Glass006-12");
-    logical_ArcVault                 = parser.GetVolume( "V-ConcreteVaultNoRoofBody-21");
+    logical_ConcreteSlab             = parser.GetVolume( "V-ConcreteSlab-13");
+    logical_AluminumCeiling          = parser.GetVolume( "V-AluminumCeiling-14");
     logical_VacuumChamber            = parser.GetVolume( "V-VacuumChamber-16");
-    logical_VacuumWindow             = parser.GetVolume( "V-MylarWindow-17");
-    logical_WPinhole                 = parser.GetVolume( "V-Tube-23");
-    logical_MagnetField              = parser.GetVolume( "V-MagneticRegion_1-19");
+    logical_VacuumChamberForPinhole  = parser.GetVolume( "V-VacuumChamberPinhole-17");
+    logical_BeamPipe                 = parser.GetVolume( "V-BeamPipe-18");
+    logical_MagnetField              = parser.GetVolume( "V-MagneticRegion_1-20");
+    logical_ArcVault                 = parser.GetVolume( "V-ConcreteVaultNoRoofBody-22");
+    logical_AdditionalConcreteWall   = parser.GetVolume( "V-AdditionalWall-23");
+    logical_WPinhole                 = parser.GetVolume( "V-Tube-25");
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /* Sensitive/Dosimetry Region */
@@ -161,7 +162,9 @@ detcon::detcon(const G4GDMLParser &parser) : G4VUserDetectorConstruction() {
     logical_WPinhole                 ->SetMaterial(mat_Tungsten);
     logical_ArcVault                 ->SetMaterial(mat_Concrete);
     logical_VacuumChamber            ->SetMaterial(mat_StainlessSteel);
-    logical_VacuumWindow             ->SetMaterial(mat_Mylar);
+    logical_VacuumChamberForPinhole  ->SetMaterial(mat_StainlessSteel);
+    logical_BeamPipe                 ->SetMaterial(mat_StainlessSteel);
+    logical_AdditionalConcreteWall   ->SetMaterial(mat_Concrete);
     logical_MagnetField              ->SetMaterial(mat_Air);
 }
 
@@ -182,7 +185,9 @@ detcon::~detcon() {
     delete logical_GlassWindow_06;
     delete logical_ArcVault;
     delete logical_VacuumChamber;
-    delete logical_VacuumWindow;
+    delete logical_VacuumChamberForPinhole;
+    delete logical_BeamPipe;
+    delete logical_AdditionalConcreteWall;
     delete logical_WPinhole;
     delete logical_MagnetField;
 
@@ -194,7 +199,6 @@ detcon::~detcon() {
     delete visAttr_GlassWindow;
     delete visAttr_ArcVault;
     delete visAttr_VacuumChamber;
-    delete visAttr_VacuumWindow;
     delete visAttr_MagneticField;
 
     delete fWorldVolume;
@@ -244,18 +248,15 @@ void detcon::SetVisualAttributes() {
     visAttr_ArcVault->SetForceSolid(true);
     visAttr_ArcVault->SetColour(0.8, 0.8, 0.8, 0.1);
     logical_ArcVault->SetVisAttributes(visAttr_ArcVault);
+    logical_AdditionalConcreteWall->SetVisAttributes(visAttr_ArcVault);
 
     visAttr_VacuumChamber = new G4VisAttributes();
     visAttr_VacuumChamber->SetVisibility(true);
     visAttr_VacuumChamber->SetForceSolid(true);
     visAttr_VacuumChamber->SetColour(0.0, 0.8, 0.0, 0.6);
     logical_VacuumChamber->SetVisAttributes(visAttr_VacuumChamber);
-
-    visAttr_VacuumWindow = new G4VisAttributes();
-    visAttr_VacuumWindow->SetVisibility(true);
-    visAttr_VacuumWindow->SetForceSolid(true);
-    visAttr_VacuumWindow->SetColour(0.8, 0.1, 0.2, 0.1);
-    logical_VacuumWindow->SetVisAttributes(visAttr_VacuumWindow);
+    logical_VacuumChamberForPinhole->SetVisAttributes(visAttr_VacuumChamber);
+    logical_BeamPipe->SetVisAttributes(visAttr_VacuumChamber);
 
     visAttr_WPinhole = new G4VisAttributes();
     visAttr_WPinhole->SetVisibility(true);
