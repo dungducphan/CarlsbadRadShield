@@ -6,11 +6,9 @@
 # ====================================================================================================================
 
 # Configuration parameters
-G4BL_FILE="stainlesssteel_chammber_halo.g4bl"
-NUM_JOBS=1600                  # Number of parallel jobs to run
+G4BL_FILE="beamProfileAfterWPinhole.g4bl"
+NUM_JOBS=80                    # Number of parallel jobs to run
 MAX_PARALLEL=40                # Maximum number of jobs to run simultaneously
-THICKNESS=19.5                 # Lead thickness parameter (mm)
-SHIELDGAP=200                  # Gap between target chamber and shield (mm)
 
 # Create output directory with timestamp
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)

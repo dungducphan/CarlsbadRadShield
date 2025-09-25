@@ -1,0 +1,50 @@
+# ====================================================================================================================
+# QGSP_BERT is best for low-energy EM physics
+physics QGSP_BERT
+# ====================================================================================================================
+
+# ====================================================================================================================
+# GPS
+particlesource nEvents=100
+/gps/particle e-
+
+# --- position: point at (0,0,0) ---
+/gps/pos/type Point
+/gps/pos/centre 0. 0. 0. mm
+
+# --- main direction: +z ---
+/gps/direction 0. 0. 1.
+
+# --- angular distribution: radial Gaussian around +z ---
+# beam1d = 1D radial Gaussian (theta distributed radially around direction)
+/gps/ang/type beam1d
+/gps/ang/sigma_r 6.37 mrad
+
+# --- energy distribution: Gaussian centered at 45 MeV, sigma = 5 MeV ---
+/gps/ene/type Gauss
+/gps/ene/mono 45. MeV
+/gps/ene/sigma 15. MeV
+
+/gps/ang/rot1 0 1 0
+/gps/ang/rot2 1 0 0
+
+# /gps/number 10000
+/gps/number 100
+
+# BeamVis just shows where the beam comes from
+box BeamVis width=0.5 height=0.5 length=0.5 material=Vacuum color=1,0,0
+place BeamVis z=0
+# ====================================================================================================================
+
+
+# ====================================================================================================================
+# w Pinhole 
+tubs PINHOLE innerRadius=0.5 outerRadius=12.7 length=15 material=W color=0.7,0.7,0.7
+place PINHOLE z=630
+# ====================================================================================================================
+
+# ====================================================================================================================
+# Detector
+virtualdetector Det radius=200.0 length=0.1 color=0,1,0 format=rootExtended
+place Det z=900
+# ====================================================================================================================
